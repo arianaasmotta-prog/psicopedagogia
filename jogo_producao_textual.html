@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--c1:#e91e8c;--c2:#f59e0b;--c3:#22c55e;--c4:#3b82f6;--c5:#ef4444;--c6:#8b5cf6;--bg:#f0f4ff;--card:#fff;--text:#2d2d4a;--muted:#8888aa;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;padding:16px 14px 60px;animation:fadeUp .4s ease;}
+.screen.active{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.topbar{width:100%;max-width:660px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.back-btn{background:#fff;border:2.5px solid #e0e0e0;border-radius:50px;padding:7px 14px;font-size:.8rem;font-weight:800;cursor:pointer;color:var(--text);transition:all .2s;}
+.back-btn:hover{border-color:#999;}
+.stars-total{background:#fff;border-radius:50px;padding:7px 14px;font-size:.84rem;font-weight:900;box-shadow:0 2px 10px rgba(0,0,0,.08);}
+.step-dots{display:flex;gap:5px;align-items:center;}
+.sdot{width:9px;height:9px;border-radius:50%;background:#dde;transition:all .3s;}
+.sdot.done{background:#22c55e;}
+.sdot.active{width:24px;border-radius:7px;}
+.card{background:#fff;border-radius:20px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.08);width:100%;max-width:660px;margin-bottom:16px;}
+.card-title{font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;}
+.step-header{width:100%;max-width:660px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;}
+.step-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;}
+.step-header h2{font-size:1.2rem;font-weight:900;margin-bottom:3px;}
+.step-header p{font-size:.85rem;color:var(--muted);font-weight:600;line-height:1.5;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:8px 14px;border-radius:50px;font-size:.8rem;font-weight:700;border:2.5px solid #e0e0e0;background:#fafafa;cursor:pointer;transition:all .2s;}
+.chip.sel{background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--ac) 35%,transparent);}
+textarea{width:100%;border:2.5px solid #e0e0e0;border-radius:13px;padding:12px 14px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:600;color:var(--text);resize:vertical;outline:none;background:#fafafa;line-height:1.6;transition:border-color .2s;}
+textarea:focus{border-color:var(--ac,#a855f7);background:#fff;}
+textarea::placeholder{color:#ccc;font-weight:600;}
+.btn{padding:12px 24px;border-radius:13px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:900;border:none;cursor:pointer;transition:all .2s;}
+.btn-main{background:var(--ac,#a855f7);color:#fff;box-shadow:0 5px 16px color-mix(in srgb,var(--ac,#a855f7) 35%,transparent);}
+.btn-main:hover{opacity:.88;transform:translateY(-2px);}
+.btn-sec{background:#fff;color:var(--text);border:2.5px solid #e0e0e0;}
+.btn-row{display:flex;gap:10px;width:100%;max-width:660px;}
+.btn-row .btn{flex:1;}
+.stars-display{display:flex;gap:5px;justify-content:center;margin:8px 0;}
+.star-ico{font-size:1.5rem;opacity:.25;transition:all .4s;transform:scale(.8);}
+.star-ico.lit{opacity:1;transform:scale(1.1);filter:drop-shadow(0 2px 6px #f59e0b);}
+/* MENU */
+#menu{background:linear-gradient(135deg,#e0f0ff,#f5e6ff);}
+.menu-title{text-align:center;margin-bottom:16px;}
+.menu-title h1{font-size:1.5rem;font-weight:900;color:var(--text);}
+.menu-title p{font-size:.88rem;color:var(--muted);font-weight:600;margin-top:4px;}
+.activity-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:660px;}
+@media(max-width:460px){.activity-grid{grid-template-columns:1fr;}}
+.act-card{background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.07);border:3px solid transparent;transition:all .25s;text-align:center;}
+.act-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.act-card.locked{opacity:.45;cursor:default;}
+.act-card.done-card{border-color:#22c55e;}
+.act-icon{font-size:2.2rem;}
+.act-name{font-size:.9rem;font-weight:900;color:var(--text);}
+.act-desc{font-size:.73rem;font-weight:700;color:var(--muted);line-height:1.4;}
+.act-stars{font-size:.78rem;font-weight:800;}
+.act-badge{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:50px;background:#f0fdf4;color:#22c55e;border:1.5px solid #22c55e;margin-top:2px;}
+/* S1 WHEEL */
+#s1{--ac:var(--c1);}
+.wheel-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;}
+canvas#wheel{border-radius:50%;box-shadow:0 8px 28px rgba(233,30,140,.22);cursor:pointer;}
+.spin-result{font-size:1.05rem;font-weight:900;color:var(--c1);min-height:26px;text-align:center;}
+/* S2 RAIN */
+#s2{--ac:var(--c2);}
+.rain-arena{position:relative;width:100%;max-width:660px;height:200px;background:linear-gradient(180deg,#fffbeb,#fff8d6);border-radius:16px;overflow:hidden;border:2.5px solid #f59e0b33;margin-bottom:12px;}
+.rain-word{position:absolute;padding:7px 14px;border-radius:50px;font-size:.82rem;font-weight:800;background:#fff;border:2.5px solid var(--c2);color:var(--c2);cursor:pointer;white-space:nowrap;animation:fall linear forwards;transition:background .15s,color .15s;}
+.rain-word:hover{background:var(--c2);color:#fff;}
+.rain-word.caught{background:var(--c3);border-color:var(--c3);color:#fff;animation:none;pointer-events:none;}
+@keyframes fall{from{transform:translateY(-50px);}to{transform:translateY(220px);}}
+.bag{display:flex;flex-wrap:wrap;gap:5px;min-height:40px;padding:9px;background:#f0fdf4;border-radius:12px;border:2px dashed #22c55e;}
+.bag-word{padding:5px 12px;border-radius:50px;font-size:.78rem;font-weight:800;background:#22c55e;color:#fff;}
+.bag-empty{font-size:.78rem;font-weight:700;color:#aaa;font-style:italic;}
+.timer-row2{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.timer2{font-size:1.2rem;font-weight:900;color:var(--c2);min-width:48px;}
+/* S3 DRAG */
+#s3{--ac:var(--c3);}
+.board{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:660px;}
+@media(max-width:480px){.board{grid-template-columns:1fr;}}
+.col-zone{background:#f8f8f8;border-radius:14px;min-height:140px;padding:10px;border:2.5px dashed #ccc;transition:border-color .2s,background .2s;}
+.col-zone.over{border-color:var(--c3);background:#f0fdf4;}
+.col-label{text-align:center;font-size:.8rem;font-weight:900;margin-bottom:8px;padding:5px;border-radius:9px;}
+.idea-card{background:#fff;border-radius:10px;padding:9px 11px;font-size:.79rem;font-weight:700;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.09);cursor:grab;margin-bottom:7px;border-left:4px solid var(--c3);user-select:none;transition:box-shadow .2s,transform .15s;}
+.idea-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.14);transform:scale(1.02);}
+.idea-card.dragging{opacity:.5;transform:rotate(2deg);}
+.source-pool{display:flex;flex-wrap:wrap;gap:7px;width:100%;max-width:660px;padding:11px;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:12px;}
+.src-label{width:100%;font-size:.76rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+/* S4 PARA */
+#s4{--ac:var(--c4);}
+.para-cards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:660px;}
+.para-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.07);border-left:5px solid var(--c4);transition:all .3s;}
+.para-card.done-para{border-color:#22c55e;background:#f0fdf4;}
+.para-label{font-size:.76rem;font-weight:800;color:var(--c4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.para-card.done-para .para-label{color:#22c55e;}
+.para-starter{font-size:.86rem;font-weight:800;color:var(--text);margin-bottom:9px;line-height:1.5;}
+.para-done-ico{font-size:1rem;margin-left:auto;}
+.assembled-text{background:#f8f8ff;border-radius:12px;padding:14px;font-size:.86rem;font-weight:600;line-height:1.8;color:var(--text);white-space:pre-wrap;min-height:56px;border:2px solid #e0e0f0;}
+/* S5 DETECTIVE */
+#s5{--ac:var(--c5);}
+.clue-list{display:flex;flex-direction:column;gap:9px;}
+.clue-item{display:flex;align-items:flex-start;gap:10px;padding:13px;border-radius:12px;background:#fafafa;border:2.5px solid #e0e0e0;cursor:pointer;transition:all .2s;user-select:none;}
+.clue-item:hover{border-color:var(--c5);background:#fef2f2;}
+.clue-item.solved{background:#fef9f0;border-color:#f59e0b;}
+.clue-box{width:26px;height:26px;border-radius:7px;border:2.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s;}
+.clue-item.solved .clue-box{background:#f59e0b;border-color:#f59e0b;color:#fff;}
+.clue-text{font-size:.84rem;font-weight:700;line-height:1.4;}
+.clue-answer{font-size:.77rem;font-weight:700;color:#f59e0b;margin-top:5px;display:none;}
+.clue-item.solved .clue-answer{display:block;}
+.clue-progress{background:#e0e0e0;border-radius:50px;height:9px;overflow:hidden;margin-top:9px;}
+.clue-bar{height:100%;background:var(--c5);border-radius:50px;transition:width .4s;}
+.evidence-stamp{text-align:center;font-size:.95rem;font-weight:900;color:#f59e0b;margin-top:5px;min-height:22px;}
+.text-display{background:#fffef5;border:2px solid #f5e0a0;border-radius:12px;padding:14px;font-size:.85rem;font-weight:600;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:170px;overflow-y:auto;}
+/* S6 TROPHY */
+#s6{--ac:var(--c6);background:linear-gradient(135deg,#f5e6ff,#e6efff);}
+.trophy-area{text-align:center;padding:8px 0 18px;}
+.trophy-big{font-size:5.5rem;animation:bounce .7s ease infinite alternate;display:block;}
+@keyframes bounce{from{transform:scale(1);}to{transform:scale(1.12);}}
+.trophy-title{font-size:1.6rem;font-weight:900;color:var(--c6);margin:7px 0 3px;}
+.trophy-sub{font-size:.9rem;font-weight:700;color:var(--muted);line-height:1.5;}
+.achievements{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0;width:100%;max-width:660px;}
+.ach{background:#fff;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:9px;box-shadow:0 3px 10px rgba(0,0,0,.08);border:2px solid transparent;min-width:130px;}
+.ach.unlocked{border-color:var(--c6);}
+.ach.locked-ach{opacity:.35;filter:grayscale(1);}
+.ach-icon{font-size:1.4rem;}
+.ach-name{font-size:.8rem;font-weight:800;color:var(--text);}
+.ach-pts{font-size:.7rem;font-weight:700;color:var(--muted);}
+.certificate{background:#fff;border:4px solid var(--c6);border-radius:22px;padding:24px;text-align:center;width:100%;max-width:520px;box-shadow:0 8px 28px rgba(139,92,246,.16);}
+.cert-title{font-size:1.1rem;font-weight:900;color:var(--c6);margin-bottom:5px;}
+.cert-body{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.7;}
+.cert-name{font-size:1.2rem;font-weight:900;color:var(--c6);border-bottom:3px solid var(--c6);display:inline-block;min-width:180px;padding-bottom:3px;margin:7px 0;}
+.cert-footer{font-size:.73rem;color:var(--muted);font-weight:700;margin-top:12px;}
+canvas#confetti{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999;}
+.score-pill{display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:50px;padding:6px 13px;font-size:.8rem;font-weight:900;box-shadow:0 2px 10px rgba(0,0,0,.08);}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div id="menu" class="screen active">
+  <div class="menu-title">
+    <h1>🎮 Jogo da Produção Textual</h1>
+    <p>Complete as 6 etapas e conquiste seu troféu! ⭐</p>
+  </div>
+  <div class="score-pill" id="menuStars">⭐ 0 estrelas conquistadas</div>
+  <br/>
+  <div class="activity-grid" id="actGrid"></div>
+</div>
+
+<div id="s1" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div class="step-dots" id="dots1"></div>
+    <div class="stars-total" id="st1">⭐ 0/3</div>
+  </div>
+  <div class="step-header">
+    <div class="step-icon" style="background:#fff0f6">💡</div>
+    <div><h2 style="color:var(--c1)">Etapa 1 — Roleta das Ideias</h2><p>Gire a roleta para se inspirar, depois responda as perguntas!</p></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎯 Gire para descobrir o tipo de texto!</div>
+    <div class="wheel-wrap">
+      <canvas id="wheel" width="200" height="200" onclick="spinWheel()"></canvas>
+      <div class="spin-result" id="spinResult">Toque na roleta para girar! 👆</div>
+      <button class="btn btn-main" id="spinBtn" onclick="spinWheel()" style="--ac:var(--c1)">🎲 Girar Roleta!</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">👀 Para quem você vai escrever?</div>
+    <div class="chips" id="chips-pub" style="--ac:var(--c1)">
+      <div class="chip" onclick="selectChip(this,'pub')" data-v="Para mim mesma 🙋">Para mim mesma 🙋</div>
+      <div class="chip" onclick="selectChip(this,'pub')" data-v="Meus amigos 👯">Meus amigos 👯</div>
+      <div class="chip" onclick="selectChip(this,'pub')" data-v="Professora/Escola 🏫">Professora/Escola 🏫</div>
+      <div class="chip" onclick="selectChip(this,'pub')" data-v="Todo mundo 🌍">Todo mundo 🌍</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎯 Qual o objetivo?</div>
+    <div class="chips" id="chips-obj" style="--ac:var(--c1)">
+      <div class="chip" onclick="selectChip(this,'obj')" data-v="Contar uma história 🗣️">Contar uma história 🗣️</div>
+      <div class="chip" onclick="selectChip(this,'obj')" data-v="Convencer alguém 💪">Convencer alguém 💪</div>
+      <div class="chip" onclick="selectChip(this,'obj')" data-v="Explicar algo 🔍">Explicar algo 🔍</div>
+      <div class="chip" onclick="selectChip(this,'obj')" data-v="Expressar sentimentos 💜">Expressar sentimentos 💜</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">💬 Meu texto é sobre... (escreva em uma frase)</div>
+    <textarea id="inp-tema" rows="2" placeholder="Ex: uma garota que descobre um poder secreto..."></textarea>
+  </div>
+  <div class="stars-display" id="stars1"></div>
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="finishStep(1)" style="--ac:var(--c1)">Concluir etapa! 🎉</button>
+  </div>
+</div>
+
+<div id="s2" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div class="step-dots" id="dots2"></div>
+    <div class="stars-total" id="st2">⭐ 0/3</div>
+  </div>
+  <div class="step-header">
+    <div class="step-icon" style="background:#fffbeb">🗺️</div>
+    <div><h2 style="color:var(--c2)">Etapa 2 — Chuva de Ideias</h2><p>Capture as palavras que se encaixam no seu texto e depois escreva livremente!</p></div>
+  </div>
+  <div class="card">
+    <div class="card-title">☁️ Clique nas palavras para capturar!</div>
+    <div class="rain-arena" id="rainArena"></div>
+    <p style="font-size:.76rem;font-weight:700;color:var(--muted);margin:7px 0 7px">🎒 Palavras capturadas:</p>
+    <div class="bag" id="wordBag"><span class="bag-empty">Clique nas palavras acima...</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title">
+      <div class="timer-row2">
+        <span>⏱️ Escreva tudo que vier à cabeça!</span>
+        <span class="timer2" id="timer2">2:00</span>
+        <button class="btn btn-sec" style="padding:5px 12px;font-size:.78rem" onclick="startTimer2()">▶</button>
+        <button class="btn btn-sec" style="padding:5px 12px;font-size:.78rem" onclick="resetTimer2()">↺</button>
+      </div>
+    </div>
+    <textarea id="inp-rascunho" rows="5" placeholder="Escreva tudo sem parar — palavras soltas, frases, sentimentos, cenas..." style="--ac:var(--c2)"></textarea>
+    <p style="font-size:.76rem;font-weight:700;color:var(--muted);margin-top:7px;text-align:right" id="wc2">0 palavras</p>
+  </div>
+  <div class="stars-display" id="stars2"></div>
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="finishStep(2)" style="--ac:var(--c2)">Concluir etapa! 🎉</button>
+  </div>
+</div>
+
+<div id="s3" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div class="step-dots" id="dots3"></div>
+    <div class="stars-total" id="st3">⭐ 0/3</div>
+  </div>
+  <div class="step-header">
+    <div class="step-icon" style="background:#f0fdf4">📋</div>
+    <div><h2 style="color:var(--c3)">Etapa 3 — Monte o Roteiro</h2><p>Arraste os cartões para organizar seu texto em Início, Meio e Fim!</p></div>
+  </div>
+  <div class="source-pool" id="sourcePool"><div class="src-label">📌 Arraste daqui para as colunas:</div></div>
+  <div class="board">
+    <div>
+      <div class="col-label" style="background:#fce4ec;color:#c2185b">🌱 INÍCIO</div>
+      <div class="col-zone" id="col-inicio" ondragover="allowDrop(event)" ondrop="dropCard(event,'inicio')"></div>
+    </div>
+    <div>
+      <div class="col-label" style="background:#e8f5e9;color:#2e7d32">🌿 MEIO</div>
+      <div class="col-zone" id="col-meio" ondragover="allowDrop(event)" ondrop="dropCard(event,'meio')"></div>
+    </div>
+    <div>
+      <div class="col-label" style="background:#e3f2fd;color:#1565c0">🌸 FIM</div>
+      <div class="col-zone" id="col-fim" ondragover="allowDrop(event)" ondrop="dropCard(event,'fim')"></div>
+    </div>
+  </div>
+  <div class="stars-display" id="stars3"></div>
+  <div class="btn-row" style="margin-top:12px">
+    <button class="btn btn-main" onclick="finishStep(3)" style="--ac:var(--c3)">Concluir etapa! 🎉</button>
+  </div>
+</div>
+
+<div id="s4" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div class="step-dots" id="dots4"></div>
+    <div class="stars-total" id="st4">⭐ 0/4</div>
+  </div>
+  <div class="step-header">
+    <div class="step-icon" style="background:#eff6ff">🖊️</div>
+    <div><h2 style="color:var(--c4)">Etapa 4 — Construtor de Parágrafos</h2><p>Complete cada parágrafo um de cada vez. Sem pressa! 💪</p></div>
+  </div>
+  <div class="para-cards" id="paraCards"></div>
+  <div class="card">
+    <div class="card-title">📄 Seu texto se montando...</div>
+    <div class="assembled-text" id="assembledText">Seus parágrafos vão aparecer aqui! ✍️</div>
+  </div>
+  <div class="stars-display" id="stars4"></div>
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="finishStep(4)" style="--ac:var(--c4)">Concluir etapa! 🎉</button>
+  </div>
+</div>
+
+<div id="s5" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div class="step-dots" id="dots5"></div>
+    <div class="stars-total" id="st5">⭐ 0/5</div>
+  </div>
+  <div class="step-header">
+    <div class="step-icon" style="background:#fef2f2">🔍</div>
+    <div><h2 style="color:var(--c5)">Etapa 5 — Detetive do Texto</h2><p>Leia seu texto e colete as pistas! Clique em cada item para investigar. 🕵️</p></div>
+  </div>
+  <div class="card">
+    <div style="font-size:.95rem;font-weight:900;color:var(--c5);margin-bottom:9px;">🗂️ Arquivo do Caso — Seu Texto:</div>
+    <div class="text-display" id="textDisplay">Escreva seu texto nas etapas anteriores...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔎 Colete as 5 pistas:</div>
+    <div class="clue-list" id="clueList"></div>
+    <div class="clue-progress" style="margin-top:12px"><div class="clue-bar" id="clueBar" style="width:0%"></div></div>
+    <div class="evidence-stamp" id="evidenceStamp"></div>
+  </div>
+  <div class="stars-display" id="stars5"></div>
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="finishStep(5)" style="--ac:var(--c5)">Concluir etapa! 🎉</button>
+  </div>
+</div>
+
+<div id="s6" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goMenu()">← Menu</button>
+    <div></div><div></div>
+  </div>
+  <div class="trophy-area">
+    <span class="trophy-big">🏆</span>
+    <div class="trophy-title">MISSÃO CUMPRIDA!</div>
+    <div class="trophy-sub">Você é uma escritora incrível! 💜<br/>Veja o que você conquistou:</div>
+  </div>
+  <div class="achievements" id="achievements"></div>
+  <div class="certificate" id="certificate">
+    <div class="cert-title">🎓 CERTIFICADO DE AUTORIA</div>
+    <div class="cert-body">
+      Certificamos que<br/>
+      <div class="cert-name" id="certName">Escritora Incrível</div><br/>
+      completou com sucesso a jornada completa<br/>
+      da <strong>Produção Textual</strong> 💜<br/>
+      sobre: <em id="certTema">seu tema especial</em>
+    </div>
+    <div class="cert-footer">✍️ Gerado com dedicação e criatividade · <span id="certDate"></span></div>
+  </div>
+  <div class="stars-display" id="stars6" style="margin-top:14px"></div>
+  <br/>
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="restartAll()" style="--ac:var(--c6)">🔄 Jogar de novo!</button>
+  </div>
+</div>
+
+<script>
+const S={tipo:'',pub:'',obj:'',tema:'',rascunho:'',bagWords:[],inicio:'',meio:'',fim:'',paragraphs:['','','',''],texto:'',notas:'',starsPerStep:[0,0,0,0,0,0],done:[false,false,false,false,false,false]};
+const STEPS=[{id:'s1',color:'#e91e8c',icon:'💡',name:'Roleta das Ideias',desc:'Gire e inspire-se!',maxStars:3},{id:'s2',color:'#f59e0b',icon:'🗺️',name:'Chuva de Ideias',desc:'Capture e escreva!',maxStars:3},{id:'s3',color:'#22c55e',icon:'📋',name:'Monte o Roteiro',desc:'Arraste e organize!',maxStars:3},{id:'s4',color:'#3b82f6',icon:'🖊️',name:'Construtor',desc:'Escreva parágrafo a parágrafo!',maxStars:4},{id:'s5',color:'#ef4444',icon:'🔍',name:'Detetive do Texto',desc:'Colete as pistas!',maxStars:5},{id:'s6',color:'#8b5cf6',icon:'✨',name:'Troféu',desc:'Celebre e receba seu certificado!',maxStars:3}];
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function goMenu(){buildMenu();showScreen('menu');}
+function goStep(n){showScreen('s'+n);onEnterStep(n);}
+
+function buildMenu(){
+  const total=S.starsPerStep.reduce((a,b)=>a+b,0);
+  document.getElementById('menuStars').textContent='⭐ '+total+' estrelas conquistadas';
+  const grid=document.getElementById('actGrid');grid.innerHTML='';
+  STEPS.forEach((st,i)=>{
+    const n=i+1,locked=n>1&&!S.done[i-1],done=S.done[i],stars=S.starsPerStep[i],maxS=st.maxStars;
+    const el=document.createElement('div');
+    el.className='act-card'+(locked?' locked':'')+(done?' done-card':'');
+    el.style.borderColor=done?'#22c55e':'transparent';
+    el.innerHTML=`<div class="act-icon">${st.icon}</div><div class="act-name">${st.name}</div><div class="act-desc">${st.desc}</div><div class="act-stars">${'⭐'.repeat(stars)}${'☆'.repeat(maxS-stars)}</div>${done?'<div class="act-badge">✅ Concluída</div>':locked?'<div class="act-badge" style="background:#fff;color:#aaa;border-color:#ccc">🔒 Complete a anterior</div>':''}`;
+    if(!locked)el.onclick=()=>goStep(n);
+    grid.appendChild(el);
+  });
+}
+
+function onEnterStep(n){buildDots(n);if(n===1)initStep1();if(n===2)initStep2();if(n===3)initStep3();if(n===4)initStep4();if(n===5)initStep5();if(n===6)initStep6();}
+
+function buildDots(current){const el=document.getElementById('dots'+current);if(!el)return;el.innerHTML='';STEPS.forEach((_,i)=>{const d=document.createElement('div');d.className='sdot'+(i+1===current?' active':S.done[i]?' done':'');d.style.background=i+1===current?STEPS[i].color:S.done[i]?'#22c55e':'#dde';el.appendChild(d);});}
+
+function updateStarUI(stepN,count){const maxS=STEPS[stepN-1].maxStars;const el=document.getElementById('stars'+stepN);if(!el)return;el.innerHTML='';for(let i=0;i<maxS;i++){const s=document.createElement('div');s.className='star-ico'+(i<count?' lit':'');s.textContent='⭐';el.appendChild(s);}const st=document.getElementById('st'+stepN);if(st)st.textContent='⭐ '+count+'/'+maxS;}
+
+// S1 WHEEL
+const TIPOS=['Conto','Carta','Crônica','Poema','Redação','Diário','Blog','Fábula'];
+const COLORS1=['#e91e8c','#f59e0b','#22c55e','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#f97316'];
+let wheelAngle=0,spinning=false;
+
+function initStep1(){drawWheel(wheelAngle);updateStarCalc1();if(S.pub)restoreChip('chips-pub',S.pub);if(S.obj)restoreChip('chips-obj',S.obj);const ta=document.getElementById('inp-tema');if(ta){ta.value=S.tema||'';ta.oninput=()=>{S.tema=ta.value;updateStarCalc1();};}}
+function restoreChip(gid,val){document.querySelectorAll('#'+gid+' .chip').forEach(c=>{if(c.dataset.v===val)c.classList.add('sel');});}
+
+function drawWheel(angle){const c=document.getElementById('wheel');if(!c)return;const ctx=c.getContext('2d');const cx=100,cy=100,r=92,seg=TIPOS.length,slice=2*Math.PI/seg;ctx.clearRect(0,0,200,200);TIPOS.forEach((t,i)=>{const start=angle+i*slice,end=start+slice;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=COLORS1[i];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 11px Nunito';ctx.fillText(t,r-6,4);ctx.restore();});ctx.fillStyle='#333';ctx.font='bold 14px Nunito';ctx.fillText('▶',cx+88,cy+5);}
+
+function spinWheel(){if(spinning)return;spinning=true;const extra=Math.random()*2*Math.PI+6*Math.PI,duration=2800,start=performance.now(),startAngle=wheelAngle;function animate(now){const t=(now-start)/duration;if(t>=1){spinning=false;const idx=Math.floor(((2*Math.PI-wheelAngle%(2*Math.PI))/(2*Math.PI/TIPOS.length)))%TIPOS.length;S.tipo=TIPOS[idx];document.getElementById('spinResult').textContent='🎉 '+S.tipo+'!';updateStarCalc1();return;}const ease=1-Math.pow(1-t,4);wheelAngle=startAngle+extra*ease;drawWheel(wheelAngle);requestAnimationFrame(animate);}requestAnimationFrame(animate);}
+
+function selectChip(el,key){const group=el.closest('.chips');group.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S[key]=el.dataset.v;updateStarCalc1();}
+function updateStarCalc1(){let s=0;if(S.tipo)s++;if(S.pub)s++;if(S.obj&&S.tema)s++;S.starsPerStep[0]=s;updateStarUI(1,s);}
+
+// S2 RAIN
+const RAIN_WORDS=['personagem','conflito','lugar','emoção','tempo','problema','solução','segredo','amizade','medo','surpresa','aventura','mistério','sonho','família','traição','coragem','esperança','amor','tristeza','descoberta','viagem','mudança','desafio'];
+let rainInterval=null,timer2Secs=120,timer2Running=false,timer2Interval=null;
+
+function initStep2(){const ta=document.getElementById('inp-rascunho');if(ta){ta.value=S.rascunho||'';ta.oninput=()=>{S.rascunho=ta.value;const wc=S.rascunho.trim().split(/\s+/).filter(Boolean).length;const wcel=document.getElementById('wc2');if(wcel)wcel.textContent=wc+' palavras';updateStarCalc2();};}rebuildBag();startRain();updateStarCalc2();}
+
+function startRain(){if(rainInterval)clearInterval(rainInterval);rainInterval=setInterval(spawnRainWord,1700);for(let i=0;i<3;i++)setTimeout(spawnRainWord,i*500);}
+
+function spawnRainWord(){const arena=document.getElementById('rainArena');if(!arena)return;if(arena.querySelectorAll('.rain-word:not(.caught)').length>6)return;const w=RAIN_WORDS[Math.floor(Math.random()*RAIN_WORDS.length)];const el=document.createElement('div');el.className='rain-word';el.textContent=w;const maxLeft=arena.offsetWidth-120;el.style.left=Math.max(10,Math.random()*maxLeft)+'px';el.style.top='-40px';const dur=3+Math.random()*3;el.style.animation=`fall ${dur}s linear forwards`;el.onclick=()=>catchWord(el,w);arena.appendChild(el);el.addEventListener('animationend',()=>el.remove());}
+
+function catchWord(el,w){if(S.bagWords.includes(w))return;el.classList.add('caught');S.bagWords.push(w);rebuildBag();updateStarCalc2();setTimeout(()=>el.remove(),600);}
+function rebuildBag(){const bag=document.getElementById('wordBag');if(!bag)return;if(S.bagWords.length===0){bag.innerHTML='<span class="bag-empty">Clique nas palavras acima...</span>';return;}bag.innerHTML=S.bagWords.map(w=>`<div class="bag-word">${w}</div>`).join('');}
+function startTimer2(){if(timer2Running)return;timer2Running=true;timer2Interval=setInterval(()=>{timer2Secs--;const m=Math.floor(timer2Secs/60),s=timer2Secs%60;const el=document.getElementById('timer2');if(el)el.textContent=`${m}:${s.toString().padStart(2,'0')}`;if(timer2Secs<=0){clearInterval(timer2Interval);timer2Running=false;if(el)el.textContent='🎉 Ótimo!';}},1000);}
+function resetTimer2(){clearInterval(timer2Interval);timer2Running=false;timer2Secs=120;const el=document.getElementById('timer2');if(el)el.textContent='2:00';}
+function updateStarCalc2(){let s=0;if(S.bagWords.length>=3)s++;if(S.bagWords.length>=6)s++;const wc=(S.rascunho||'').trim().split(/\s+/).filter(Boolean).length;if(wc>=20)s++;S.starsPerStep[1]=s;updateStarUI(2,s);}
+
+// S3 DRAG
+let dragId=null;
+const DEFAULT_CARDS=[{id:'c1',text:'🌟 Apresentar o(a) personagem principal'},{id:'c2',text:'🗺️ Mostrar onde e quando tudo acontece'},{id:'c3',text:'⚡ O grande problema ou conflito'},{id:'c4',text:'😰 As dificuldades encontradas'},{id:'c5',text:'💡 A virada ou descoberta importante'},{id:'c6',text:'🎉 Como tudo se resolve no final'}];
+
+function initStep3(){const pool=document.getElementById('sourcePool');const label=pool.querySelector('.src-label');pool.innerHTML='';pool.appendChild(label);const placed=['inicio','meio','fim'].flatMap(z=>Array.from(document.getElementById('col-'+z).querySelectorAll('.idea-card')).map(c=>c.dataset.id));DEFAULT_CARDS.forEach(card=>{if(!placed.includes(card.id))pool.appendChild(makeCard(card));});if(S.bagWords.length>0){S.bagWords.slice(0,4).forEach((w,i)=>{const id='bw'+i;if(!placed.includes(id))pool.appendChild(makeCard({id,text:'💬 '+w}));});}pool.addEventListener('dragover',e=>e.preventDefault());pool.addEventListener('drop',e=>{e.preventDefault();if(!dragId)return;const el=document.querySelector(`[data-id="${dragId}"]`);if(el)pool.appendChild(el);dragId=null;updateStarCalc3();});updateStarCalc3();}
+
+function makeCard(card){const el=document.createElement('div');el.className='idea-card';el.draggable=true;el.dataset.id=card.id;el.textContent=card.text;el.addEventListener('dragstart',()=>{dragId=card.id;el.classList.add('dragging');});el.addEventListener('dragend',()=>{el.classList.remove('dragging');updateStarCalc3();});return el;}
+function allowDrop(e){e.preventDefault();e.currentTarget.classList.add('over');}
+function dropCard(e,zone){e.preventDefault();e.currentTarget.classList.remove('over');if(!dragId)return;const el=document.querySelector(`[data-id="${dragId}"]`);if(!el)return;document.querySelectorAll('.col-zone').forEach(z=>z.classList.remove('over'));document.getElementById('col-'+zone).appendChild(el);dragId=null;updateStarCalc3();}
+function updateStarCalc3(){const i=document.getElementById('col-inicio').querySelectorAll('.idea-card').length;const m=document.getElementById('col-meio').querySelectorAll('.idea-card').length;const f=document.getElementById('col-fim').querySelectorAll('.idea-card').length;S.inicio=Array.from(document.getElementById('col-inicio').querySelectorAll('.idea-card')).map(c=>c.textContent).join(' / ');S.meio=Array.from(document.getElementById('col-meio').querySelectorAll('.idea-card')).map(c=>c.textContent).join(' / ');S.fim=Array.from(document.getElementById('col-fim').querySelectorAll('.idea-card')).map(c=>c.textContent).join(' / ');let s=0;if(i>=1)s++;if(m>=1)s++;if(f>=1)s++;S.starsPerStep[2]=s;updateStarUI(3,s);}
+
+// S4 PARA
+const STARTERS=[{label:'Parágrafo 1 — Início',color:'#3b82f6',starter:'No começo da história / No texto que escrevi, '},{label:'Parágrafo 2 — Conflito',color:'#f59e0b',starter:'O problema que surgiu foi '},{label:'Parágrafo 3 — Desenvolvimento',color:'#22c55e',starter:'Para resolver isso, '},{label:'Parágrafo 4 — Conclusão',color:'#8b5cf6',starter:'No final, '}];
+
+function initStep4(){const container=document.getElementById('paraCards');container.innerHTML='';STARTERS.forEach((s,i)=>{const card=document.createElement('div');card.className='para-card'+(S.paragraphs[i]?' done-para':'');card.innerHTML=`<div class="para-label" style="color:${s.color}">${['1️⃣','2️⃣','3️⃣','4️⃣'][i]} ${s.label}<span class="para-done-ico">${S.paragraphs[i]?'✅':''}</span></div><div class="para-starter" style="color:${s.color}">${s.starter}...</div><textarea rows="3" placeholder="Continue a frase acima com as suas próprias palavras..." style="--ac:${s.color}">${S.paragraphs[i]||''}</textarea>`;const ta=card.querySelector('textarea');ta.addEventListener('input',()=>{S.paragraphs[i]=ta.value;const done=!!ta.value.trim();card.classList.toggle('done-para',done);card.querySelector('.para-done-ico').textContent=done?'✅':'';updateAssembled();updateStarCalc4();});container.appendChild(card);});updateAssembled();updateStarCalc4();}
+
+function updateAssembled(){const parts=STARTERS.map((s,i)=>S.paragraphs[i]?s.starter+S.paragraphs[i]:'').filter(Boolean);const el=document.getElementById('assembledText');if(!el)return;if(parts.length===0){el.textContent='Seus parágrafos vão aparecer aqui! ✍️';return;}el.textContent=parts.join('\n\n');S.texto=parts.join('\n\n');}
+function updateStarCalc4(){const filled=S.paragraphs.filter(p=>p&&p.trim()).length;S.starsPerStep[3]=filled;updateStarUI(4,filled);}
+
+// S5 DETECTIVE
+const CLUES=[{q:'O texto tem começo, meio e fim?',hint:'Verifique se há introdução, desenvolvimento e conclusão.'},{q:'As ideias estão numa ordem que faz sentido?',hint:'Releia em voz alta e veja se flui naturalmente.'},{q:'Existe pelo menos uma frase de efeito (emocionante, curiosa ou marcante)?',hint:'Uma frase que faça o leitor pensar ou sentir.'},{q:'Os erros de ortografia mais óbvios foram corrigidos?',hint:'Verifique nomes, acentos e pontuação básica.'},{q:'O texto atinge o objetivo que você definiu?',hint:'Ele conta, convence, explica ou expressa o que você queria?'}];
+let cluesSolved=[];
+
+function initStep5(){const td=document.getElementById('textDisplay');if(td)td.textContent=S.texto||'Você ainda não escreveu o texto na Etapa 4.';const list=document.getElementById('clueList');if(!list)return;list.innerHTML='';cluesSolved=[];CLUES.forEach((c,i)=>{const el=document.createElement('div');el.className='clue-item';el.innerHTML=`<div class="clue-box">🔍</div><div><div class="clue-text">${c.q}</div><div class="clue-answer">✅ Pista coletada! ${c.hint}</div></div>`;el.onclick=()=>{if(el.classList.contains('solved'))return;el.classList.add('solved');el.querySelector('.clue-box').textContent='✅';cluesSolved.push(i);updateStarCalc5();};list.appendChild(el);});updateStarCalc5();}
+
+function updateStarCalc5(){const n=cluesSolved.length;const bar=document.getElementById('clueBar');if(bar)bar.style.width=(n/5*100)+'%';const stamps=['','🔍 1ª pista coletada!','🕵️ Investigação em curso...','📁 Caso quase resolvido!','⚡ Quase detetive!','🏅 CASO ENCERRADO! Detetive mestre!'];const stamp=document.getElementById('evidenceStamp');if(stamp)stamp.textContent=stamps[n]||'';S.starsPerStep[4]=n;updateStarUI(5,n);}
+
+// S6 TROPHY
+const ACHS=[{icon:'💡',name:'Idealizadora',desc:'Completou a Etapa 1',step:0},{icon:'🌧️',name:'Tempestade de Ideias',desc:'Completou a Etapa 2',step:1},{icon:'🗂️',name:'Organizadora',desc:'Completou a Etapa 3',step:2},{icon:'✍️',name:'Escritora',desc:'Completou a Etapa 4',step:3},{icon:'🕵️',name:'Detetive',desc:'Completou a Etapa 5',step:4},{icon:'🏆',name:'Autora Completa',desc:'Completou todas as etapas',step:-1}];
+
+function initStep6(){bigConfetti();const total=S.starsPerStep.reduce((a,b)=>a+b,0);const cn=document.getElementById('certName');if(cn)cn.textContent='Escritora Incrível';const ct=document.getElementById('certTema');if(ct)ct.textContent=S.tema||'seu tema especial';const cd=document.getElementById('certDate');if(cd)cd.textContent=new Date().toLocaleDateString('pt-BR');const div=document.getElementById('achievements');if(!div)return;div.innerHTML='';ACHS.forEach(a=>{const unlocked=a.step===-1?S.done.filter(Boolean).length===6:S.done[a.step];const el=document.createElement('div');el.className='ach'+(unlocked?' unlocked':' locked-ach');el.innerHTML=`<div class="ach-icon">${a.icon}</div><div><div class="ach-name">${a.name}</div><div class="ach-pts">${a.desc}</div></div>`;div.appendChild(el);});const stars=Math.min(3,Math.round(total/5));S.starsPerStep[5]=stars;updateStarUI(6,stars);}
+
+function finishStep(n){S.done[n-1]=true;spawnStars();setTimeout(()=>{buildMenu();showScreen('menu');},800);}
+function restartAll(){Object.assign(S,{tipo:'',pub:'',obj:'',tema:'',rascunho:'',bagWords:[],inicio:'',meio:'',fim:'',paragraphs:['','','',''],texto:'',notas:'',starsPerStep:[0,0,0,0,0,0],done:[false,false,false,false,false,false]});clearInterval(rainInterval);clearInterval(timer2Interval);buildMenu();showScreen('menu');}
+
+function spawnStars(){const canvas=document.getElementById('confetti');const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const p=Array.from({length:28},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height*.5+50,size:18+Math.random()*12,vy:-(Math.random()*3+2),vx:(Math.random()-.5)*3,op:1,char:'⭐'}));let f=0;(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);p.forEach(pt=>{pt.y+=pt.vy;pt.x+=pt.vx;pt.op-=0.025;ctx.globalAlpha=Math.max(0,pt.op);ctx.font=pt.size+'px serif';ctx.fillText(pt.char,pt.x,pt.y);});ctx.globalAlpha=1;f++;if(f<60)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);})();}
+
+function bigConfetti(){const canvas=document.getElementById('confetti');const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const cols=['#a855f7','#3b82f6','#22c55e','#f59e0b','#ef4444','#ec4899'];const p=Array.from({length:150},()=>({x:Math.random()*canvas.width,y:-20,w:Math.random()*11+4,h:Math.random()*6+3,color:cols[Math.floor(Math.random()*cols.length)],speed:Math.random()*4+2,angle:Math.random()*360,spin:(Math.random()-.5)*5,op:1}));let f=0;(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);p.forEach(pt=>{pt.y+=pt.speed;pt.angle+=pt.spin;pt.op=Math.max(0,1-pt.y/canvas.height/1.1);ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(pt.angle*Math.PI/180);ctx.globalAlpha=pt.op;ctx.fillStyle=pt.color;ctx.fillRect(-pt.w/2,-pt.h/2,pt.w,pt.h);ctx.restore();});f++;if(f<220)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);})();}
+
+buildMenu();
+</script>
+</body>
+</html>
