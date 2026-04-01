@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Users/arian/Downloads/jogo-das-palavrinhas.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jogo das Palavrinhas 🌟</title>
+  <link href="./Jogo das Palavrinhas 🌟_files/css2" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+      background: linear-gradient(160deg, #a18cd1 0%, #fbc2eb 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 32px;
+      padding: 24px 20px 28px;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.25);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: clamp(22px, 5vw, 30px);
+      font-weight: 900;
+      color: #6c3483;
+      margin-bottom: 8px;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 14px;
+    }
+
+    .stat { text-align: center; }
+    .stat-value { font-size: 26px; font-weight: 900; color: #6c3483; line-height: 1; }
+    .stat-label { font-size: 11px; color: #999; margin-top: 2px; letter-spacing: .5px; text-transform: uppercase; }
+
+    .hint {
+      font-size: 16px;
+      color: #8e44ad;
+      background: #f5eeff;
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin-bottom: 18px;
+      display: inline-block;
+    }
+
+    .word-display {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      flex-wrap: wrap;
+      min-height: 72px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .letter-box {
+      width: clamp(44px, 10vw, 58px);
+      height: clamp(50px, 12vw, 68px);
+      border: 4px solid #c39bd3;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(24px, 7vw, 36px);
+      font-weight: 900;
+      color: #6c3483;
+      background: #faf5ff;
+      transition: background .2s, border-color .2s;
+    }
+
+    .letter-box.revealed {
+      background: #e8d5ff;
+      border-color: #8e44ad;
+      animation: popIn .35s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(.4) rotate(-8deg); }
+      70%  { transform: scale(1.18) rotate(3deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .alphabet {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .letter-btn {
+      width: clamp(36px, 9vw, 46px);
+      height: clamp(36px, 9vw, 46px);
+      border: none;
+      border-radius: 50%;
+      font-size: clamp(15px, 4vw, 20px);
+      font-weight: 900;
+      cursor: pointer;
+      color: #fff;
+      box-shadow: 0 4px 0 rgba(0,0,0,.18);
+      transition: transform .1s, box-shadow .1s, opacity .2s;
+      font-family: inherit;
+      position: relative;
+      top: 0;
+    }
+
+    .letter-btn:active { top: 3px; box-shadow: 0 1px 0 rgba(0,0,0,.18); }
+    .letter-btn:disabled { opacity: .28; cursor: not-allowed; box-shadow: none; top: 0; }
+
+    .letter-btn:nth-child(8n+1) { background: #e74c3c; box-shadow: 0 4px 0 #b03a2e; }
+    .letter-btn:nth-child(8n+2) { background: #e67e22; box-shadow: 0 4px 0 #a04000; }
+    .letter-btn:nth-child(8n+3) { background: #f1c40f; box-shadow: 0 4px 0 #b7950b; color: #555; }
+    .letter-btn:nth-child(8n+4) { background: #2ecc71; box-shadow: 0 4px 0 #1e8449; }
+    .letter-btn:nth-child(8n+5) { background: #3498db; box-shadow: 0 4px 0 #1a5276; }
+    .letter-btn:nth-child(8n+6) { background: #9b59b6; box-shadow: 0 4px 0 #6c3483; }
+    .letter-btn:nth-child(8n+7) { background: #e91e8c; box-shadow: 0 4px 0 #9b0a5a; }
+    .letter-btn:nth-child(8n+0) { background: #1abc9c; box-shadow: 0 4px 0 #0e6655; }
+
+    .letter-btn.state-wrong { background: #ccc !important; box-shadow: 0 4px 0 #999 !important; }
+    .letter-btn.state-correct { background: #2ecc71 !important; box-shadow: 0 4px 0 #1e8449 !important; }
+
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeUp .45s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .img-word {
+      font-size: clamp(28px, 8vw, 42px);
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #8e44ad;
+      margin-bottom: 6px;
+    }
+
+    .img-prompt {
+      font-size: clamp(15px, 4vw, 20px);
+      color: #555;
+      margin-bottom: 18px;
+    }
+
+    .image-choices {
+      display: flex;
+      justify-content: center;
+      gap: clamp(14px, 4vw, 28px);
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .img-btn {
+      width: clamp(120px, 36vw, 160px);
+      height: clamp(120px, 36vw, 160px);
+      border: 5px solid #ddd;
+      border-radius: 24px;
+      background: #fafafa;
+      cursor: pointer;
+      font-size: clamp(64px, 18vw, 90px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, border-color .2s, background .2s, box-shadow .2s;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      line-height: 1;
+    }
+
+    .img-btn:hover:not([disabled]) {
+      transform: scale(1.06);
+      border-color: #8e44ad;
+      box-shadow: 0 10px 30px rgba(142,68,173,.25);
+    }
+
+    .img-btn.correct {
+      border-color: #2ecc71;
+      background: #d5f5e3;
+      animation: celebrate .55s ease;
+    }
+
+    .img-btn.wrong {
+      border-color: #e74c3c;
+      background: #fdecea;
+      animation: shake .4s ease;
+    }
+
+    @keyframes celebrate {
+      0%   { transform: scale(1); }
+      25%  { transform: scale(1.28) rotate(6deg); }
+      55%  { transform: scale(1.12) rotate(-4deg); }
+      100% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%  { transform: translateX(-10px) rotate(-3deg); }
+      40%  { transform: translateX(10px) rotate(3deg); }
+      60%  { transform: translateX(-8px); }
+      80%  { transform: translateX(8px); }
+    }
+
+    .feedback {
+      font-size: clamp(18px, 5vw, 24px);
+      font-weight: 900;
+      min-height: 36px;
+      margin-bottom: 10px;
+    }
+    .feedback.ok  { color: #27ae60; }
+    .feedback.err { color: #e74c3c; }
+
+    .btn-next, .btn-restart {
+      border: none;
+      padding: 14px 36px;
+      font-size: clamp(18px, 5vw, 22px);
+      font-weight: 900;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 6px 0 rgba(0,0,0,.2);
+      position: relative;
+      top: 0;
+    }
+
+    .btn-next:active, .btn-restart:active { top: 4px; box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+
+    .btn-next    { background: linear-gradient(135deg,#8e44ad,#6c3483); color: #fff; display: none; }
+    .btn-restart { background: linear-gradient(135deg,#e74c3c,#c0392b); color: #fff; }
+
+    .end-emoji  { font-size: 80px; margin: 10px 0 6px; }
+    .end-title  { font-size: clamp(24px, 6vw, 32px); font-weight: 900; color: #6c3483; margin-bottom: 8px; }
+    .end-score  { font-size: clamp(16px, 4vw, 22px); color: #555; margin-bottom: 20px; }
+    .stars-row  { font-size: 36px; margin-bottom: 14px; }
+
+    .confetti-layer {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .cp {
+      position: absolute;
+      top: -14px;
+      border-radius: 3px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
+    .word-display.flash { animation: flashBg .4s ease 2; }
+    @keyframes flashBg {
+      50% { background: #fff3a3; border-radius: 16px; }
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 10px;
+      background: #f0e6ff;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg,#9b59b6,#e91e8c);
+      border-radius: 999px;
+      transition: width .5s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="confetti-layer" id="confettiLayer"></div>
+
+<div class="card">
+  <div class="title">🌟 Jogo das Palavrinhas 🌟</div>
+
+  <div class="status-bar">
+    <div class="stat">
+      <div class="stat-value" id="scoreVal">0</div>
+      <div class="stat-label">⭐ Pontos</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="wordNum">1 / 10</div>
+      <div class="stat-label">📝 Palavra</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="screen active" id="screenGame" style="display: block;">
+    <div class="hint" id="hintText">💡 Doce de aniversário</div>
+    <div class="word-display" id="wordDisplay"><div class="letter-box" id="b0"></div><div class="letter-box" id="b1"></div><div class="letter-box" id="b2"></div><div class="letter-box" id="b3"></div></div>
+    <div class="alphabet" id="alphabetGrid"><button class="letter-btn" id="lbtn-A">A</button><button class="letter-btn" id="lbtn-B">B</button><button class="letter-btn" id="lbtn-C">C</button><button class="letter-btn" id="lbtn-D">D</button><button class="letter-btn" id="lbtn-E">E</button><button class="letter-btn" id="lbtn-F">F</button><button class="letter-btn" id="lbtn-G">G</button><button class="letter-btn" id="lbtn-H">H</button><button class="letter-btn" id="lbtn-I">I</button><button class="letter-btn" id="lbtn-J">J</button><button class="letter-btn" id="lbtn-K">K</button><button class="letter-btn" id="lbtn-L">L</button><button class="letter-btn" id="lbtn-M">M</button><button class="letter-btn" id="lbtn-N">N</button><button class="letter-btn" id="lbtn-O">O</button><button class="letter-btn" id="lbtn-P">P</button><button class="letter-btn" id="lbtn-Q">Q</button><button class="letter-btn" id="lbtn-R">R</button><button class="letter-btn" id="lbtn-S">S</button><button class="letter-btn" id="lbtn-T">T</button><button class="letter-btn" id="lbtn-U">U</button><button class="letter-btn" id="lbtn-V">V</button><button class="letter-btn" id="lbtn-W">W</button><button class="letter-btn" id="lbtn-X">X</button><button class="letter-btn" id="lbtn-Y">Y</button><button class="letter-btn" id="lbtn-Z">Z</button></div>
+  </div>
+
+  <div class="screen" id="screenImage">
+    <div class="img-word" id="imgWord"></div>
+    <div class="img-prompt">Qual imagem representa essa palavra?</div>
+    <div class="image-choices" id="imageChoices"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextWord()">Próxima ➡️</button>
+  </div>
+
+  <div class="screen" id="screenEnd">
+    <div class="end-emoji">🏆</div>
+    <div class="end-title">Você arrasou!</div>
+    <div class="stars-row" id="starsRow"></div>
+    <div class="end-score" id="endScore"></div>
+    <button class="btn-restart" onclick="restartGame()">Jogar de novo! 🔄</button>
+  </div>
+</div>
+
+<script>
+const ALL_WORDS = [
+  { word:"BOLA",  emoji:"⚽", dEmoji:"🎈", dName:"balão",      hint:"Objeto redondo para brincar" },
+  { word:"GATO",  emoji:"🐱", dEmoji:"🐶", dName:"cachorro",   hint:"Animal que faz miau" },
+  { word:"PATO",  emoji:"🦆", dEmoji:"🐸", dName:"sapo",       hint:"Ave que nada no lago" },
+  { word:"SAPO",  emoji:"🐸", dEmoji:"🐍", dName:"cobra",      hint:"Animal verde que pula" },
+  { word:"CASA",  emoji:"🏠", dEmoji:"🌳", dName:"árvore",     hint:"Lugar onde moramos" },
+  { word:"UVAS",  emoji:"🍇", dEmoji:"🍌", dName:"banana",     hint:"Fruta roxa em cacho" },
+  { word:"PEIXE", emoji:"🐟", dEmoji:"🐢", dName:"tartaruga",  hint:"Animal que nada no mar" },
+  { word:"CARRO", emoji:"🚗", dEmoji:"🚂", dName:"trem",       hint:"Veículo de quatro rodas" },
+  { word:"LOBO",  emoji:"🐺", dEmoji:"🦊", dName:"raposa",     hint:"Animal uivante da floresta" },
+  { word:"BOLO",  emoji:"🎂", dEmoji:"🍕", dName:"pizza",      hint:"Doce de aniversário" },
+];
+
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+let deck = [], idx = 0, score = 0, guessed = new Set();
+let wrongThisWord = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function show(id) {
+  ["screenGame","screenImage","screenEnd"].forEach(s => {
+    const el = document.getElementById(s);
+    el.classList.remove("active");
+    el.style.display = "";
+  });
+  const target = document.getElementById(id);
+  target.style.display = "block";
+  void target.offsetWidth;
+  target.classList.add("active");
+}
+
+function updateStatus() {
+  document.getElementById("scoreVal").textContent = score;
+  document.getElementById("wordNum").textContent = `${idx + 1} / ${deck.length}`;
+  const pct = (idx / deck.length) * 100;
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+function restartGame() {
+  deck = shuffle(ALL_WORDS);
+  idx = 0; score = 0;
+  updateStatus();
+  loadWord();
+  show("screenGame");
+}
+
+function loadWord() {
+  guessed = new Set();
+  wrongThisWord = false;
+  const { word, hint } = deck[idx];
+
+  document.getElementById("hintText").textContent = "💡 " + hint;
+
+  const wd = document.getElementById("wordDisplay");
+  wd.innerHTML = "";
+  wd.classList.remove("flash");
+  word.split("").forEach((_, i) => {
+    const box = document.createElement("div");
+    box.className = "letter-box";
+    box.id = `b${i}`;
+    wd.appendChild(box);
+  });
+
+  const grid = document.getElementById("alphabetGrid");
+  grid.innerHTML = "";
+  ALPHABET.forEach(letter => {
+    const btn = document.createElement("button");
+    btn.className = "letter-btn";
+    btn.textContent = letter;
+    btn.id = `lbtn-${letter}`;
+    btn.addEventListener("click", () => handleLetter(letter));
+    grid.appendChild(btn);
+  });
+
+  updateStatus();
+}
+
+function handleLetter(letter) {
+  if (guessed.has(letter)) return;
+  guessed.add(letter);
+
+  const btn = document.getElementById(`lbtn-${letter}`);
+  btn.disabled = true;
+
+  const word = deck[idx].word;
+  let found = false;
+
+  word.split("").forEach((l, i) => {
+    if (l === letter) {
+      const box = document.getElementById(`b${i}`);
+      box.textContent = l;
+      box.classList.add("revealed");
+      found = true;
+    }
+  });
+
+  if (found) {
+    btn.classList.add("state-correct");
+    if (word.split("").every(l => guessed.has(l))) {
+      const wd = document.getElementById("wordDisplay");
+      wd.classList.add("flash");
+      setTimeout(() => showImageScreen(), 900);
+    }
+  } else {
+    btn.classList.add("state-wrong");
+  }
+}
+
+function showImageScreen() {
+  const { word, emoji, dEmoji, dName } = deck[idx];
+
+  document.getElementById("imgWord").textContent = word;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("btnNext").style.display = "none";
+
+  const choices = document.getElementById("imageChoices");
+  choices.innerHTML = "";
+
+  const opts = shuffle([
+    { emoji, correct: true,  name: word },
+    { emoji: dEmoji, correct: false, name: dName }
+  ]);
+
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "img-btn";
+    btn.textContent = opt.emoji;
+    btn.setAttribute("aria-label", opt.name);
+    btn.addEventListener("click", () => handleImageChoice(btn, opt.correct));
+    choices.appendChild(btn);
+  });
+
+  show("screenImage");
+}
+
+function handleImageChoice(btn, correct) {
+  if (btn.disabled) return;
+
+  const allBtns = document.querySelectorAll(".img-btn");
+
+  if (correct) {
+    btn.classList.add("correct");
+    allBtns.forEach(b => b.disabled = true);
+
+    const fb = document.getElementById("feedback");
+    fb.textContent = "🎉 Muito bem!";
+    fb.className = "feedback ok";
+
+    if (!wrongThisWord) score += 10;
+    else               score += 5;
+    updateStatus();
+    launchConfetti();
+
+    setTimeout(() => {
+      document.getElementById("btnNext").style.display = "inline-block";
+    }, 900);
+
+  } else {
+    wrongThisWord = true;
+    btn.classList.add("wrong");
+    btn.disabled = true;
+
+    const fb = document.getElementById("feedback");
+    fb.textContent = "💪 Tente a outra!";
+    fb.className = "feedback err";
+
+    setTimeout(() => {
+      btn.classList.remove("wrong");
+    }, 500);
+  }
+}
+
+function nextWord() {
+  idx++;
+  if (idx >= deck.length) {
+    showEnd();
+    return;
+  }
+  loadWord();
+  show("screenGame");
+}
+
+function showEnd() {
+  const maxScore = deck.length * 10;
+  const pct = score / maxScore;
+  const stars = pct >= .9 ? "⭐⭐⭐" : pct >= .6 ? "⭐⭐" : "⭐";
+
+  document.getElementById("starsRow").textContent = stars;
+  document.getElementById("endScore").textContent =
+    `Você fez ${score} de ${maxScore} pontos!`;
+
+  document.getElementById("progressFill").style.width = "100%";
+
+  show("screenEnd");
+  launchConfetti();
+  setTimeout(launchConfetti, 600);
+  setTimeout(launchConfetti, 1200);
+}
+
+function launchConfetti() {
+  const layer = document.getElementById("confettiLayer");
+  const colors = ["#e74c3c","#e67e22","#f1c40f","#2ecc71","#3498db","#9b59b6","#e91e8c","#1abc9c"];
+  const shapes = ["50%", "0", "50% 0"];
+
+  for (let i = 0; i < 45; i++) {
+    const el = document.createElement("div");
+    el.className = "cp";
+    const size = Math.random() * 10 + 6;
+    el.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      width: ${size}px;
+      height: ${size}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius: ${shapes[Math.floor(Math.random() * shapes.length)]};
+      animation-duration: ${Math.random() * 2 + 1.8}s;
+      animation-delay: ${Math.random() * .6}s;
+    `;
+    layer.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+}
+
+restartGame();
+</script>
+
+
+</body></html>
