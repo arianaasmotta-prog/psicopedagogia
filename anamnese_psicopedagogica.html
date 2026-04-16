@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anamnese Psicopedagógica</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; }
+    input[type=radio], input[type=checkbox] { accent-color: #2563eb; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+const initialState = {
+  nome: "", dataNascimento: "", idade: "", genero: "",
+  entrevistadoMae: false, entrevistadoPai: false, entrevistadoOutros: "",
+  nomeMae: "", nomePai: "", nomeResponsavel: "", grauParentesco: "",
+  telefone: "", endereco: "", bairro: "", cidadeUF: "", religiao: "",
+  obsIdentificacao: "",
+  composicaoFamiliar: [{ nome: "", parentesco: "", idade: "", profissao: "" }],
+  ambienteFamiliar: "", comQuemFica: "",
+  escola: "", serie: "", turno: "", rendimentoEscolar: "",
+  outraEscola: "", motivoTransferencia: "", repetiuSerie: "",
+  orientacaoDever: "", quemOrientaDever: "", tempoDever: "",
+  problemaAdaptacaoEscola: "", quaisProblemasEscola: "",
+  inicioVidaEscolar: "", quantasEscolas: "", queixaEscola: "",
+  motivoAtendimento: "", idadeConstatadoProblema: "", queixaAmbiente: "",
+  quandoComecouPerceber: "", comoEraAntesQueixa: "",
+  comoResponsavelLida: "", comoCreancaLida: "",
+  dificuldadesMotoras: "", dificuldadesMotoresDetalhe: "",
+  gestacaoPlanejada: "", idadeMaeGestacao: "", idadePaiGestacao: "",
+  criancaDesejada: "", abortosAnteriores: "", fumouGravidez: "",
+  bebeAlcoolGravidez: "", reacaoNoticiasGravidez: "", prenatal: "",
+  quedaGravidez: "", doencasGestacao: "", medicamentosGestacao: "",
+  vacinasGestacao: "", ameacaAborto: "", transfusaoSangue: "",
+  saudeEmocionalGestacao: "",
+  semanasGestacao: "", localNascimento: "", tipoParto: "", cesarianaMotivo: "",
+  descricaoParto: "", duracaoParto: "", posicaoBebe: "",
+  problemaNascimento: "", precisouOxigenio: "", nasceuCianotico: "",
+  chorouLogo: "", pesoNascimento: "", alturaNascimento: "",
+  apgar: "", prematuro: "", complicacoesParto: "",
+  sustentouCabeca: "", sentouSozinha: "", engatinhou: "",
+  quando_andou: "", andaAdequadamente: "", destrocanhoto: "",
+  engatinhouSN: "", controlEsfincterSN: "", enureseNoturna: "", encoprese: "",
+  linguagemNaoVerbal: "", idadeBalbucio: "", primeirasPalavras: "",
+  primeirasFrases: "", problemaLinguagem: "", gagueira: "",
+  compreendeAdequado: "", estimuladaFalar: "", reacaoPaisErro: "",
+  linguagemAtual: "", trocaLetras: "",
+  horarioDorme: "", horarioAcorda: "", dividQuarto: "",
+  sonoTipo: "", medoDormir: "", sonambulismo: "", terroresNoturnos: "",
+  hipersonia: "", pesadelos: "", insonia: "", dormeSozinha: "", comQuemDorme: "",
+  inclinaCabeca: "", aproximaObjetos: "", afastaObjetos: "",
+  movExcessivoOlhos: "", doresFrente: "",
+  estereotipias: "", quaisEstereotipias: "",
+  inquietacaoMotora: "", dificuldadeAssentar: "", mudancaRapidaAtividade: "",
+  maneirismos: "", quaisManeirismos: "", roiUnhas: "",
+  autolesao: "", acessosBirra: "", culpaOutros: "",
+  desafiaRegras: "", sensivelAborrecido: "",
+  medos: "", quaisMedos: "", sudorese: "", introvertido: "", eCurioso: "",
+  extrovertidaOuRetraida: "", fazAmizades: "", brigaFacilmente: "",
+  tipoBrincadeiras: "", falaSozinha: "", brincaFazConta: "",
+  imitaAnimais: "", imitaPessoas: "", reacaoProblemas: "",
+  temAmigos: "", relacionamentoAmigos: "",
+  comportamentoAmbientes: "", grupoOuSozinho: "",
+  destroiBrinquedos: "", pegaDoOutro: "", comportamentoIrritado: "",
+  temRotina: "",
+  rotina: {
+    "06:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "07:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "08:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "09:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "10:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "11:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "12:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "13:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "14:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "15:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "16:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "17:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "18:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "19:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "20:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "21:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+    "22:00":{seg:"",ter:"",qua:"",qui:"",sex:"",sab:"",dom:""},
+  },
+  temAutonomia: "", tempoTV: "", usoCelular: "", frequenciaCelular: "",
+  disciplinaQuem: "", disciplinaComoAplica: "", comportamentoCasa: "",
+  atividadeFisica: "", qualAtividadeFisica: "", atividadesExtracurriculares: "",
+  restricaoAlimentar: "", foiAmamentado: "", ateIdadeAmamentado: "",
+  usouMamadeira: "", ateIdadeMamadeira: "", usouChupeta: "", ateIdadeChupeta: "",
+  alimentacaoDescricao: "", alergia: "",
+  vomitos: "", polifagia: "", fobiaAlimentos: "", anorexia: "",
+  comerDemais: "", ruminacao: "", regurgitacao: "",
+  acompanhamentoMedico: "", especialidadeMedico: "", nomeMedico: "",
+  usaMedicacao: "", qualMedicacao: "", frequenciaMedicacao: "",
+  doencasPassadas: "", quaisDoencasPassadas: "",
+  cirurgiaInternacao: "", qualCirurgia: "", quandoCirurgia: "", porqueCirurgia: "",
+  doencaAtual: "", qualDoencaAtual: "", estaTratado: "",
+  perdasImportantes: "", alcoolismoDrogas: "",
+  antecedenteFamiliares: "", doencasInfecto: "",
+  traumas: "", fatoresNeurologicos: "",
+  aniversariosComemorados: "", punicaoLimites: "", quemPuneLimites: "",
+  reacaoPunicao: "", interessesPotencialidades: "",
+  acessoBrinquedosPedagogicos: "", acessoLivros: "", acessoEletronicos: "",
+  observacoesComplementares: "",
+};
+const SECTIONS = [
+  "Identificação","Composição Familiar","Escolarização","Queixa Principal",
+  "Gestação","Nascimento","Desenv. Psicomotor","Linguagem e Fala",
+  "Sono","Visão e Comportamentos","Sociabilidade","Rotina",
+  "Autonomia e Tecnologia","Alimentação","Saúde e Antecedentes","Outros","Relatório",
+];
+const dias = ["seg","ter","qua","qui","sex","sab","dom"];
+const diasLabel = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+function Field({ label, name, value, onChange, type = "text" }) {
+  return (
+    <div className="mb-3">
+      <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+      {type === "textarea" ? (
+        <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" rows={3} name={name} value={value} onChange={onChange} />
+      ) : (
+        <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" type={type} name={name} value={value} onChange={onChange} />
+      )}
+    </div>
+  );
+}
+function RadioGroup({ label, name, value, onChange, options }) {
+  return (
+    <div className="mb-3">
+      <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+      <div className="flex flex-wrap gap-3">
+        {options.map(opt => (
+          <label key={opt.value} className="flex items-center gap-1 text-sm cursor-pointer">
+            <input type="radio" name={name} value={opt.value} checked={value === opt.value} onChange={onChange} /> {opt.label}
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+function CheckRow({ label, name, value, onChange, details, detailsName, detailsValue }) {
+  return (
+    <div className="mb-2 flex flex-wrap items-center gap-3">
+      <span className="text-sm text-gray-700 min-w-64">{label}</span>
+      <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" name={name} value="sim" checked={value === "sim"} onChange={onChange} /> Sim</label>
+      <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" name={name} value="nao" checked={value === "nao"} onChange={onChange} /> Não</label>
+      {details && value === "sim" && (
+        <input className="border border-gray-300 rounded px-2 py-1 text-sm flex-1 min-w-32 focus:outline-none focus:ring-1 focus:ring-blue-400" placeholder="Detalhes..." name={detailsName} value={detailsValue} onChange={onChange} />
+      )}
+    </div>
+  );
+}
+function SectionTitle({ title }) {
+  return <h2 className="text-lg font-bold text-blue-700 border-b-2 border-blue-200 pb-2 mb-5 mt-2">{title}</h2>;
+}
+const yn = [{value:"sim",label:"Sim"},{value:"nao",label:"Não"}];
+function App() {
+  const [form, setForm] = useState(initialState);
+  const [section, setSection] = useState(0);
+  const handle = e => {
+    const { name, value, type, checked } = e.target;
+    setForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+  };
+  const handleRotina = (horario, dia, value) => {
+    setForm(f => ({ ...f, rotina: { ...f.rotina, [horario]: { ...f.rotina[horario], [dia]: value } } }));
+  };
+  const handleFamiliar = (i, field, value) => {
+    const arr = [...form.composicaoFamiliar];
+    arr[i] = { ...arr[i], [field]: value };
+    setForm(f => ({ ...f, composicaoFamiliar: arr }));
+  };
+  const addFamiliar = () => setForm(f => ({ ...f, composicaoFamiliar: [...f.composicaoFamiliar, { nome:"", parentesco:"", idade:"", profissao:"" }] }));
+  const removeFamiliar = i => {
+    const arr = form.composicaoFamiliar.filter((_, idx) => idx !== i);
+    setForm(f => ({ ...f, composicaoFamiliar: arr.length ? arr : [{ nome:"", parentesco:"", idade:"", profissao:"" }] }));
+  };
+  const renderSection = () => {
+    switch(section) {
+      case 0: return (
+        <div>
+          <SectionTitle title="1. Identificação" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div className="md:col-span-2"><Field label="Nome completo da criança" name="nome" value={form.nome} onChange={handle} /></div>
+            <Field label="Data de nascimento" name="dataNascimento" value={form.dataNascimento} onChange={handle} type="date" />
+            <Field label="Idade" name="idade" value={form.idade} onChange={handle} />
+            <Field label="Gênero" name="genero" value={form.genero} onChange={handle} />
+            <Field label="Telefone / Celular" name="telefone" value={form.telefone} onChange={handle} />
+            <div className="md:col-span-2"><Field label="Endereço" name="endereco" value={form.endereco} onChange={handle} /></div>
+            <Field label="Bairro" name="bairro" value={form.bairro} onChange={handle} />
+            <Field label="Cidade / UF" name="cidadeUF" value={form.cidadeUF} onChange={handle} />
+            <Field label="Religião" name="religiao" value={form.religiao} onChange={handle} />
+          </div>
+          <div className="mb-3">
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Entrevistados</label>
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="checkbox" name="entrevistadoMae" checked={form.entrevistadoMae} onChange={handle} /> Mãe</label>
+              <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="checkbox" name="entrevistadoPai" checked={form.entrevistadoPai} onChange={handle} /> Pai</label>
+              <div className="flex items-center gap-2"><span className="text-sm">Outros:</span><input className="border border-gray-300 rounded px-2 py-1 text-sm w-40" name="entrevistadoOutros" value={form.entrevistadoOutros} onChange={handle} /></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Nome da mãe" name="nomeMae" value={form.nomeMae} onChange={handle} />
+            <Field label="Nome do pai" name="nomePai" value={form.nomePai} onChange={handle} />
+            <Field label="Responsável (se diferente)" name="nomeResponsavel" value={form.nomeResponsavel} onChange={handle} />
+            <Field label="Grau de parentesco" name="grauParentesco" value={form.grauParentesco} onChange={handle} />
+          </div>
+          <RadioGroup label="Acompanhamento médico?" name="acompanhamentoMedico" value={form.acompanhamentoMedico} onChange={handle} options={yn} />
+          {form.acompanhamentoMedico === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Especialidade" name="especialidadeMedico" value={form.especialidadeMedico} onChange={handle} />
+              <Field label="Nome do médico" name="nomeMedico" value={form.nomeMedico} onChange={handle} />
+            </div>
+          )}
+          <RadioGroup label="Faz uso de medicação?" name="usaMedicacao" value={form.usaMedicacao} onChange={handle} options={yn} />
+          {form.usaMedicacao === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Qual medicação?" name="qualMedicacao" value={form.qualMedicacao} onChange={handle} />
+              <Field label="Frequência" name="frequenciaMedicacao" value={form.frequenciaMedicacao} onChange={handle} />
+            </div>
+          )}
+          <Field label="Observações gerais" name="obsIdentificacao" value={form.obsIdentificacao} onChange={handle} type="textarea" />
+        </div>
+      );
+      case 1: return (
+        <div>
+          <SectionTitle title="2. Composição Familiar" />
+          <p className="text-xs text-gray-500 mb-3">Adicione todos os membros que residem com a criança.</p>
+          <div className="overflow-x-auto mb-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-blue-50">
+                  {["Nome","Parentesco","Idade","Profissão",""].map(h => <th key={h} className="border border-gray-200 px-2 py-1 text-left font-semibold text-gray-600">{h}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {form.composicaoFamiliar.map((m, i) => (
+                  <tr key={i}>
+                    {["nome","parentesco","idade","profissao"].map(f => (
+                      <td key={f} className="border border-gray-200 px-1 py-1">
+                        <input className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 rounded" value={m[f]} onChange={e => handleFamiliar(i, f, e.target.value)} />
+                      </td>
+                    ))}
+                    <td className="border border-gray-200 px-1 py-1 text-center">
+                      <button onClick={() => removeFamiliar(i)} className="text-red-400 hover:text-red-600 text-lg leading-none font-bold">×</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <button onClick={addFamiliar} className="text-sm text-blue-600 hover:underline mb-4">+ Adicionar membro</button>
+          <Field label="Como é o ambiente familiar?" name="ambienteFamiliar" value={form.ambienteFamiliar} onChange={handle} type="textarea" />
+          <Field label="Com quem a criança costuma ficar?" name="comQuemFica" value={form.comQuemFica} onChange={handle} />
+        </div>
+      );
+      case 2: return (
+        <div>
+          <SectionTitle title="3. Escolarização" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Escola atual" name="escola" value={form.escola} onChange={handle} />
+            <Field label="Série / Ano" name="serie" value={form.serie} onChange={handle} />
+            <Field label="Turno" name="turno" value={form.turno} onChange={handle} />
+            <Field label="Rendimento escolar" name="rendimentoEscolar" value={form.rendimentoEscolar} onChange={handle} />
+            <Field label="Quando iniciou a vida escolar?" name="inicioVidaEscolar" value={form.inicioVidaEscolar} onChange={handle} />
+            <Field label="Quantas escolas já frequentou?" name="quantasEscolas" value={form.quantasEscolas} onChange={handle} />
+          </div>
+          <RadioGroup label="Já estudou em outra escola?" name="outraEscola" value={form.outraEscola} onChange={handle} options={yn} />
+          {form.outraEscola === "sim" && <Field label="Motivo da transferência" name="motivoTransferencia" value={form.motivoTransferencia} onChange={handle} />}
+          <RadioGroup label="Já repetiu alguma série?" name="repetiuSerie" value={form.repetiuSerie} onChange={handle} options={yn} />
+          <RadioGroup label="Recebe orientação para deveres de casa?" name="orientacaoDever" value={form.orientacaoDever} onChange={handle} options={yn} />
+          {form.orientacaoDever === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Quem oferece?" name="quemOrientaDever" value={form.quemOrientaDever} onChange={handle} />
+              <Field label="Durante quanto tempo?" name="tempoDever" value={form.tempoDever} onChange={handle} />
+            </div>
+          )}
+          <RadioGroup label="Teve problemas em se adaptar à escola?" name="problemaAdaptacaoEscola" value={form.problemaAdaptacaoEscola} onChange={handle} options={yn} />
+          {form.problemaAdaptacaoEscola === "sim" && <Field label="Quais problemas?" name="quaisProblemasEscola" value={form.quaisProblemasEscola} onChange={handle} type="textarea" />}
+          <Field label="Tem horário fixo para atividades escolares em casa?" name="queixaEscola" value={form.queixaEscola} onChange={handle} />
+        </div>
+      );
+      case 3: return (
+        <div>
+          <SectionTitle title="4. Queixa Principal / Motivo do Atendimento" />
+          <Field label="Motivo do atendimento / queixa principal" name="motivoAtendimento" value={form.motivoAtendimento} onChange={handle} type="textarea" />
+          <Field label="Em qual(is) ambiente(s) a queixa ocorre?" name="queixaAmbiente" value={form.queixaAmbiente} onChange={handle} />
+          <Field label="Idade em que foi constatado o problema" name="idadeConstatadoProblema" value={form.idadeConstatadoProblema} onChange={handle} />
+          <Field label="A partir de quando começou a perceber?" name="quandoComecouPerceber" value={form.quandoComecouPerceber} onChange={handle} />
+          <Field label="Como a criança era no(s) ano(s) anterior(es)?" name="comoEraAntesQueixa" value={form.comoEraAntesQueixa} onChange={handle} type="textarea" />
+          <Field label="Como o(a) responsável tem lidado?" name="comoResponsavelLida" value={form.comoResponsavelLida} onChange={handle} type="textarea" />
+          <Field label="Como a criança tem lidado?" name="comoCreancaLida" value={form.comoCreancaLida} onChange={handle} type="textarea" />
+          <RadioGroup label="Dificuldades motoras e de orientação espacial visíveis?" name="dificuldadesMotoras" value={form.dificuldadesMotoras} onChange={handle} options={yn} />
+          {form.dificuldadesMotoras === "sim" && <Field label="Quais dificuldades?" name="dificuldadesMotoresDetalhe" value={form.dificuldadesMotoresDetalhe} onChange={handle} type="textarea" />}
+        </div>
+      );
+      case 4: return (
+        <div>
+          <SectionTitle title="5. Histórico Gestacional" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Idade da mãe na gestação" name="idadeMaeGestacao" value={form.idadeMaeGestacao} onChange={handle} />
+            <Field label="Idade do pai na gestação" name="idadePaiGestacao" value={form.idadePaiGestacao} onChange={handle} />
+          </div>
+          <RadioGroup label="A gestação foi planejada / desejada?" name="gestacaoPlanejada" value={form.gestacaoPlanejada} onChange={handle} options={yn} />
+          <Field label="Como a mãe reagiu à notícia da gravidez? (sensações psicológicas)" name="reacaoNoticiasGravidez" value={form.reacaoNoticiasGravidez} onChange={handle} type="textarea" />
+          <RadioGroup label="Abortos anteriores?" name="abortosAnteriores" value={form.abortosAnteriores} onChange={handle} options={yn} />
+          <RadioGroup label="Fez tratamento pré-natal?" name="prenatal" value={form.prenatal} onChange={handle} options={yn} />
+          <RadioGroup label="Fumou durante a gravidez?" name="fumouGravidez" value={form.fumouGravidez} onChange={handle} options={yn} />
+          <RadioGroup label="Bebeu álcool durante a gravidez?" name="bebeAlcoolGravidez" value={form.bebeAlcoolGravidez} onChange={handle} options={yn} />
+          <Field label="Sofreu queda durante a gravidez? (mês e parte do corpo afetada)" name="quedaGravidez" value={form.quedaGravidez} onChange={handle} />
+          <Field label="Doenças durante a gestação?" name="doencasGestacao" value={form.doencasGestacao} onChange={handle} />
+          <Field label="Medicamentos usados durante a gestação" name="medicamentosGestacao" value={form.medicamentosGestacao} onChange={handle} />
+          <Field label="Vacinas durante a gestação" name="vacinasGestacao" value={form.vacinasGestacao} onChange={handle} />
+          <RadioGroup label="Ameaça de aborto?" name="ameacaAborto" value={form.ameacaAborto} onChange={handle} options={yn} />
+          <RadioGroup label="Transfusão de sangue na gestação?" name="transfusaoSangue" value={form.transfusaoSangue} onChange={handle} options={yn} />
+          <Field label="Saúde durante a gestação (traumas emocionais, internações)" name="saudeEmocionalGestacao" value={form.saudeEmocionalGestacao} onChange={handle} type="textarea" />
+        </div>
+      );
+      case 5: return (
+        <div>
+          <SectionTitle title="6. Nascimento e Pós-Parto" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Semanas de gestação ao nascer" name="semanasGestacao" value={form.semanasGestacao} onChange={handle} />
+            <Field label="Local do nascimento" name="localNascimento" value={form.localNascimento} onChange={handle} />
+          </div>
+          <RadioGroup label="Tipo de parto" name="tipoParto" value={form.tipoParto} onChange={handle} options={[{value:"normal",label:"Normal"},{value:"cesariana",label:"Cesárea"}]} />
+          {form.tipoParto === "cesariana" && <Field label="Motivo da cesárea" name="cesarianaMotivo" value={form.cesarianaMotivo} onChange={handle} />}
+          <RadioGroup label="Prematuro?" name="prematuro" value={form.prematuro} onChange={handle} options={yn} />
+          <Field label="Descrição / duração do parto" name="descricaoParto" value={form.descricaoParto} onChange={handle} />
+          <Field label="Posição do bebê no nascimento" name="posicaoBebe" value={form.posicaoBebe} onChange={handle} />
+          <RadioGroup label="Algum problema logo ao nascer?" name="problemaNascimento" value={form.problemaNascimento} onChange={handle} options={yn} />
+          <RadioGroup label="Precisou de oxigênio?" name="precisouOxigenio" value={form.precisouOxigenio} onChange={handle} options={yn} />
+          <RadioGroup label="Nasceu cianótico?" name="nasceuCianotico" value={form.nasceuCianotico} onChange={handle} options={yn} />
+          <RadioGroup label="Chorou logo ao nascer?" name="chorouLogo" value={form.chorouLogo} onChange={handle} options={yn} />
+          <RadioGroup label="Complicações no parto?" name="complicacoesParto" value={form.complicacoesParto} onChange={handle} options={yn} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4">
+            <Field label="Peso ao nascer" name="pesoNascimento" value={form.pesoNascimento} onChange={handle} />
+            <Field label="Tamanho ao nascer" name="alturaNascimento" value={form.alturaNascimento} onChange={handle} />
+            <Field label="APGAR" name="apgar" value={form.apgar} onChange={handle} />
+          </div>
+        </div>
+      );
+      case 6: return (
+        <div>
+          <SectionTitle title="7. Desenvolvimento Neuropsicomotor" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Com que idade sustentou a cabeça?" name="sustentouCabeca" value={form.sustentouCabeca} onChange={handle} />
+            <Field label="Com que idade sentou sozinha?" name="sentouSozinha" value={form.sentouSozinha} onChange={handle} />
+            <Field label="Com que idade andou?" name="quando_andou" value={form.quando_andou} onChange={handle} />
+            <Field label="Anda adequadamente?" name="andaAdequadamente" value={form.andaAdequadamente} onChange={handle} />
+          </div>
+          <RadioGroup label="Engatinhou?" name="engatinhouSN" value={form.engatinhouSN} onChange={handle} options={yn} />
+          <RadioGroup label="Controle de esfíncteres?" name="controlEsfincterSN" value={form.controlEsfincterSN} onChange={handle} options={yn} />
+          <RadioGroup label="Enurese noturna (xixi na cama)?" name="enureseNoturna" value={form.enureseNoturna} onChange={handle} options={yn} />
+          <RadioGroup label="Encoprese (evacuação involuntária)?" name="encoprese" value={form.encoprese} onChange={handle} options={yn} />
+          <RadioGroup label="Lateralidade" name="destrocanhoto" value={form.destrocanhoto} onChange={handle} options={[{value:"destro",label:"Destro"},{value:"canhoto",label:"Canhoto"},{value:"ambidestro",label:"Ambidestro"}]} />
+        </div>
+      );
+      case 7: return (
+        <div>
+          <SectionTitle title="8. Linguagem e Fala" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Idade do balbucio" name="idadeBalbucio" value={form.idadeBalbucio} onChange={handle} />
+            <Field label="Primeiras palavras" name="primeirasPalavras" value={form.primeirasPalavras} onChange={handle} />
+            <Field label="Primeiras frases" name="primeirasFrases" value={form.primeirasFrases} onChange={handle} />
+            <Field label="Fala compreensível a partir de que idade?" name="linguagemNaoVerbal" value={form.linguagemNaoVerbal} onChange={handle} />
+          </div>
+          <Field label="Como é a linguagem atualmente?" name="linguagemAtual" value={form.linguagemAtual} onChange={handle} type="textarea" />
+          <RadioGroup label="Problema de linguagem?" name="problemaLinguagem" value={form.problemaLinguagem} onChange={handle} options={yn} />
+          <RadioGroup label="Gagueira?" name="gagueira" value={form.gagueira} onChange={handle} options={yn} />
+          <RadioGroup label="Troca letras / sons na fala?" name="trocaLetras" value={form.trocaLetras} onChange={handle} options={yn} />
+          <RadioGroup label="Boa compreensão do que falam à criança?" name="compreendeAdequado" value={form.compreendeAdequado} onChange={handle} options={yn} />
+          <RadioGroup label="Foi estimulada a falar?" name="estimuladaFalar" value={form.estimuladaFalar} onChange={handle} options={yn} />
+          <RadioGroup label="Reação dos pais quando falava errado" name="reacaoPaisErro" value={form.reacaoPaisErro} onChange={handle} options={[{value:"corrigia",label:"Corrigia"},{value:"achavaBonitinho",label:"Achava bonitinho"},{value:"engracado",label:"Engraçado"},{value:"ignorava",label:"Ignorava"}]} />
+        </div>
+      );
+      case 8: return (
+        <div>
+          <SectionTitle title="9. Sono" />
+          <RadioGroup label="Como é o sono?" name="sonoTipo" value={form.sonoTipo} onChange={handle} options={[{value:"tranquilo",label:"Tranquilo"},{value:"agitado",label:"Agitado"}]} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Field label="Horário que dorme" name="horarioDorme" value={form.horarioDorme} onChange={handle} />
+            <Field label="Horário que acorda" name="horarioAcorda" value={form.horarioAcorda} onChange={handle} />
+          </div>
+          <RadioGroup label="Dorme sozinha?" name="dormeSozinha" value={form.dormeSozinha} onChange={handle} options={yn} />
+          {form.dormeSozinha === "nao" && <Field label="Com quem dorme?" name="comQuemDorme" value={form.comQuemDorme} onChange={handle} />}
+          <RadioGroup label="Divide quarto com outras pessoas?" name="dividQuarto" value={form.dividQuarto} onChange={handle} options={yn} />
+          <div className="mt-3 space-y-2">
+            {[["medoDormir","Medo de dormir"],["sonambulismo","Sonambulismo"],["terroresNoturnos","Terrores noturnos"],["hipersonia","Hipersonia (dorme demais)"],["pesadelos","Pesadelos frequentes"],["insonia","Insônia"]].map(([n,l]) => (
+              <CheckRow key={n} label={l} name={n} value={form[n]} onChange={handle} />
+            ))}
+          </div>
+        </div>
+      );
+      case 9: return (
+        <div>
+          <SectionTitle title="10. Visão e Comportamentos Motores" />
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Visão</p>
+          <div className="space-y-2 mb-4">
+            {[["inclinaCabeca","Inclina a cabeça para olhar?"],["aproximaObjetos","Aproxima objetos para ver?"],["afastaObjetos","Afasta objetos para ver?"],["movExcessivoOlhos","Movimento excessivo dos olhos?"],["doresFrente","Dores de cabeça na região fronto-temporal?"]].map(([n,l]) => (
+              <CheckRow key={n} label={l} name={n} value={form[n]} onChange={handle} />
+            ))}
+          </div>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Estereotipias e Comportamentos</p>
+          <div className="space-y-2">
+            {[["estereotipias","Movimentos corporais repetitivos?",true,"quaisEstereotipias"],["inquietacaoMotora","Inquietação motora contínua (corridas, saltos)?"],["dificuldadeAssentar","Dificuldade em manter-se sentado?"],["mudancaRapidaAtividade","Mudança rápida de atividade?"],["maneirismos","Maneirismos / tiques / TOC?",true,"quaisManeirismos"],["roiUnhas","Rói unhas?"],["autolesao","Autolesão repetitiva?"],["acessosBirra","Birras frequentes?"],["culpaOutros","Culpa os outros pelos próprios erros?"],["desafiaRegras","Desafia regras?"],["sensivelAborrecido","Sensível / facilmente aborrecido?"],["medos","Apresenta medos?",true,"quaisMedos"],["sudorese","Sudorese nas mãos e pés?"],["eCurioso","É curioso(a)?"]].map(([n,l,d,dn]) => (
+              <CheckRow key={n} label={l} name={n} value={form[n]} onChange={handle} details={d} detailsName={dn} detailsValue={form[dn]} />
+            ))}
+          </div>
+          <RadioGroup label="Perfil predominante" name="introvertido" value={form.introvertido} onChange={handle} options={[{value:"introvertido",label:"Introvertido(a)"},{value:"extrovertido",label:"Extrovertido(a)"},{value:"misto",label:"Misto"}]} />
+        </div>
+      );
+      case 10: return (
+        <div>
+          <SectionTitle title="11. Sociabilidade e Brincar" />
+          <RadioGroup label="Perfil social" name="extrovertidaOuRetraida" value={form.extrovertidaOuRetraida} onChange={handle} options={[{value:"retraida",label:"Retraída"},{value:"extrovertida",label:"Extrovertida"},{value:"misto",label:"Misto"}]} />
+          <RadioGroup label="Faz amizades facilmente?" name="fazAmizades" value={form.fazAmizades} onChange={handle} options={yn} />
+          <RadioGroup label="Quantidade de amigos" name="temAmigos" value={form.temAmigos} onChange={handle} options={[{value:"muitos",label:"Muitos"},{value:"poucos",label:"Poucos"},{value:"nao",label:"Não tem"}]} />
+          <RadioGroup label="Briga facilmente?" name="brigaFacilmente" value={form.brigaFacilmente} onChange={handle} options={yn} />
+          <RadioGroup label="Fala sozinha?" name="falaSozinha" value={form.falaSozinha} onChange={handle} options={yn} />
+          <RadioGroup label="Brinca de faz de conta?" name="brincaFazConta" value={form.brincaFazConta} onChange={handle} options={yn} />
+          <RadioGroup label="Imita animais?" name="imitaAnimais" value={form.imitaAnimais} onChange={handle} options={yn} />
+          <RadioGroup label="Imita pessoas?" name="imitaPessoas" value={form.imitaPessoas} onChange={handle} options={yn} />
+          <RadioGroup label="Prefere brincar em grupo ou sozinho?" name="grupoOuSozinho" value={form.grupoOuSozinho} onChange={handle} options={[{value:"grupo",label:"Em grupo"},{value:"sozinho",label:"Sozinho(a)"},{value:"ambos",label:"Ambos"}]} />
+          <RadioGroup label="Trata os brinquedos com cuidado?" name="destroiBrinquedos" value={form.destroiBrinquedos} onChange={handle} options={[{value:"cuidadoso",label:"Cuidadoso(a)"},{value:"destroi",label:"Costuma destruir"}]} />
+          <RadioGroup label="Hábito de pegar o que é do outro?" name="pegaDoOutro" value={form.pegaDoOutro} onChange={handle} options={yn} />
+          <Field label="Brincadeiras preferidas" name="tipoBrincadeiras" value={form.tipoBrincadeiras} onChange={handle} />
+          <Field label="Relacionamento com amigos" name="relacionamentoAmigos" value={form.relacionamentoAmigos} onChange={handle} type="textarea" />
+          <Field label="Comportamento em ambientes diferentes" name="comportamentoAmbientes" value={form.comportamentoAmbientes} onChange={handle} type="textarea" />
+          <Field label="Reação quando tem algum problema" name="reacaoProblemas" value={form.reacaoProblemas} onChange={handle} type="textarea" />
+          <Field label="Comportamento quando fica irritado(a)" name="comportamentoIrritado" value={form.comportamentoIrritado} onChange={handle} type="textarea" />
+        </div>
+      );
+      case 11: return (
+        <div>
+          <SectionTitle title="12. Rotina da Criança" />
+          <RadioGroup label="Existe rotina estruturada?" name="temRotina" value={form.temRotina} onChange={handle} options={yn} />
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="border border-gray-200 px-2 py-1 text-gray-600 w-16 text-center">Horário</th>
+                  {diasLabel.map(d => <th key={d} className="border border-gray-200 px-2 py-1 text-gray-600 text-center">{d}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(form.rotina).map(h => (
+                  <tr key={h} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-2 py-1 font-semibold text-gray-500 text-center">{h}</td>
+                    {dias.map(d => (
+                      <td key={d} className="border border-gray-200 px-1 py-1">
+                        <input className="w-full text-xs px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-blue-300 rounded" value={form.rotina[h][d]} onChange={e => handleRotina(h, d, e.target.value)} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+      case 12: return (
+        <div>
+          <SectionTitle title="13. Autonomia, Tecnologia e Disciplina" />
+          <Field label="Tem autonomia? Como se manifesta?" name="temAutonomia" value={form.temAutonomia} onChange={handle} type="textarea" />
+          <Field label="Quanto tempo na televisão por dia?" name="tempoTV" value={form.tempoTV} onChange={handle} />
+          <RadioGroup label="Usa celular / videogame / tablets?" name="usoCelular" value={form.usoCelular} onChange={handle} options={yn} />
+          {form.usoCelular === "sim" && <Field label="Frequência / tempo de uso" name="frequenciaCelular" value={form.frequenciaCelular} onChange={handle} />}
+          <Field label="Quem aplica a disciplina em casa?" name="disciplinaQuem" value={form.disciplinaQuem} onChange={handle} />
+          <Field label="Como é aplicada a disciplina?" name="disciplinaComoAplica" value={form.disciplinaComoAplica} onChange={handle} type="textarea" />
+          <Field label="Comportamento em casa (limites, regras)" name="comportamentoCasa" value={form.comportamentoCasa} onChange={handle} type="textarea" />
+          <RadioGroup label="Realiza atividade física?" name="atividadeFisica" value={form.atividadeFisica} onChange={handle} options={yn} />
+          {form.atividadeFisica === "sim" && <Field label="Qual atividade física?" name="qualAtividadeFisica" value={form.qualAtividadeFisica} onChange={handle} />}
+          <Field label="Atividades extracurriculares" name="atividadesExtracurriculares" value={form.atividadesExtracurriculares} onChange={handle} />
+        </div>
+      );
+      case 13: return (
+        <div>
+          <SectionTitle title="14. Alimentação" />
+          <RadioGroup label="Foi amamentado(a) no seio?" name="foiAmamentado" value={form.foiAmamentado} onChange={handle} options={yn} />
+          {form.foiAmamentado === "sim" && <Field label="Até que idade?" name="ateIdadeAmamentado" value={form.ateIdadeAmamentado} onChange={handle} />}
+          <RadioGroup label="Usou mamadeira?" name="usouMamadeira" value={form.usouMamadeira} onChange={handle} options={yn} />
+          {form.usouMamadeira === "sim" && <Field label="Até que idade?" name="ateIdadeMamadeira" value={form.ateIdadeMamadeira} onChange={handle} />}
+          <RadioGroup label="Usou chupeta?" name="usouChupeta" value={form.usouChupeta} onChange={handle} options={yn} />
+          {form.usouChupeta === "sim" && <Field label="Até que idade?" name="ateIdadeChupeta" value={form.ateIdadeChupeta} onChange={handle} />}
+          <RadioGroup label="Restrição alimentar?" name="restricaoAlimentar" value={form.restricaoAlimentar} onChange={handle} options={yn} />
+          <RadioGroup label="Alergia alimentar?" name="alergia" value={form.alergia} onChange={handle} options={yn} />
+          <Field label="Alimentação atual (quais alimentos, come sozinha?)" name="alimentacaoDescricao" value={form.alimentacaoDescricao} onChange={handle} type="textarea" />
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-2">Comportamentos alimentares</p>
+          <div className="space-y-2">
+            {[["vomitos","Vômitos frequentes"],["polifagia","Polifagia (come excessivamente)"],["fobiaAlimentos","Fobia de alimentos"],["anorexia","Anorexia"],["comerDemais","Come demais compulsivamente"],["ruminacao","Ruminação"],["regurgitacao","Regurgitação"]].map(([n,l]) => (
+              <CheckRow key={n} label={l} name={n} value={form[n]} onChange={handle} />
+            ))}
+          </div>
+        </div>
+      );
+      case 14: return (
+        <div>
+          <SectionTitle title="15. Saúde e Antecedentes" />
+          <RadioGroup label="Teve alguma doença?" name="doencasPassadas" value={form.doencasPassadas} onChange={handle} options={yn} />
+          {form.doencasPassadas === "sim" && <Field label="Quais?" name="quaisDoencasPassadas" value={form.quaisDoencasPassadas} onChange={handle} type="textarea" />}
+          <RadioGroup label="Cirurgia ou internação?" name="cirurgiaInternacao" value={form.cirurgiaInternacao} onChange={handle} options={yn} />
+          {form.cirurgiaInternacao === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Qual?" name="qualCirurgia" value={form.qualCirurgia} onChange={handle} />
+              <Field label="Quando?" name="quandoCirurgia" value={form.quandoCirurgia} onChange={handle} />
+              <Field label="Por quê?" name="porqueCirurgia" value={form.porqueCirurgia} onChange={handle} />
+            </div>
+          )}
+          <RadioGroup label="Doença atual?" name="doencaAtual" value={form.doencaAtual} onChange={handle} options={yn} />
+          {form.doencaAtual === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Qual?" name="qualDoencaAtual" value={form.qualDoencaAtual} onChange={handle} />
+              <Field label="Está sendo tratada?" name="estaTratado" value={form.estaTratado} onChange={handle} />
+            </div>
+          )}
+          <Field label="Antecedentes familiares (doenças, transtornos, deficiências)" name="antecedenteFamiliares" value={form.antecedenteFamiliares} onChange={handle} type="textarea" />
+          <Field label="Doenças infecto-contagiosas (nome, internação, consequências)" name="doencasInfecto" value={form.doencasInfecto} onChange={handle} type="textarea" />
+          <Field label="Traumas (perdas, acidentes, situações constrangedoras na escola)" name="traumas" value={form.traumas} onChange={handle} type="textarea" />
+          <Field label="Fatores neurológicos (tremores, tics, dislexia familiar, desatenção...)" name="fatoresNeurologicos" value={form.fatoresNeurologicos} onChange={handle} type="textarea" />
+          <Field label="Alcoolismo / drogas na família?" name="alcoolismoDrogas" value={form.alcoolismoDrogas} onChange={handle} />
+          <Field label="Perdas importantes, mortes ou abandonos" name="perdasImportantes" value={form.perdasImportantes} onChange={handle} type="textarea" />
+          <RadioGroup label="Já fez acompanhamento com outro profissional?" name="acompanhamentoMedico" value={form.acompanhamentoMedico} onChange={handle} options={yn} />
+          {form.acompanhamentoMedico === "sim" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <Field label="Especialidade / profissional" name="especialidadeMedico" value={form.especialidadeMedico} onChange={handle} />
+              <Field label="Por quanto tempo?" name="nomeMedico" value={form.nomeMedico} onChange={handle} />
+            </div>
+          )}
+        </div>
+      );
+      case 15: return (
+        <div>
+          <SectionTitle title="16. Outros" />
+          <Field label="Como são comemorados aniversários / datas importantes?" name="aniversariosComemorados" value={form.aniversariosComemorados} onChange={handle} type="textarea" />
+          <Field label="Como é dada punição / limites? Quem dá?" name="punicaoLimites" value={form.punicaoLimites} onChange={handle} type="textarea" />
+          <Field label="Como a criança reage às punições?" name="reacaoPunicao" value={form.reacaoPunicao} onChange={handle} type="textarea" />
+          <Field label="Interesses e potencialidades da criança" name="interessesPotencialidades" value={form.interessesPotencialidades} onChange={handle} type="textarea" />
+          <RadioGroup label="Acesso a brinquedos pedagógicos?" name="acessoBrinquedosPedagogicos" value={form.acessoBrinquedosPedagogicos} onChange={handle} options={yn} />
+          <RadioGroup label="Acesso a livros?" name="acessoLivros" value={form.acessoLivros} onChange={handle} options={yn} />
+          <RadioGroup label="Acesso a eletrônicos?" name="acessoEletronicos" value={form.acessoEletronicos} onChange={handle} options={yn} />
+          <Field label="Observações complementares" name="observacoesComplementares" value={form.observacoesComplementares} onChange={handle} type="textarea" />
+        </div>
+      );
+      case 16: return <ReportView form={form} />;
+      default: return null;
+    }
+  };
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-md p-5 mb-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold shrink-0">A</div>
+          <div>
+            <h1 className="text-2xl font-bold text-blue-800">Anamnese Psicopedagógica</h1>
+            <p className="text-sm text-gray-500">Preencha cada seção e gere o relatório ao final</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-md p-4 mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progresso</span>
+            <span className="text-xs text-gray-400">{section + 1} / {SECTIONS.length}</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-blue-500 h-2 rounded-full transition-all duration-500" style={{ width: `${((section+1)/SECTIONS.length)*100}%` }} />
+          </div>
+          <div className="flex gap-1 mt-3 overflow-x-auto pb-1">
+            {SECTIONS.map((s, i) => (
+              <button key={i} onClick={() => setSection(i)} className={`shrink-0 text-xs px-2 py-1 rounded-full transition-colors ${i === section ? "bg-blue-600 text-white font-semibold" : i < section ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+                {i+1}. {s.split(" ")[0]}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-md p-6 mb-4">
+          {renderSection()}
+        </div>
+        <div className="flex justify-between items-center no-print">
+          <button onClick={() => setSection(s => Math.max(0, s-1))} disabled={section === 0} className="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 font-semibold disabled:opacity-40 hover:bg-gray-300 transition-colors">
+            ← Anterior
+          </button>
+          <span className="text-sm text-gray-400 hidden sm:block">{SECTIONS[section]}</span>
+          {section < SECTIONS.length - 1 ? (
+            <button onClick={() => setSection(s => Math.min(SECTIONS.length-1, s+1))} className="px-5 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors">
+              Próximo →
+            </button>
+          ) : <span />}
+        </div>
+      </div>
+    </div>
+  );
+}
+function ReportView({ form }) {
+  const nome = form.nome || "A criança";
+  const primeiroNome = nome.split(" ")[0];
+  const idade = form.idade ? `${form.idade} anos` : "";
+  const pronome = form.genero && form.genero.toLowerCase().startsWith("f") ? "ela" : "ele";
+  const artigo = form.genero && form.genero.toLowerCase().startsWith("f") ? "a" : "o";
+  const artigoMaius = artigo === "a" ? "A" : "O";
+  const adjetivo = form.genero && form.genero.toLowerCase().startsWith("f") ? "a" : "o";
+  const sim = v => v === "sim";
+  const nao = v => v === "nao";
+  const preenchido = v => v && v.trim && v.trim() !== "";
+
+  // ── BLOCO INTRODUÇÃO ────────────────────────────────────────────────
+  const membros = form.composicaoFamiliar.filter(m => m.parentesco || m.nome);
+  const contextFamiliar = preenchido(form.ambienteFamiliar) ? form.ambienteFamiliar : "contexto familiar";
+  const entrevistadosList = [
+    form.entrevistadoMae && "mãe",
+    form.entrevistadoPai && "pai",
+    preenchido(form.entrevistadoOutros) && form.entrevistadoOutros,
+  ].filter(Boolean);
+  const entrevistadosStr = entrevistadosList.length
+    ? `pela ${entrevistadosList.join(" e ")}`
+    : "pelos responsáveis";
+
+  const introPartes = [];
+  introPartes.push(`${nome}${idade ? `, ${idade},` : ""} reside com seus responsáveis em ${contextFamiliar}.`);
+  if (preenchido(form.comQuemFica)) introPartes.push(`No cotidiano, ${pronome} fica sob os cuidados de ${form.comQuemFica}.`);
+  introPartes.push(`As informações desta anamnese foram fornecidas ${entrevistadosStr}, que demonstram envolvimento ativo no processo de avaliação psicopedagógica.`);
+  if (preenchido(form.motivoAtendimento)) introPartes.push(`O motivo do encaminhamento refere-se a: ${form.motivoAtendimento}.`);
+
+  // ── BLOCO GESTAÇÃO / NASCIMENTO / DESENVOLVIMENTO ────────────────────
+  const gestPartes = [];
+  const gestOk = nao(form.fumouGravidez) && nao(form.bebeAlcoolGravidez) && nao(form.ameacaAborto) && nao(form.complicacoesParto) && !preenchido(form.doencasGestacao);
+  if (gestOk && !preenchido(form.saudeEmocionalGestacao)) {
+    gestPartes.push("A gestação transcorreu sem intercorrências relevantes.");
+  } else {
+    if (sim(form.gestacaoPlanejada)) gestPartes.push("A gestação foi planejada e desejada.");
+    if (nao(form.gestacaoPlanejada)) gestPartes.push("A gestação não foi planejada.");
+    if (preenchido(form.reacaoNoticiasGravidez)) gestPartes.push(`Diante da notícia, a mãe relatou: ${form.reacaoNoticiasGravidez}.`);
+    if (sim(form.fumouGravidez)) gestPartes.push("Houve tabagismo durante a gestação.");
+    if (sim(form.bebeAlcoolGravidez)) gestPartes.push("Houve consumo de álcool durante a gestação.");
+    if (sim(form.ameacaAborto)) gestPartes.push("Houve ameaça de aborto.");
+    if (preenchido(form.doencasGestacao)) gestPartes.push(`Foram relatadas as seguintes intercorrências clínicas: ${form.doencasGestacao}.`);
+    if (preenchido(form.saudeEmocionalGestacao)) gestPartes.push(`Do ponto de vista emocional: ${form.saudeEmocionalGestacao}.`);
+  }
+  if (preenchido(form.tipoParto)) {
+    const tipoParto = form.tipoParto === "normal" ? "parto normal" : `parto cesáreo${form.cesarianaMotivo ? ` (${form.cesarianaMotivo})` : ""}`;
+    const complicacoes = sim(form.complicacoesParto) ? " com complicações relatadas" : sim(form.problemaNascimento) ? " com intercorrências imediatas ao nascimento" : " sem complicações neonatais significativas";
+    gestPartes.push(`${artigoMaius} nascimento ocorreu por ${tipoParto}${preenchido(form.semanasGestacao) ? `, com ${form.semanasGestacao} semanas de gestação` : ""}${complicacoes}.`);
+    if (preenchido(form.pesoNascimento) || preenchido(form.apgar)) {
+      const dados = [form.pesoNascimento && `peso de ${form.pesoNascimento}`, form.apgar && `APGAR ${form.apgar}`].filter(Boolean).join(", ");
+      if (dados) gestPartes.push(`Dados do nascimento: ${dados}.`);
+    }
+  }
+  // Desenvolvimento neuropsicomotor
+  const marcosOk = !preenchido(form.sustentouCabeca) && !preenchido(form.sentouSozinha) && !preenchido(form.quando_andou);
+  if (!marcosOk) {
+    const marcos = [
+      form.sustentouCabeca && `sustentou a cabeça aos ${form.sustentouCabeca}`,
+      form.sentouSozinha && `sentou sozinho aos ${form.sentouSozinha}`,
+      form.quando_andou && `iniciou a marcha aos ${form.quando_andou}`,
+    ].filter(Boolean);
+    if (marcos.length) gestPartes.push(`O desenvolvimento neuropsicomotor seguiu os seguintes marcos: ${marcos.join("; ")}.`);
+  } else {
+    gestPartes.push("O desenvolvimento neuropsicomotor ocorreu dentro dos marcos esperados para a faixa etária.");
+  }
+  if (sim(form.enureseNoturna)) gestPartes.push("Há relato de enurese noturna.");
+  if (sim(form.encoprese)) gestPartes.push("Há relato de encoprese.");
+  if (preenchido(form.destrocanhoto)) gestPartes.push(`Lateralidade: ${form.destrocanhoto}.`);
+  // Linguagem
+  const lingPartes = [];
+  if (preenchido(form.idadeBalbucio) || preenchido(form.primeirasPalavras) || preenchido(form.primeirasFrases)) {
+    const ling = [
+      form.idadeBalbucio && `balbucio aos ${form.idadeBalbucio}`,
+      form.primeirasPalavras && `primeiras palavras aos ${form.primeirasPalavras}`,
+      form.primeirasFrases && `primeiras frases aos ${form.primeirasFrases}`,
+    ].filter(Boolean);
+    lingPartes.push(`A aquisição de linguagem ocorreu com: ${ling.join(", ")}.`);
+  }
+  if (preenchido(form.linguagemAtual)) lingPartes.push(`Atualmente, a linguagem é descrita como: ${form.linguagemAtual}.`);
+  if (sim(form.problemaLinguagem) || sim(form.gagueira) || sim(form.trocaLetras)) {
+    const probLing = [sim(form.problemaLinguagem) && "problemas de linguagem", sim(form.gagueira) && "gagueira", sim(form.trocaLetras) && "trocas de letras/sons na fala"].filter(Boolean);
+    lingPartes.push(`São relatad${probLing.length > 1 ? "os" : "o"}: ${probLing.join(", ")}.`);
+  } else if (preenchido(form.primeirasPalavras)) {
+    lingPartes.push("Não há relatos de problemas significativos no desenvolvimento da fala.");
+  }
+  if (lingPartes.length) gestPartes.push(...lingPartes);
+
+  // ── BLOCO SAÚDE ──────────────────────────────────────────────────────
+  const saudePartes = [];
+  const temDoenca = sim(form.doencaAtual) || sim(form.doencasPassadas) || preenchido(form.antecedenteFamiliares) || preenchido(form.fatoresNeurologicos);
+  if (!temDoenca && nao(form.usaMedicacao)) {
+    saudePartes.push(`Não há indicação de condições neurológicas ou clínicas que, no momento, justifiquem alterações significativas no desenvolvimento.`);
+  } else {
+    if (sim(form.doencasPassadas) && preenchido(form.quaisDoencasPassadas)) saudePartes.push(`Como antecedentes clínicos, foram relatadas: ${form.quaisDoencasPassadas}.`);
+    if (sim(form.doencaAtual) && preenchido(form.qualDoencaAtual)) saudePartes.push(`Atualmente, apresenta: ${form.qualDoencaAtual}${form.estaTratado ? ` — ${form.estaTratado}` : ""}.`);
+    if (preenchido(form.fatoresNeurologicos)) saudePartes.push(`Fatores neurológicos relatados: ${form.fatoresNeurologicos}.`);
+    if (preenchido(form.antecedenteFamiliares)) saudePartes.push(`Nos antecedentes familiares, consta: ${form.antecedenteFamiliares}.`);
+  }
+  if (sim(form.usaMedicacao) && preenchido(form.qualMedicacao)) {
+    saudePartes.push(`${artigoMaius} criança faz uso de ${form.qualMedicacao}${preenchido(form.frequenciaMedicacao) ? ` (${form.frequenciaMedicacao})` : ""}.`);
+  }
+  if (sim(form.acompanhamentoMedico) && preenchido(form.especialidadeMedico)) {
+    saudePartes.push(`Realiza acompanhamento com ${form.especialidadeMedico}${preenchido(form.nomeMedico) ? ` (${form.nomeMedico})` : ""}.`);
+  }
+  if (preenchido(form.traumas)) saudePartes.push(`Eventos relevantes: ${form.traumas}.`);
+  if (preenchido(form.perdasImportantes)) saudePartes.push(`Perdas ou situações de impacto emocional: ${form.perdasImportantes}.`);
+  if (saudePartes.length === 0) saudePartes.push("Não foram relatadas condições de saúde relevantes no momento da avaliação.");
+
+  // ── BLOCO COGNITIVO / COMPORTAMENTAL ─────────────────────────────────
+  const cogPartes = [];
+  const comportsSim = [
+    sim(form.inquietacaoMotora) && "inquietação motora contínua",
+    sim(form.dificuldadeAssentar) && "dificuldade em manter-se sentado",
+    sim(form.mudancaRapidaAtividade) && "mudança rápida entre atividades",
+    sim(form.acessosBirra) && "acessos de birra frequentes",
+    sim(form.desafiaRegras) && "tendência a desafiar regras",
+    sim(form.culpaOutros) && "tendência a culpar os outros pelos próprios erros",
+    sim(form.sensivelAborrecido) && "sensibilidade elevada / fácil aborrecimento",
+    sim(form.autolesao) && "comportamentos de autolesão repetitiva",
+    sim(form.roiUnhas) && "hábito de roer unhas",
+  ].filter(Boolean);
+  const comportsPos = [
+    sim(form.eCurioso) && "curiosidade acentuada",
+  ].filter(Boolean);
+  if (comportsPos.length) cogPartes.push(`${artigoMaius} criança apresenta ${comportsPos.join(", ")}.`);
+  if (comportsSim.length) cogPartes.push(`São observados: ${comportsSim.join(", ")}.`);
+  if (sim(form.estereotipias) && preenchido(form.quaisEstereotipias)) cogPartes.push(`Estereotipias relatadas: ${form.quaisEstereotipias}.`);
+  if (sim(form.maneirismos) && preenchido(form.quaisManeirismos)) cogPartes.push(`Maneirismos/tiques observados: ${form.quaisManeirismos}.`);
+  if (sim(form.medos) && preenchido(form.quaisMedos)) cogPartes.push(`Apresenta medos relacionados a: ${form.quaisMedos}.`);
+  if (preenchido(form.interessesPotencialidades)) cogPartes.push(`Interesses e potencialidades identificados: ${form.interessesPotencialidades}.`);
+  if (preenchido(form.introvertido)) {
+    const perfil = form.introvertido === "introvertido" ? "perfil predominantemente introvertido" : form.introvertido === "extrovertido" ? "perfil predominantemente extrovertido" : "perfil misto entre introversão e extroversão";
+    cogPartes.push(`${artigoMaius} criança apresenta ${perfil}.`);
+  }
+  if (cogPartes.length === 0) cogPartes.push("Não foram registrados comportamentos de destaque nesta avaliação.");
+
+  // ── BLOCO SOCIOEMOCIONAL ──────────────────────────────────────────────
+  const socioPartes = [];
+  const perfSocial = form.extrovertidaOuRetraida === "retraida" ? "retraída" : form.extrovertidaOuRetraida === "extrovertida" ? "extrovertida" : form.extrovertidaOuRetraida === "misto" ? "com perfil social misto" : null;
+  if (perfSocial) socioPartes.push(`No campo socioemocional, ${primeiroNome} é descrit${adjetivo} como uma criança ${perfSocial}, ${sim(form.fazAmizades) ? "com facilidade para estabelecer vínculos" : "com alguma dificuldade para estabelecer amizades"}.`);
+  const temAmigos = form.temAmigos === "muitos" ? "círculo amplo de amigos" : form.temAmigos === "poucos" ? "poucos amigos" : form.temAmigos === "nao" ? "sem amigos próximos relatados" : null;
+  if (temAmigos) socioPartes.push(`${artigoMaius} criança apresenta ${temAmigos}.`);
+  if (preenchido(form.relacionamentoAmigos)) socioPartes.push(`O relacionamento com pares é descrito como: ${form.relacionamentoAmigos}.`);
+  if (sim(form.brigaFacilmente)) socioPartes.push(`Há relato de tendência a brigar com facilidade.`);
+  if (preenchido(form.reacaoProblemas)) socioPartes.push(`Diante de problemas, a criança tende a: ${form.reacaoProblemas}.`);
+  if (preenchido(form.comportamentoIrritado)) socioPartes.push(`Quando irritad${adjetivo}: ${form.comportamentoIrritado}.`);
+  if (preenchido(form.comportamentoAmbientes)) socioPartes.push(`Em diferentes ambientes, apresenta: ${form.comportamentoAmbientes}.`);
+  const brincar = [sim(form.brincaFazConta) && "brinca de faz de conta", sim(form.imitaAnimais) && "imita animais", sim(form.imitaPessoas) && "imita pessoas"].filter(Boolean);
+  if (brincar.length) socioPartes.push(`No brincar, ${pronome} ${brincar.join(", ")}.`);
+  if (preenchido(form.tipoBrincadeiras)) socioPartes.push(`Brincadeiras preferidas: ${form.tipoBrincadeiras}.`);
+  if (socioPartes.length === 0) socioPartes.push("Não há informações suficientes sobre o perfil socioemocional nesta anamnese.");
+
+  // ── BLOCO ESCOLAR ─────────────────────────────────────────────────────
+  const escolarPartes = [];
+  if (preenchido(form.escola) || preenchido(form.serie)) {
+    escolarPartes.push(`${primeiroNome} frequenta${preenchido(form.serie) ? ` o ${form.serie}` : ""}${preenchido(form.escola) ? ` na escola ${form.escola}` : ""}${preenchido(form.turno) ? `, no período ${form.turno}` : ""}.`);
+  }
+  if (preenchido(form.rendimentoEscolar)) escolarPartes.push(`O rendimento escolar é descrito como: ${form.rendimentoEscolar}.`);
+  if (sim(form.repetiuSerie)) escolarPartes.push(`Há histórico de repetência escolar.`);
+  if (sim(form.problemaAdaptacaoEscola) && preenchido(form.quaisProblemasEscola)) escolarPartes.push(`Foram relatados problemas de adaptação: ${form.quaisProblemasEscola}.`);
+  if (nao(form.problemaAdaptacaoEscola)) escolarPartes.push(`A adaptação escolar ocorreu sem dificuldades significativas.`);
+  if (sim(form.orientacaoDever)) {
+    escolarPartes.push(`Recebe orientação para as atividades escolares${preenchido(form.quemOrientaDever) ? ` de ${form.quemOrientaDever}` : ""}${preenchido(form.tempoDever) ? `, durante ${form.tempoDever}` : ""}.`);
+  }
+  if (preenchido(form.comoEraAntesQueixa)) escolarPartes.push(`Anteriormente ao período de queixa: ${form.comoEraAntesQueixa}.`);
+  if (preenchido(form.queixaAmbiente)) escolarPartes.push(`A queixa se manifesta no(s) seguinte(s) ambiente(s): ${form.queixaAmbiente}.`);
+  if (preenchido(form.comoResponsavelLida)) escolarPartes.push(`A família tem lidado com a situação da seguinte forma: ${form.comoResponsavelLida}.`);
+  if (escolarPartes.length === 0) escolarPartes.push("Informações escolares não foram detalhadas nesta anamnese.");
+
+  // ── BLOCO SONO / ROTINA (condensado, só se relevante) ─────────────────
+  const sonoAlertas = [
+    sim(form.medoDormir) && "medo de dormir",
+    sim(form.sonambulismo) && "sonambulismo",
+    sim(form.terroresNoturnos) && "terrores noturnos",
+    sim(form.pesadelos) && "pesadelos frequentes",
+    sim(form.insonia) && "insônia",
+    sim(form.hipersonia) && "hipersonia",
+  ].filter(Boolean);
+
+  const obsCompl = [
+    preenchido(form.observacoesComplementares) && form.observacoesComplementares,
+    preenchido(form.punicaoLimites) && `Quanto à disciplina e limites: ${form.punicaoLimites}.`,
+    preenchido(form.temAutonomia) && `Em relação à autonomia: ${form.temAutonomia}.`,
+  ].filter(Boolean);
+
+  const Paragrafo = ({ children, className = "" }) => (
+    <p className={`text-justify text-sm leading-relaxed mb-3 text-gray-800 ${className}`} style={{textIndent:"2em", fontFamily:"'Times New Roman', Times, serif"}}>{children}</p>
+  );
+  const Subtitulo = ({ children }) => (
+    <p className="text-sm leading-relaxed mb-1 text-gray-800" style={{fontFamily:"'Times New Roman', Times, serif"}}>
+      <em><strong>{children}</strong></em>
+    </p>
+  );
+  const Secao = ({ titulo, partes }) => partes.length === 0 ? null : (
+    <div className="mb-2">
+      <Subtitulo>{titulo}</Subtitulo>
+      <Paragrafo>{partes.join(" ")}</Paragrafo>
+    </div>
+  );
+
+  const reportRef = React.useRef(null);
+  const handlePrint = () => window.print();
+  const handleCopy = () => {
+    const el = reportRef.current;
+    if (!el) return;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand("copy");
+    sel.removeAllRanges();
+    alert("Texto copiado para a área de transferência.");
+  };
+
+  return (
+    <div>
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #report-print, #report-print * { visibility: visible; }
+          #report-print { position: absolute; left: 0; top: 0; width: 100%; padding: 3cm 3cm 2cm 3cm; }
+        }
+      `}</style>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 no-print">
+        <h2 className="text-lg font-bold text-blue-700">Relatório Narrativo — Anamnese Psicopedagógica</h2>
+        <div className="flex gap-2">
+          <button onClick={handleCopy} className="px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+            📋 Copiar texto
+          </button>
+          <button onClick={handlePrint} className="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-700 text-white hover:bg-gray-800 transition-colors">
+            🖨 Imprimir / PDF
+          </button>
+        </div>
+      </div>
+
+      <div id="report-print" ref={reportRef} className="bg-white border border-gray-200 rounded-xl p-6 text-gray-800" style={{fontFamily:"'Times New Roman', Times, serif"}}>
+        <h3 className="text-base font-bold text-center mb-1" style={{fontFamily:"'Times New Roman', Times, serif"}}>5. ANAMNESE</h3>
+        <p className="text-xs text-center text-gray-400 mb-4" style={{fontFamily:"'Times New Roman', Times, serif"}}>Data: {new Date().toLocaleDateString("pt-BR")}</p>
+
+        {/* Introdução */}
+        <Paragrafo>{introPartes.join(" ")}</Paragrafo>
+
+        {/* Gestação / Desenvolvimento */}
+        <Secao titulo="Gestação, parto e desenvolvimento inicial:" partes={gestPartes} />
+
+        {/* Saúde */}
+        <Secao titulo="Saúde geral:" partes={saudePartes} />
+
+        {/* Sono (só se há alertas) */}
+        {sonoAlertas.length > 0 && (
+          <Secao titulo="Sono:" partes={[`Em relação ao sono, ${preenchido(form.sonoTipo) ? `é descrito como ${form.sonoTipo}.` : ""} São relatados: ${sonoAlertas.join(", ")}.`]} />
+        )}
+
+        {/* Cognitivo / Comportamental */}
+        <Secao titulo="Aspectos cognitivos e comportamentais:" partes={cogPartes} />
+
+        {/* Socioemocional */}
+        <Secao titulo="Aspectos socioemocionais:" partes={socioPartes} />
+
+        {/* Escolar */}
+        <Secao titulo="Aspectos escolares:" partes={escolarPartes} />
+
+        {/* Observações complementares */}
+        {obsCompl.length > 0 && (
+          <Secao titulo="Observações complementares:" partes={obsCompl} />
+        )}
+      </div>
+      <p className="text-xs text-gray-400 mt-3 text-center no-print">Use "Imprimir / PDF" para salvar como PDF ou "Copiar texto" para usar em outro editor.</p>
+    </div>
+  );
+}
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
