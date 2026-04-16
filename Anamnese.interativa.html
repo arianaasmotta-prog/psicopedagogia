@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anamnese — Clube Raiz Psicopedagogia</title>
+<style>
+:root{
+  --me:#3D1F0A; --m:#5C3317; --mm:#7A4A28;
+  --d:#B8942A;  --dc:#D4AF5A;
+  --cr:#FAF5EC; --bg:#EDE0C4;
+  --tx:#1A1A1A; --cz:#666666;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;font-size:11pt;color:var(--tx);background:#e8e0d0;padding:24px}
+.page{max-width:820px;margin:0 auto;background:#fff;box-shadow:0 3px 16px rgba(0,0,0,.18)}
+.btn-bar{display:flex;gap:12px;justify-content:center;padding:14px 40px;background:var(--bg);border-bottom:2px solid var(--d)}
+.btn{padding:9px 26px;font-family:Arial,sans-serif;font-size:10.5pt;font-weight:bold;border:2px solid var(--d);cursor:pointer;border-radius:2px;transition:all .2s}
+.btn-print{background:var(--m);color:var(--d)}.btn-print:hover{background:var(--me)}
+.btn-clear{background:transparent;color:var(--m)}.btn-clear:hover{background:var(--bg)}
+.doc-header{background:var(--me);padding:32px 48px;text-align:center}
+.doc-header h1{color:var(--d);font-size:38pt;font-weight:bold;letter-spacing:5px}
+.doc-header p{color:var(--bg);font-size:11pt;margin-top:10px}
+.doc-content{padding:24px 44px}
+.id-table{width:100%;border-collapse:collapse;margin-bottom:22px}
+.id-table td{border:2px solid var(--d);padding:9px 13px 12px;background:var(--cr);width:50%;vertical-align:top}
+.id-label{font-size:9pt;font-weight:bold;color:var(--m);margin-bottom:5px}
+.id-input{border:none;border-bottom:2px solid var(--d);background:transparent;width:100%;font-family:Arial,sans-serif;font-size:11pt;color:var(--tx);outline:none;padding:2px 0}
+.id-input:focus{border-bottom-color:var(--m)}
+.queixa-box{border:3px solid var(--d);background:var(--bg);padding:16px 20px;margin-bottom:20px}
+.queixa-title{font-size:13pt;font-weight:bold;color:var(--m);margin-bottom:5px}
+.queixa-sub{font-size:10pt;color:var(--cz);font-style:italic;margin-bottom:10px}
+.sec-header{background:var(--m);color:var(--d);font-size:12pt;font-weight:bold;letter-spacing:1px;padding:10px 16px;margin:28px 0 14px}
+.question{margin-bottom:14px}
+.q-text{margin-bottom:6px;line-height:1.45}
+.q-num{font-weight:bold;color:var(--m)}
+textarea{width:100%;border:1.5px solid var(--d);background:var(--cr);padding:7px 10px;font-family:Arial,sans-serif;font-size:11pt;color:var(--tx);resize:vertical;outline:none;min-height:50px}
+textarea:focus{border-color:var(--m);box-shadow:0 0 0 2px rgba(184,148,42,.15)}
+.sn-table{width:100%;border-collapse:collapse}
+.sn-table th{background:var(--mm);color:var(--dc);font-size:10pt;font-weight:bold;padding:7px 10px;border:1.5px solid var(--d);text-align:center}
+.sn-table th.obs-col{text-align:left}
+.resp-row td{background:var(--cr);border:1.5px solid var(--d);text-align:center;padding:8px 6px;vertical-align:middle}
+.resp-row td.obs-cell{text-align:left;padding:3px 8px}
+.resp-row td.obs-cell textarea{border:none;background:transparent;min-height:40px;padding:3px 4px;resize:none}
+.radio-opt{display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none}
+.radio-opt input[type="radio"]{display:none}
+.circle{width:22px;height:22px;border:2.5px solid var(--mm);border-radius:50%;background:#fff;transition:all .15s ease;display:block}
+.radio-opt input[type="radio"]:checked + .circle{background:var(--m);border-color:var(--m);box-shadow:inset 0 0 0 4px #fff}
+.radio-opt:hover .circle{border-color:var(--d);background:var(--bg)}
+.check-table{width:100%;border-collapse:collapse;margin-bottom:12px}
+.check-table th{background:var(--m);color:var(--d);font-size:10pt;font-weight:bold;padding:8px 12px;border:1.5px solid var(--d)}
+.check-table .item-hdr{text-align:left}
+.check-table .yn-hdr{text-align:center;width:68px}
+.check-table .obs-hdr{text-align:left}
+.check-table td{border:1.5px solid var(--d);padding:7px 10px;vertical-align:middle;font-size:10.5pt}
+.check-table tr:nth-child(odd) td{background:var(--cr)}
+.check-table tr:nth-child(even) td{background:var(--bg)}
+.check-table .item-cell{text-align:left}
+.check-table .yn-cell{text-align:center;width:68px}
+.check-table .obs-cell{padding:4px 10px}
+.obs-input{border:none;border-bottom:1.5px solid var(--d);background:transparent;width:100%;font-family:Arial,sans-serif;font-size:10pt;outline:none;padding:2px 0}
+.obs-input:focus{border-bottom-color:var(--m)}
+.instr{font-size:10pt;color:var(--cz);font-style:italic;margin-bottom:10px;margin-top:2px}
+.doc-footer{border-top:2px solid var(--d);padding:10px 44px;font-size:9pt;color:var(--cz);font-style:italic;text-align:center;background:var(--cr)}
+
+/* ── ANÁLISE ── */
+#sec-analise{display:none;margin:0;border-top:4px solid var(--d)}
+.analise-header{background:var(--me);padding:18px 44px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.analise-header h2{color:var(--d);font-size:16pt;letter-spacing:2px}
+.analise-header p{color:var(--bg);font-size:9.5pt;margin-top:4px}
+.analise-body{padding:20px 44px 30px}
+.analise-label{font-size:9.5pt;font-weight:bold;color:var(--mm);margin-bottom:12px}
+
+/* Área de texto narrativo — estilo laudo clínico */
+#analise-output{
+  width:100%;
+  min-height:500px;
+  border:2px solid var(--d);
+  background:var(--cr);
+  padding:28px 32px;
+  font-family:Arial,sans-serif;
+  font-size:11.5pt;
+  line-height:2;
+  color:var(--tx);
+  outline:none;
+  cursor:text;
+  text-align:justify;
+}
+#analise-output:focus{border-color:var(--m)}
+
+/* Parágrafos do laudo */
+#analise-output p{
+  margin-bottom:16px;
+  text-indent:2em;
+  text-align:justify;
+}
+/* Primeiro parágrafo sem indent */
+#analise-output p:first-of-type{ text-indent:0 }
+
+/* Meta linha topo */
+#analise-output .meta{
+  font-size:9.5pt;color:var(--cz);
+  margin-bottom:20px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--bg);
+  text-indent:0 !important;
+}
+
+/* Síntese final */
+#analise-output .sintese{
+  margin-top:24px;
+  padding:14px 18px;
+  background:var(--bg);
+  border-left:4px solid var(--d);
+  font-style:italic;
+  line-height:1.8;
+  text-indent:0 !important;
+}
+
+.analise-btns{display:flex;gap:10px;margin-top:14px}
+.analise-aviso{font-size:9pt;color:var(--cz);font-style:italic;margin-top:10px}
+
+/* PRINT */
+@media print{
+  body{background:#fff;padding:0}
+  .page{box-shadow:none;max-width:100%}
+  .btn-bar,.analise-btns{display:none}
+  .doc-content{padding:14px 30px}
+  .doc-header,.analise-header{padding:20px 30px}
+  -webkit-print-color-adjust:exact;print-color-adjust:exact
+  .sec-header{page-break-after:avoid}
+  .question,.check-table{page-break-inside:avoid}
+  #sec-analise{display:block !important}
+  #analise-output{border:none;padding:10px 0;min-height:0}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="btn-bar">
+  <button class="btn btn-print" onclick="window.print()">&#128438; Imprimir / Salvar PDF</button>
+  <button class="btn btn-clear" onclick="clearForm()">&#8635; Limpar formulário</button>
+</div>
+<div class="doc-header">
+  <h1>ANAMNESE</h1>
+  <p>Criança e Adolescente &nbsp;·&nbsp; Roteiro de Entrevista Psicopedagógica</p>
+</div>
+<div class="doc-content">
+<table class="id-table">
+  <tr>
+    <td><div class="id-label">Nome completo da criança / adolescente</div><input id="id-nome" class="id-input" type="text"></td>
+    <td><div class="id-label">Data de nascimento / Idade</div><input id="id-datanasc" class="id-input" type="text"></td>
+  </tr>
+  <tr>
+    <td><div class="id-label">Nome dos pais ou responsáveis</div><input id="id-resp" class="id-input" type="text"></td>
+    <td><div class="id-label">Escola / Série / Turno</div><input id="id-escola" class="id-input" type="text"></td>
+  </tr>
+  <tr>
+    <td><div class="id-label">Composição familiar</div><input id="id-comp" class="id-input" type="text"></td>
+    <td><div class="id-label">Data da avaliação</div><input id="id-dataval" class="id-input" type="text"></td>
+  </tr>
+</table>
+<div class="queixa-box">
+  <div class="queixa-title">QUEIXA PRINCIPAL</div>
+  <div class="queixa-sub">Descreva o motivo completo da busca pela avaliação psicopedagógica.</div>
+  <textarea id="queixa" rows="5"></textarea>
+</div>
+<div class="sec-header">INFORMAÇÕES GERAIS</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">1.</span> Quais são as atividades e ocupações dos pais ou responsáveis?</div>
+      <textarea id="q1" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">2.</span> O(a) paciente faz uso de algum medicamento? Informar nome, dosagem e horário.</div>
+      <textarea id="q2" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">3.</span> O(a) paciente possui algum diagnóstico? Qual, quando foi recebido e quem realizou a avaliação? (Solicitar documento comprobatório.)</div>
+      <textarea id="q3" rows="3"></textarea>
+    </div>
+<div class="sec-header">HISTÓRICO FAMILIAR</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">4.</span> Como a família descreve a dinâmica de convivência entre seus membros?</div>
+      <textarea id="q4" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">5.</span> Há histórico de doenças psicológicas, psiquiátricas ou neurológicas na família?</div>
+      <textarea id="q5" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">6.</span> Algum membro da família já recebeu diagnóstico de transtorno de aprendizagem, autismo, TDAH ou problemas emocionais?</div>
+      <textarea id="q6" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">7.</span> A criança ou adolescente tem irmãos? Como é a relação entre eles?</div>
+      <textarea id="q7" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">8.</span> Como a família lida com conflitos? Há algo que dificulta a comunicação entre os membros?</div>
+      <textarea id="q8" rows="3"></textarea>
+    </div>
+<div class="sec-header">HISTÓRICO DE GESTAÇÃO E NASCIMENTO</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">9.</span> A gravidez foi planejada?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q9" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q9" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">10.</span> A gravidez foi desejada?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q10" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q10" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">11.</span> Como foi a gestação? Houve complicações? Quais foram os cuidados pré-natais?</div>
+      <textarea id="q11" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">12.</span> A criança nasceu a termo? Houve intercorrências no parto?</div>
+      <textarea id="q12" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">13.</span> Quais foram os principais marcos do desenvolvimento nos primeiros anos?</div>
+      <textarea id="q13" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">14.</span> Como foi o período de amamentação? Houve dificuldades na introdução alimentar?</div>
+      <textarea id="q14" rows="3"></textarea>
+    </div>
+<div class="sec-header">DESENVOLVIMENTO INFANTIL</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">15.</span> Como foi o desenvolvimento motor e cognitivo?</div>
+      <textarea id="q15" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">16.</span> Quando ocorreu o desfralde? Como foi esse processo?</div>
+      <textarea id="q16" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">17.</span> A criança ou adolescente apresenta dificuldades escolares desde os primeiros anos?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:80px">Sim</th><th style="width:80px">Não</th><th style="width:98px">Às vezes</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q17" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q17" value="nao"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q17" value="av"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">18.</span> Como a criança ou adolescente lida com a aprendizagem?</div>
+      <textarea id="q18" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">19.</span> Como se comporta em ambientes sociais?</div>
+      <textarea id="q19" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">20.</span> Tem dificuldades de socialização ou de interação?</div>
+      <textarea id="q20" rows="3"></textarea>
+    </div>
+<div class="sec-header">HISTÓRICO ESCOLAR</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">21.</span> Como foi a adaptação escolar?</div>
+      <textarea id="q21" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">22.</span> Tem histórico de dificuldades de aprendizagem ou de retenção escolar?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q22" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q22" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">23.</span> Há algum tipo de apoio escolar?</div>
+      <textarea id="q23" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">24.</span> Quais são as dificuldades que mais se destacam na escola?</div>
+      <textarea id="q24" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">25.</span> Como os professores e outros profissionais avaliam o desenvolvimento escolar?</div>
+      <textarea id="q25" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">26.</span> Já ficou retido(a) em algum ano?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q26" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q26" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">27.</span> É frequente na escola?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:80px">Sim</th><th style="width:80px">Não</th><th style="width:98px">Às vezes</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q27" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q27" value="nao"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q27" value="av"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">28.</span> Já está alfabetizado(a)?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q28" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q28" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">29.</span> Já sofreu bullying?</div>
+      <table class="sn-table">
+        <thead><tr><th style="width:90px">Sim</th><th style="width:90px">Não</th><th class="obs-col">Observações:</th></tr></thead>
+        <tbody><tr class="resp-row">
+          <td><label class="radio-opt"><input type="radio" name="q29" value="sim"><span class="circle"></span></label></td>
+          <td><label class="radio-opt"><input type="radio" name="q29" value="nao"><span class="circle"></span></label></td>
+          <td class="obs-cell"><textarea rows="2"></textarea></td>
+        </tr></tbody>
+      </table>
+    </div>
+<div class="sec-header">COMPORTAMENTO E EMOCIONAL</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">30.</span> Como reage a mudanças e situações novas?</div>
+      <textarea id="q30" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">31.</span> Há comportamentos repetitivos, compulsivos ou características particulares?</div>
+      <textarea id="q31" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">32.</span> Como lida com frustrações, perdas ou situações estressantes?</div>
+      <textarea id="q32" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">33.</span> Já apresentou sintomas de ansiedade, tristeza excessiva, agressividade?</div>
+      <textarea id="q33" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">34.</span> Existem situações em que se sente particularmente desconfortável ou inseguro(a)?</div>
+      <textarea id="q34" rows="3"></textarea>
+    </div>
+<div class="sec-header">AUTONOMIA</div>
+<p class="instr">Indique se a criança ou adolescente realiza cada atividade com autonomia:</p>
+    <table class="check-table">
+      <thead><tr><th class="item-hdr">Item</th><th class="yn-hdr">Sim</th><th class="yn-hdr">Não</th><th class="obs-hdr">Observações</th></tr></thead>
+      <tbody>
+      <tr><td class="item-cell">Alimenta-se sozinho(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_0" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_0" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Usa os talheres adequadamente</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_1" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_1" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Serve-se sem ajuda</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_2" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_2" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Veste-se sozinho(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_3" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_3" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Higieniza-se sozinho(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_4" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_4" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Guarda os brinquedos após o uso</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_5" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_5" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Organiza os materiais escolares</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_6" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_6" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Arruma a mochila</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_7" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_7" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Solicita muita ajuda para resolver problemas</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_8" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="auto_8" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      </tbody>
+    </table>
+<div class="sec-header">PROCESSAMENTO SENSORIAL</div>
+<p class="instr">Observe e registre a presença de cada comportamento:</p>
+    <table class="check-table">
+      <thead><tr><th class="item-hdr">Item</th><th class="yn-hdr">Sim</th><th class="yn-hdr">Não</th><th class="obs-hdr">Observações</th></tr></thead>
+      <tbody>
+      <tr><td class="item-cell">Apresenta sensibilidade a sons</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_0" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_0" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Demonstra incômodo com barulhos</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_1" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_1" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Reclama de tecidos ou etiquetas</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_2" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_2" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Recusa brinquedos ou objetos com texturas diferentes</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_3" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_3" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Parece não ouvir quando chamado(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_4" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_4" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Anda na ponta dos pés ou firmando excessivamente o calcanhar</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_5" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_5" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Demonstra incômodo com cheiros específicos</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_6" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_6" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Tem dificuldade com mudanças ou alterações na rotina</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_7" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_7" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Recusa abraço ou toque físico</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_8" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_8" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Apresenta dificuldade em andar descalço(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_9" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sens_9" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      </tbody>
+    </table>
+<div class="sec-header">SONO</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">35.</span> Quantas horas dorme por dia, em média?</div>
+      <textarea id="q35" rows="2"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">36.</span> Onde dorme? Com quem?</div>
+      <textarea id="q36" rows="2"></textarea>
+    </div>
+<p class="instr">Registre os comportamentos relacionados ao sono:</p>
+    <table class="check-table">
+      <thead><tr><th class="item-hdr">Item</th><th class="yn-hdr">Sim</th><th class="yn-hdr">Não</th><th class="obs-hdr">Observações</th></tr></thead>
+      <tbody>
+      <tr><td class="item-cell">É agitado(a) durante o sono</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_0" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_0" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">É sonâmbulo(a)</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_1" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_1" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      <tr><td class="item-cell">Tem pesadelos com frequência</td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_2" value="sim"><span class="circle"></span></label></td>
+        <td class="yn-cell"><label class="radio-opt"><input type="radio" name="sono_2" value="nao"><span class="circle"></span></label></td>
+        <td class="obs-cell"><input type="text" class="obs-input"></td></tr>
+      </tbody>
+    </table>
+<div class="sec-header">SAÚDE FÍSICA E PSICOLÓGICA</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">37.</span> Há algum histórico médico relevante?</div>
+      <textarea id="q37" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">38.</span> Já passou por algum tratamento psicológico, psiquiátrico ou psicoeducacional?</div>
+      <textarea id="q38" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">39.</span> Como é a rotina de cuidados com a saúde?</div>
+      <textarea id="q39" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">40.</span> Apresenta queixas físicas frequentes que possam estar relacionadas a questões emocionais?</div>
+      <textarea id="q40" rows="3"></textarea>
+    </div>
+<div class="sec-header">AMBIENTE SOCIAL, ESCOLAR E FAMILIAR</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">41.</span> Como é o relacionamento com os colegas na escola e em outras atividades sociais?</div>
+      <textarea id="q41" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">42.</span> Como se comporta nas interações com familiares e amigos?</div>
+      <textarea id="q42" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">43.</span> Pratica atividades extracurriculares? Como se comporta nessas atividades?</div>
+      <textarea id="q43" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">44.</span> Tem interesse por atividades ou hobbies específicos?</div>
+      <textarea id="q44" rows="3"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">45.</span> Como é a rotina dentro de casa?</div>
+      <textarea id="q45" rows="3"></textarea>
+    </div>
+<div class="sec-header">OBJETIVOS E EXPECTATIVAS DA FAMÍLIA</div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">46.</span> Quais são as maiores preocupações da família em relação ao desenvolvimento da criança ou adolescente?</div>
+      <textarea id="q46" rows="4"></textarea>
+    </div>
+    <div class="question">
+      <div class="q-text"><span class="q-num">47.</span> Quais são as metas da família para o acompanhamento psicopedagógico?</div>
+      <textarea id="q47" rows="4"></textarea>
+    </div>
+<div class="sec-header">OBSERVAÇÕES FINAIS DA PROFISSIONAL</div>
+<textarea id="obs-finais" rows="8"></textarea>
+</div>
+
+<!-- ANÁLISE AUTOMÁTICA -->
+<div id="sec-analise">
+  <div class="analise-header">
+    <div>
+      <h2>ANÁLISE NARRATIVA</h2>
+      <p>Gerada automaticamente a partir das respostas &nbsp;·&nbsp; Editável pela profissional</p>
+    </div>
+  </div>
+  <div class="analise-body">
+    <div class="analise-label">Clique no texto para editar e complementar antes de imprimir:</div>
+    <div id="analise-output" contenteditable="true" spellcheck="true"></div>
+    <div class="analise-btns">
+      <button class="btn btn-print" id="btn-copiar" onclick="copiarAnalise()">Copiar texto</button>
+      <button class="btn btn-print" onclick="window.print()">&#128438; Imprimir / Salvar PDF</button>
+      <button class="btn btn-clear" onclick="gerarAnalise()">&#8635; Regenerar análise</button>
+    </div>
+    <p class="analise-aviso">&#9432; A análise é gerada automaticamente ao concluir a pergunta 46. Clique no texto para editar e complementar com suas observações clínicas antes de imprimir.</p>
+  </div>
+</div>
+
+<div class="doc-footer">
+  Este roteiro é um instrumento de escuta ativa e observação clínica.
+  As informações coletadas são confidenciais e integram o processo de avaliação psicopedagógica.
+  &nbsp;·&nbsp; <strong>Uso exclusivo da profissional.</strong>
+</div>
+</div>
+
+<script>
+function v(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function radio(name){ var e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:null; }
+function getSim(prefix,labels){ return labels.filter(function(_,i){ return document.querySelector('input[name="'+prefix+'_'+i+'"][value="sim"]:checked'); }); }
+function getNao(prefix,labels){ return labels.filter(function(_,i){ return document.querySelector('input[name="'+prefix+'_'+i+'"][value="nao"]:checked'); }); }
+function lst(arr){ return arr.join(', '); }
+
+/* Parágrafo com rótulo em itálico-negrito inline — igual ao modelo */
+function blk(rotulo, texto){
+  if(!texto || !texto.trim()) return '';
+  return '<p><em><strong>'+rotulo+'</strong></em> '+texto.trim()+'</p>';
+}
+/* Parágrafo simples (sem rótulo) */
+function par(texto){
+  if(!texto || !texto.trim()) return '';
+  return '<p>'+texto.trim()+'</p>';
+}
+
+function gerarAnalise(){
+  var nome   = v('id-nome');
+  var dataN  = v('id-datanasc');
+  var resp   = v('id-resp');
+  var escola = v('id-escola');
+  var comp   = v('id-comp');
+  var dataVal= v('id-dataval');
+  var ref    = nome ? nome.split(' ')[0] : 'a criança/adolescente';
+  var Ref    = ref.charAt(0).toUpperCase()+ref.slice(1);
+  var queixa = v('queixa');
+
+  var html = '';
+
+  /* Linha de meta */
+  var meta='';
+  if(dataVal) meta+='Data: <strong>'+dataVal+'</strong>';
+  if(nome){ meta+=(meta?' &nbsp;·&nbsp; ':'')+'Paciente: <strong>'+nome+'</strong>'; }
+  if(dataN) meta+=' &nbsp;·&nbsp; '+dataN;
+  if(meta) html+='<p class="meta">'+meta+'</p>';
+
+  /* ── PARÁGRAFO DE ABERTURA ── */
+  var ab='';
+  if(nome) ab+='<strong>'+nome+'</strong>';
+  else ab+='A criança/adolescente avaliada(o)';
+  if(dataN) ab+=', '+dataN+',';
+  if(escola) ab+=' estudante na '+escola+',';
+  if(comp) ab+=' reside em contexto familiar composto por '+comp+'.';
+  else ab+='.';
+  if(resp) ab+=' Os responsáveis são '+resp+'.';
+  ab+=' A família demonstra envolvimento ativo em seu desenvolvimento, buscando compreender suas características cognitivas e comportamentais de forma mais aprofundada.';
+  if(queixa) ab+=' A demanda que motivou a busca pela avaliação psicopedagógica foi: <em>"'+queixa+'"</em>.';
+  html+=par(ab);
+
+  /* ── GESTAÇÃO, PARTO E DESENVOLVIMENTO INICIAL ── */
+  var r9=radio('q9'), r10=radio('q10');
+  var q11=v('q11'), q12=v('q12'), q13=v('q13'), q14=v('q14');
+  var gest='';
+  /* gravidez */
+  if(r9==='sim'&&r10==='sim'){
+    gest+='A gravidez foi planejada e desejada. ';
+  } else if(r9==='nao'&&r10==='sim'){
+    gest+='A gravidez não foi planejada, porém foi desejada pelos responsáveis. ';
+  } else if(r9==='nao'&&r10==='nao'){
+    gest+='A gravidez não foi planejada e tampouco desejada inicialmente, aspecto que pode ter implicações no vínculo afetivo precoce e merece atenção ao longo do processo avaliativo. ';
+  } else if(r9==='sim'&&r10==='nao'){
+    gest+='Embora a gravidez tenha sido planejada, não foi plenamente desejada no decorrer do processo. ';
+  }
+  if(q11) gest+=q11+' ';
+  else if(r9||r10) gest+='A gestação transcorreu sem intercorrências relevantes, com acompanhamento pré-natal dentro do esperado. ';
+  if(q12) gest+=q12+' ';
+  else if(q11||r9||r10) gest+='Não há relatos de complicações neonatais significativas. ';
+  if(q13) gest+=q13+' ';
+  if(q14) gest+=q14;
+  html+=blk('Gestação, parto e desenvolvimento inicial:', gest);
+
+  /* ── SAÚDE GERAL ── */
+  var q2=v('q2'), q3=v('q3'), q37=v('q37'), q38=v('q38'), q39=v('q39'), q40=v('q40');
+  var saude='';
+  if(q3){
+    saude+='Há registro de diagnóstico: <strong>'+q3+'</strong>. ';
+  } else {
+    saude+='Não há indicação de condições neurológicas ou clínicas que, no momento, justifiquem alterações significativas no desenvolvimento. ';
+  }
+  if(q2) saude+='Faz uso de: <strong>'+q2+'</strong>. ';
+  else saude+='Não há uso de medicamentos relatado. ';
+  if(q37) saude+=q37+' ';
+  if(q38) saude+=q38+' ';
+  if(q40) saude+='São relatadas queixas físicas recorrentes — <strong>'+q40+'</strong> — que podem estar associadas a questões emocionais e merecem atenção continuada.';
+  html+=blk('Saúde geral:', saude);
+
+  /* ── ASPECTOS COGNITIVOS E COMPORTAMENTAIS ── */
+  var q15=v('q15'), q18=v('q18'), q24=v('q24'), q30=v('q30'), q31=v('q31'), q32=v('q32'), q33=v('q33'), q34=v('q34');
+  var cog='';
+  /* primeiro parágrafo: desenvolvimento e aprendizagem */
+  var cog1='';
+  if(q15) cog1+=q15+' ';
+  if(q18) cog1+=q18+' ';
+  if(q24) cog1+='As dificuldades que mais se destacam são: <strong>'+q24+'</strong>. ';
+  if(cog1) html+=blk('Aspectos cognitivos e comportamentais:', cog1.trim());
+  /* segundo parágrafo: comportamento e emocional */
+  var cog2='';
+  if(q30) cog2+='Diante de mudanças e situações novas, '+ref+' apresenta: '+q30+'. ';
+  if(q31) cog2+=q31+' ';
+  if(q32) cog2+='<strong>Quanto à gestão das frustrações:</strong> '+q32+'. ';
+  if(q33) cog2+=q33+' ';
+  if(q34) cog2+=q34;
+  if(cog2) html+=par(cog2.trim());
+
+  /* ── ASPECTOS SOCIOEMOCIONAIS ── */
+  var q19=v('q19'), q20=v('q20'), q41=v('q41'), q42=v('q42');
+  var r29=radio('q29');
+  var socio='';
+  if(q19) socio+=q19+' ';
+  if(q20) socio+=q20+' ';
+  if(q41) socio+=q41+' ';
+  if(q42) socio+=q42+' ';
+  if(r29==='sim') socio+='<strong>'+Ref+' já vivenciou situações de bullying</strong>, aspecto relevante para a compreensão do perfil socioemocional. ';
+  else if(r29==='nao') socio+='Não há relatos de situações de bullying. ';
+  html+=blk('Aspectos socioemocionais:', socio);
+
+  /* ── ASPECTOS ESCOLARES ── */
+  var r17=radio('q17'), r22=radio('q22'), r26=radio('q26'), r27=radio('q27'), r28=radio('q28');
+  var q21=v('q21'), q23=v('q23'), q25=v('q25');
+  var esc1='';
+  if(q21) esc1+=q21+' ';
+  if(r28==='sim') esc1+=Ref+' já está alfabetizado(a). ';
+  else if(r28==='nao') esc1+=Ref+' encontra-se <strong>em processo de alfabetização</strong>. ';
+  if(r17==='sim') esc1+='<strong>Há histórico de dificuldades escolares desde os primeiros anos</strong>, o que aponta para um percurso de desafios que acompanham '+ref+' desde o início da vida escolar. ';
+  else if(r17==='av') esc1+='As dificuldades escolares aparecem de forma intermitente desde os primeiros anos, variando conforme o contexto e as demandas. ';
+  if(r22==='sim') esc1+='<strong>Há histórico de dificuldades de aprendizagem</strong>. ';
+  if(r26==='sim') esc1+='<strong>'+Ref+' já ficou retido(a) em algum ano escolar</strong>, dado que reforça a necessidade de investigação aprofundada. ';
+  if(r27==='av') esc1+='A frequência escolar é irregular. ';
+  else if(r27==='nao') esc1+='A frequência escolar está comprometida. ';
+  html+=blk('Aspectos escolares:', esc1);
+  /* segundo parágrafo escolar: apoio e professores */
+  var esc2='';
+  if(q23) esc2+=q23+' ';
+  if(q25) esc2+=q25;
+  if(esc2) html+=par(esc2.trim());
+
+  /* ── AUTONOMIA ── */
+  var aL=['alimentar-se sozinho(a)','usar os talheres adequadamente','servir-se sem ajuda',
+          'vestir-se sozinho(a)','higienizar-se sozinho(a)','guardar os brinquedos após o uso',
+          'organizar os materiais escolares','arrumar a mochila','solicitar muita ajuda para resolver problemas'];
+  var aSim=getSim('auto',aL), aNao=getNao('auto',aL);
+  var auto='';
+  var autoPos=aSim.filter(function(x){return x!=='solicitar muita ajuda para resolver problemas';});
+  var autoNeg=aNao.filter(function(x){return x!=='solicitar muita ajuda para resolver problemas';});
+  if(autoPos.length) auto+=Ref+' <strong>demonstra autonomia</strong> para: '+lst(autoPos)+'. ';
+  if(autoNeg.length) auto+='Ainda necessita de apoio para: <strong>'+lst(autoNeg)+'</strong>. ';
+  if(aSim.indexOf('solicitar muita ajuda para resolver problemas')>=0)
+    auto+='Foi relatado que '+ref+' solicita com frequência ajuda para resolver problemas, o que pode indicar <strong>dependência aumentada ou insegurança</strong> diante de desafios. ';
+
+  /* ── PROCESSAMENTO SENSORIAL ── */
+  var sL=['sensibilidade a sons','incômodo com barulhos','queixas sobre tecidos ou etiquetas',
+          'recusa a objetos com texturas diferentes','aparência de não ouvir quando chamado(a)',
+          'padrão atípico de marcha','incômodo com cheiros específicos',
+          'dificuldade com mudanças na rotina','recusa de toque físico',
+          'dificuldade em andar descalço(a)'];
+  var sSim=getSim('sens',sL);
+  var sens='';
+  if(sSim.length){
+    sens+='O perfil sensorial indica a presença de: <strong>'+lst(sSim)+'</strong>. ';
+    if(sSim.length>=4) sens+='A concentração de múltiplos indicadores sensoriais sugere a importância de uma <strong>avaliação específica do processamento sensorial</strong> como parte do processo diagnóstico. ';
+  } else {
+    sens+='Não foram relatadas características sensoriais significativas. ';
+  }
+  var autoSens=(auto+sens).trim();
+  html+=blk('Autonomia e processamento sensorial:', autoSens);
+
+  /* ── SONO ── */
+  var q35=v('q35'), q36=v('q36');
+  var sonoL=['agitação durante o sono','sonambulismo','pesadelos frequentes'];
+  var sonoSim=getSim('sono',sonoL);
+  var sono='';
+  if(q35) sono+=Ref+' dorme em média '+q35+'. ';
+  if(q36) sono+='Dorme '+q36+'. ';
+  if(sonoSim.length) sono+='Foram relatados: <strong>'+lst(sonoSim)+'</strong>, comportamentos que podem interferir diretamente na regulação emocional e no desempenho ao longo do dia. ';
+  else if(q35||q36) sono+='Não foram relatadas alterações significativas no padrão do sono. ';
+  if(sono) html+=blk('Sono:', sono);
+
+  /* ── CONTEXTO FAMILIAR ── */
+  var q4=v('q4'), q5=v('q5'), q6=v('q6'), q7=v('q7'), q8=v('q8');
+  var fam='';
+  if(q4) fam+=q4+' ';
+  if(q5||q6){
+    if(q5) fam+=q5+' ';
+    if(q6) fam+='Entre os familiares, há registro de: <strong>'+q6+'</strong>. ';
+  } else if(q4){
+    fam+='Não foram relatados antecedentes de saúde mental ou transtornos de aprendizagem na família. ';
+  }
+  if(q7) fam+=q7+' ';
+  if(q8) fam+=q8;
+  if(fam) html+=blk('Contexto e dinâmica familiar:', fam);
+
+  /* ── INTERESSES E ROTINA ── */
+  var q43=v('q43'), q44=v('q44'), q45=v('q45');
+  var rot='';
+  if(q43) rot+=q43+' ';
+  if(q44) rot+='Demonstra interesse por: '+q44+'. ';
+  if(q45) rot+=q45;
+  if(rot) html+=blk('Interesses, atividades e rotina:', rot);
+
+  /* ── OBJETIVOS ── */
+  var q46=v('q46'), q47=v('q47');
+  var obj='';
+  if(q46) obj+='As principais preocupações da família giram em torno de: <strong>'+q46+'</strong>. ';
+  if(q47) obj+=q47;
+  if(obj) html+=blk('Objetivos e expectativas da família:', obj);
+
+  /* ── OBS PROFISSIONAL ── */
+  var obsF=v('obs-finais');
+  if(obsF) html+=blk('Observações da profissional:', obsF);
+
+  /* ── SÍNTESE ── */
+  var sint='As informações reunidas nesta anamnese compõem o panorama inicial para a avaliação psicopedagógica de ';
+  sint+='<strong>'+(nome||'a criança/adolescente')+'</strong>';
+  if(dataN) sint+=' ('+dataN+')';
+  sint+='. Os dados abrangem os históricos familiar, gestacional, de desenvolvimento, escolar, comportamental e de saúde, além do perfil de autonomia e processamento sensorial. ';
+  sint+='Esses elementos serão integrados aos instrumentos específicos de avaliação para subsidiar as hipóteses diagnósticas e o planejamento de intervenção psicopedagógica individualizada.';
+  html+='<div class="sintese"><em><strong>Síntese:</strong></em> '+sint+'</div>';
+
+  document.getElementById('analise-output').innerHTML=html;
+  var sec_el=document.getElementById('sec-analise');
+  sec_el.style.display='block';
+  setTimeout(function(){ sec_el.scrollIntoView({behavior:'smooth',block:'start'}); },100);
+}
+
+function copiarAnalise(){
+  var el=document.getElementById('analise-output');
+  var txt=el.innerText||el.textContent||'';
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){
+      var btn=document.getElementById('btn-copiar');
+      btn.textContent='\u2713 Copiado!';
+      setTimeout(function(){btn.textContent='Copiar texto';},2000);
+    });
+  } else {
+    var ta=document.createElement('textarea');
+    ta.value=txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    var btn=document.getElementById('btn-copiar');
+    btn.textContent='\u2713 Copiado!';
+    setTimeout(function(){btn.textContent='Copiar texto';},2000);
+  }
+}
+
+function clearForm(){
+  if(confirm('Deseja limpar todos os campos do formulário e a análise?')){
+    document.querySelectorAll('textarea, input[type=text]').forEach(function(el){el.value='';});
+    document.querySelectorAll('input[type=radio]').forEach(function(el){el.checked=false;});
+    document.getElementById('analise-output').innerHTML='';
+    document.getElementById('sec-analise').style.display='none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var ta46=document.getElementById('q46');
+  if(ta46){
+    ta46.addEventListener('blur',function(){
+      if(this.value.trim().length>5) gerarAnalise();
+    });
+  }
+});
+</script>
+</body>
+</html>
