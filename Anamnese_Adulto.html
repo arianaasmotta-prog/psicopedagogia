@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anamnese Psicopedagógica — Adulto</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --marrom:#3D1F0A;
+  --marrom2:#5C3317;
+  --marrom3:#7A4A28;
+  --verde:#3A4A2F;
+  --verde2:#4E6140;
+  --ouro:#B8942A;
+  --ouro2:#D4AF5A;
+  --ouro3:#EDD68A;
+  --creme:#FAF5EC;
+  --creme2:#F0E8D4;
+  --creme3:#E8D9BC;
+  --branco:#FFFFFF;
+  --texto:#1C1410;
+  --cinza:#6B6259;
+  --cinza2:#9C9088;
+  --borda:#D4AF5A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',Arial,sans-serif;font-size:10.5pt;color:var(--texto);background:var(--creme3);min-height:100vh}
+
+/* HEADER */
+.app-header{background:var(--marrom);padding:28px 48px 22px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.app-header-left h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:28pt;font-weight:700;color:var(--ouro2);letter-spacing:4px;line-height:1}
+.app-header-left p{font-family:'Inter',sans-serif;font-size:9pt;color:var(--creme2);letter-spacing:2px;margin-top:6px;text-transform:uppercase}
+.app-header-right{display:flex;gap:10px}
+.hdr-btn{background:transparent;border:1.5px solid var(--ouro);color:var(--ouro2);font-family:'Inter',sans-serif;font-size:9pt;padding:7px 18px;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.hdr-btn:hover{background:var(--ouro);color:var(--marrom)}
+
+/* NAV TABS */
+.nav-tabs{background:var(--verde);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:3px solid var(--ouro)}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{font-family:'Inter',sans-serif;font-size:8.5pt;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);background:transparent;border:none;padding:14px 24px 12px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s}
+.tab-btn:hover{color:var(--ouro2)}
+.tab-btn.active{color:var(--ouro2);border-bottom:3px solid var(--ouro2);background:rgba(255,255,255,0.05)}
+.tab-num{font-size:7.5pt;opacity:0.6;margin-right:5px}
+
+/* BODY */
+.app-body{max-width:920px;margin:0 auto;padding:36px 24px 60px}
+.section-panel{display:none}
+.section-panel.active{display:block}
+.sec-eyebrow{font-family:'Inter',sans-serif;font-size:8pt;letter-spacing:3px;text-transform:uppercase;color:var(--ouro);margin-bottom:8px}
+.sec-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:24pt;font-weight:600;color:var(--marrom);margin-bottom:4px;line-height:1.1}
+.sec-divider{border:none;border-top:2px solid var(--ouro3);margin:18px 0 30px}
+
+/* CAMPOS */
+.campo-label{font-family:'Inter',sans-serif;font-size:8pt;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--marrom2);margin-bottom:6px;display:block}
+.campo-input{width:100%;border:none;border-bottom:2px solid var(--ouro3);background:transparent;font-family:'Inter',sans-serif;font-size:10.5pt;color:var(--texto);padding:6px 0 4px;outline:none;transition:border-color .2s}
+.campo-input:focus{border-bottom-color:var(--marrom2)}
+.campo-textarea{width:100%;border:1.5px solid var(--creme3);background:var(--creme);font-family:'Inter',sans-serif;font-size:10.5pt;color:var(--texto);padding:10px 14px;outline:none;resize:vertical;min-height:72px;line-height:1.6;transition:border-color .2s}
+.campo-textarea:focus{border-color:var(--marrom2)}
+.campo-wrap{margin-bottom:22px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+/* BLOCO */
+.bloco{background:var(--branco);border:1px solid var(--creme3);padding:24px 28px;margin-bottom:20px}
+.bloco-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:14pt;font-weight:600;color:var(--marrom2);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--creme3)}
+.bloco-sub{font-size:9pt;color:var(--cinza);font-style:italic;margin-bottom:14px;margin-top:-10px}
+
+/* SIM/NÃO */
+.sn-wrap{display:flex;align-items:center;gap:32px;margin-bottom:10px}
+.sn-label{font-size:9pt;color:var(--cinza);font-style:italic;margin-right:8px}
+.sn-opt{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.sn-opt input[type="radio"]{display:none}
+.sn-circle{width:20px;height:20px;border:2.5px solid var(--marrom3);border-radius:50%;background:var(--branco);flex-shrink:0;transition:all .15s}
+.sn-opt input[type="radio"]:checked + .sn-circle{background:var(--marrom2);border-color:var(--marrom2);box-shadow:inset 0 0 0 3.5px var(--branco)}
+.sn-opt:hover .sn-circle{border-color:var(--ouro)}
+.sn-text{font-size:9.5pt;color:var(--texto);font-family:'Inter',sans-serif}
+
+/* ESCALA 0-10 */
+.escala-wrap{margin-bottom:20px}
+.escala-grid{display:grid;gap:0}
+.escala-row{display:grid;grid-template-columns:1fr 200px;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--creme2)}
+.escala-row:first-child{border-top:1px solid var(--creme2)}
+.escala-row:nth-child(odd){background:var(--creme)}
+.escala-row:nth-child(even){background:var(--branco)}
+.escala-item{font-size:10pt;color:var(--texto)}
+.escala-ctrl{display:flex;align-items:center;gap:10px}
+.escala-ctrl input[type="range"]{-webkit-appearance:none;width:130px;height:4px;background:var(--creme3);border-radius:2px;outline:none;cursor:pointer}
+.escala-ctrl input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--marrom2);cursor:pointer;border:2px solid var(--ouro2)}
+.escala-ctrl input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--marrom2);cursor:pointer;border:2px solid var(--ouro2)}
+.escala-val{font-family:'Cormorant Garamond',serif;font-size:14pt;font-weight:600;color:var(--marrom2);min-width:24px;text-align:center}
+.escala-head{display:grid;grid-template-columns:1fr 200px;gap:16px;padding:9px 16px;background:var(--marrom2)}
+.escala-head span{font-family:'Inter',sans-serif;font-size:8pt;font-weight:600;letter-spacing:1px;color:var(--ouro2);text-transform:uppercase}
+.escala-head .eh-right{text-align:center}
+
+/* QUEIXA */
+.queixa-box{background:var(--marrom);padding:24px 28px 20px;margin-bottom:24px}
+.queixa-label{font-family:'Inter',sans-serif;font-size:8pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ouro);margin-bottom:8px;display:block}
+.queixa-hint{font-size:9pt;color:rgba(250,245,236,0.7);font-style:italic;margin-bottom:12px}
+.queixa-box textarea{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(212,175,90,0.4);color:var(--creme);font-family:'Inter',sans-serif;font-size:11pt;padding:12px 14px;outline:none;resize:vertical;min-height:100px;line-height:1.7}
+.queixa-box textarea::placeholder{color:rgba(250,245,236,0.4)}
+.queixa-box textarea:focus{border-color:var(--ouro2)}
+
+/* Q-ITEM */
+.q-item{margin-bottom:18px}
+.q-texto{font-size:10pt;color:var(--texto);margin-bottom:8px;line-height:1.5}
+.q-num{font-weight:600;color:var(--marrom2);margin-right:4px}
+
+/* NAV BUTTONS */
+.nav-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:20px;border-top:1px solid var(--creme3)}
+.nav-btn{background:var(--marrom);color:var(--ouro2);border:none;font-family:'Inter',sans-serif;font-size:9pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:13px 32px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px}
+.nav-btn:hover{background:var(--marrom2)}
+.nav-btn.ghost{background:transparent;color:var(--marrom2);border:1.5px solid var(--marrom3)}
+.nav-btn.ghost:hover{background:var(--creme2)}
+.nav-btn.hidden{visibility:hidden;pointer-events:none}
+.nav-progress{font-family:'Inter',sans-serif;font-size:9pt;color:var(--cinza2);letter-spacing:1px}
+
+/* RELATÓRIO */
+.gerar-btn{display:block;width:100%;background:var(--marrom);color:var(--ouro2);border:none;font-family:'Cormorant Garamond',Georgia,serif;font-size:16pt;font-weight:600;letter-spacing:3px;padding:22px;cursor:pointer;transition:all .2s;text-align:center;margin-bottom:24px}
+.gerar-btn:hover{background:var(--marrom2)}
+#sec-analise{display:none;margin-top:28px}
+.analise-header-box{background:var(--marrom);padding:20px 28px;margin-bottom:0}
+.analise-header-box h3{font-family:'Cormorant Garamond',Georgia,serif;font-size:18pt;color:var(--ouro2);letter-spacing:2px}
+.analise-header-box p{font-size:9pt;color:rgba(250,245,236,0.7);margin-top:4px;font-style:italic}
+#analise-output{width:100%;min-height:500px;border:1.5px solid var(--creme3);border-top:none;background:var(--branco);padding:32px 36px;font-family:'Inter',Georgia,sans-serif;font-size:11pt;line-height:2;color:var(--texto);outline:none;text-align:justify}
+#analise-output p{margin-bottom:18px;text-indent:2em}
+#analise-output p:first-of-type{text-indent:0}
+#analise-output .meta{font-size:9.5pt;color:var(--cinza);margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--creme3);text-indent:0 !important}
+#analise-output .sintese{margin-top:28px;padding:16px 20px;background:var(--creme);border-left:4px solid var(--ouro);font-style:italic;line-height:1.9;text-indent:0 !important}
+.analise-btns{display:flex;gap:10px;margin-top:16px}
+
+/* PRINT */
+@media print{
+  body{background:#fff}
+  .app-header,.nav-tabs,.nav-bottom,.hdr-btn,.analise-btns,.gerar-btn{display:none !important}
+  .app-body{padding:10px 0;max-width:100%}
+  .section-panel{display:block !important}
+  .bloco,.escala-wrap{page-break-inside:avoid}
+  #sec-analise{display:block !important}
+  #analise-output{border:none;min-height:0}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="app-header-left">
+    <h1>ANAMNESE PSICOPEDAGÓGICA</h1>
+    <p>Adulto &nbsp;·&nbsp; Roteiro de Entrevista &nbsp;·&nbsp; Uso Exclusivo da Profissional</p>
+  </div>
+  <div class="app-header-right">
+    <button class="hdr-btn" onclick="window.print()">Imprimir / PDF</button>
+    <button class="hdr-btn" onclick="confirmarLimpar()">Limpar</button>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs" id="navTabs">
+  <button class="tab-btn active"  onclick="irPara(0)"><span class="tab-num">01</span>Identificação</button>
+  <button class="tab-btn"         onclick="irPara(1)"><span class="tab-num">02</span>Queixa</button>
+  <button class="tab-btn"         onclick="irPara(2)"><span class="tab-num">03</span>Saúde Geral</button>
+  <button class="tab-btn"         onclick="irPara(3)"><span class="tab-num">04</span>Saúde Mental</button>
+  <button class="tab-btn"         onclick="irPara(4)"><span class="tab-num">05</span>Histórico Escolar</button>
+  <button class="tab-btn"         onclick="irPara(5)"><span class="tab-num">06</span>Cognitivo &amp; Social</button>
+  <button class="tab-btn"         onclick="irPara(6)"><span class="tab-num">07</span>Funções Executivas</button>
+  <button class="tab-btn"         onclick="irPara(7)"><span class="tab-num">08</span>Relatório</button>
+</div>
+
+<div class="app-body">
+
+<!-- ══════════════════════════════════
+     01 — IDENTIFICAÇÃO
+══════════════════════════════════ -->
+<div class="section-panel active" id="panel-0">
+  <div class="sec-eyebrow">Seção 01</div>
+  <div class="sec-title">Identificação</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Dados Pessoais</div>
+    <div class="grid-2">
+      <div class="campo-wrap">
+        <label class="campo-label">Nome completo</label>
+        <input id="id-nome" class="campo-input" type="text" placeholder="Nome completo">
+      </div>
+      <div class="campo-wrap">
+        <label class="campo-label">Idade e data de nascimento</label>
+        <input id="id-datanasc" class="campo-input" type="text" placeholder="DD/MM/AAAA · XX anos">
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="campo-wrap">
+        <label class="campo-label">Estado civil</label>
+        <input id="id-estcivil" class="campo-input" type="text" placeholder="Ex.: solteiro(a), casado(a)...">
+      </div>
+      <div class="campo-wrap">
+        <label class="campo-label">Profissão / Ocupação atual</label>
+        <input id="id-profissao" class="campo-input" type="text" placeholder="Ex.: estudante, professora...">
+      </div>
+      <div class="campo-wrap">
+        <label class="campo-label">Data da avaliação</label>
+        <input id="id-dataval" class="campo-input" type="text" placeholder="DD/MM/AAAA">
+      </div>
+    </div>
+    <div class="campo-wrap">
+      <label class="campo-label">Escolaridade (último grau e cursos realizados)</label>
+      <textarea id="id-escolaridade" class="campo-textarea" rows="2" placeholder="Ex.: Ensino Superior completo em Pedagogia · Pós-graduação em Neuropsicopedagogia"></textarea>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Contexto de Vida</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">6.</span> Histórico de moradia (mudanças frequentes, por exemplo):</div>
+      <textarea id="q6" class="campo-textarea" rows="2" placeholder="Descreva mudanças de cidade, moradia com quem, períodos relevantes..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">7.</span> Situação familiar: quem mora com você? Tem filhos? Qual a idade deles?</div>
+      <textarea id="q7" class="campo-textarea" rows="3" placeholder="Descreva com quem convive, filhos, configuração familiar atual..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost hidden">← Anterior</button>
+    <span class="nav-progress">1 de 8</span>
+    <button class="nav-btn" onclick="irPara(1)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     02 — QUEIXA PRINCIPAL
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-1">
+  <div class="sec-eyebrow">Seção 02</div>
+  <div class="sec-title">Queixa Principal</div>
+  <hr class="sec-divider">
+
+  <div class="queixa-box">
+    <span class="queixa-label">Principal dificuldade</span>
+    <p class="queixa-hint">Descreva com as próprias palavras do(a) avaliado(a) a dificuldade central que o(a) trouxe à avaliação.</p>
+    <textarea id="queixa" rows="5" placeholder="Qual é a sua principal dificuldade atualmente?"></textarea>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Contexto da Queixa</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Desde quando você percebe essa dificuldade?</div>
+      <textarea id="q-desde" class="campo-textarea" rows="2" placeholder="Ex.: desde a infância, desde o ensino médio, há 2 anos..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Como essa dificuldade impacta sua vida cotidiana?</div>
+      <textarea id="q-impacto" class="campo-textarea" rows="3" placeholder="Descreva o impacto no trabalho, nas relações, nos estudos, na rotina..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(0)">← Anterior</button>
+    <span class="nav-progress">2 de 8</span>
+    <button class="nav-btn" onclick="irPara(2)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     03 — SAÚDE GERAL
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-2">
+  <div class="sec-eyebrow">Seção 03</div>
+  <div class="sec-title">Saúde Geral</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Histórico de Saúde</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Você tem algum diagnóstico médico ou histórico de doenças crônicas?</div>
+      <textarea id="s-diagnostico" class="campo-textarea" rows="2" placeholder="Informe diagnósticos recebidos, doenças crônicas, condições de saúde..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Está em uso de medicação atualmente? Se sim, quais?</div>
+      <textarea id="s-medicacao" class="campo-textarea" rows="2" placeholder="Nome do medicamento · dosagem · horário (ou 'Não faz uso')"></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Já teve ou tem algum histórico de problemas psicológicos como depressão, ansiedade, distúrbios de humor?</div>
+      <textarea id="s-psicologico" class="campo-textarea" rows="2" placeholder="Descreva o histórico de saúde mental — diagnósticos, episódios, período..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Já passou por algum tratamento psicológico ou psiquiátrico? Como foi?</div>
+      <textarea id="s-tratamento" class="campo-textarea" rows="3" placeholder="Descreva os tratamentos realizados, profissional, período, resultados percebidos..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">5.</span> Já teve alguma intervenção cirúrgica ou hospitalizações?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="s-cirurgia" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="s-cirurgia" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+      </div>
+      <textarea id="s-cirurgia-obs" class="campo-textarea" rows="2" placeholder="Se sim, descreva qual cirurgia ou hospitalização e quando ocorreu..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">6.</span> Faz algum acompanhamento médico regular (endocrinologista, neurologista, etc.)?</div>
+      <textarea id="s-acomp" class="campo-textarea" rows="2" placeholder="Informe especialidades acompanhadas e frequência das consultas..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(1)">← Anterior</button>
+    <span class="nav-progress">3 de 8</span>
+    <button class="nav-btn" onclick="irPara(3)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     04 — SAÚDE MENTAL E EMOCIONAL
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-3">
+  <div class="sec-eyebrow">Seção 04</div>
+  <div class="sec-title">Saúde Mental e Emocional</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Estado Emocional</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Como você se sente emocionalmente no dia a dia?</div>
+      <textarea id="e-estadoatual" class="campo-textarea" rows="3" placeholder="Descreva como está seu estado emocional de forma geral — humor, energia, bem-estar..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Já sentiu alguma dificuldade para lidar com situações de estresse ou pressão?</div>
+      <textarea id="e-estresse" class="campo-textarea" rows="3" placeholder="Descreva como reage a situações de pressão, como enfrenta o estresse..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Tem histórico de dificuldades emocionais na infância ou adolescência?</div>
+      <textarea id="e-infancia" class="campo-textarea" rows="3" placeholder="Descreva dificuldades emocionais vividas na infância ou adolescência — como se sentiu, o que ocorreu..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Já teve alguma experiência de trauma que acredita ser relevante para sua condição atual?</div>
+      <textarea id="e-trauma" class="campo-textarea" rows="3" placeholder="Compartilhe o que se sentir confortável em relatar — situações de perda, violência, abandono, bullying..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(2)">← Anterior</button>
+    <span class="nav-progress">4 de 8</span>
+    <button class="nav-btn" onclick="irPara(4)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     05 — HISTÓRICO DE APRENDIZAGEM
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-4">
+  <div class="sec-eyebrow">Seção 05</div>
+  <div class="sec-title">Histórico de Aprendizagem</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Trajetória Escolar</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Como foi sua experiência escolar? Teve alguma dificuldade em aprender?</div>
+      <textarea id="a-escolar" class="campo-textarea" rows="3" placeholder="Descreva sua trajetória escolar de forma geral — como era a escola, suas experiências, pontos fortes e dificuldades..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Havia algum comportamento ou sintoma durante a infância (dificuldade para ler, escrever, atenção etc.)?</div>
+      <textarea id="a-sintomas" class="campo-textarea" rows="3" placeholder="Descreva comportamentos ou dificuldades percebidas durante a infância e adolescência..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Você teve dificuldades de concentração ou foco durante a escola?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="a-concentracao" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="a-concentracao" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+        <label class="sn-opt"><input type="radio" name="a-concentracao" value="av"><span class="sn-circle"></span><span class="sn-text">Às vezes</span></label>
+      </div>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Com que idade você aprendeu a ler e escrever?</div>
+      <textarea id="a-leresc" class="campo-textarea" rows="2" placeholder="Informe a idade aproximada e como foi esse processo de alfabetização..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">5.</span> Teve alguma dificuldade específica em alguma área de aprendizagem — matemática, leitura ou escrita?</div>
+      <textarea id="a-area" class="campo-textarea" rows="2" placeholder="Informe quais áreas foram mais desafiadoras e como se manifestava a dificuldade..."></textarea>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Apoio e Acompanhamento</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">6.</span> Teve apoio familiar ou escolar durante sua trajetória educacional?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="a-apoio" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="a-apoio" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+        <label class="sn-opt"><input type="radio" name="a-apoio" value="av"><span class="sn-circle"></span><span class="sn-text">Parcialmente</span></label>
+      </div>
+      <textarea id="a-apoio-obs" class="campo-textarea" rows="2" placeholder="Descreva que tipo de apoio teve — familiar, reforço escolar, professores de apoio..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">7.</span> Participou de algum tipo de acompanhamento psicopedagógico ou terapêutico durante a infância/adolescência?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="a-acomp" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="a-acomp" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+      </div>
+      <textarea id="a-acomp-obs" class="campo-textarea" rows="2" placeholder="Descreva o tipo de acompanhamento, período e resultados percebidos..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(3)">← Anterior</button>
+    <span class="nav-progress">5 de 8</span>
+    <button class="nav-btn" onclick="irPara(5)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     06 — COGNITIVO & SOCIAL
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-5">
+  <div class="sec-eyebrow">Seção 06</div>
+  <div class="sec-title">Cognitivo &amp; Social</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Funcionamento Cognitivo e Habilidades</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Você tem dificuldades de memória? Se sim, como elas se manifestam?</div>
+      <textarea id="c-memoria" class="campo-textarea" rows="3" placeholder="Descreva se esquece compromissos, nomes, informações recentes, onde deixou objetos..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Tem facilidade ou dificuldade para organizar tarefas e atividades do dia a dia?</div>
+      <textarea id="c-organizar" class="campo-textarea" rows="2" placeholder="Descreva como lida com a organização das tarefas, prioridades, planejamento..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Como lida com o planejamento e execução de atividades complexas?</div>
+      <textarea id="c-planejamento" class="campo-textarea" rows="2" placeholder="Descreva como divide projetos em etapas, como conduz atividades mais elaboradas..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Você tem facilidade ou dificuldade em aprender novas habilidades ou adquirir novos conhecimentos?</div>
+      <textarea id="c-aprender" class="campo-textarea" rows="2" placeholder="Descreva como você aprende melhor, o que facilita ou dificulta a aquisição de novos conhecimentos..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">5.</span> Já teve algum episódio que envolvesse dificuldades de linguagem — dificuldade para se expressar ou entender o que os outros falam?</div>
+      <textarea id="c-linguagem" class="campo-textarea" rows="2" placeholder="Descreva situações em que a comunicação foi particularmente desafiadora..."></textarea>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Comportamentos e Habilidades Sociais</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Você tem dificuldades de interação social ou comunicação com outras pessoas?</div>
+      <textarea id="c-social" class="campo-textarea" rows="2" placeholder="Descreva como se sente em situações sociais, com estranhos, em grupos..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Como você lida com situações de grupo ou de trabalho em equipe?</div>
+      <textarea id="c-equipe" class="campo-textarea" rows="2" placeholder="Descreva sua experiência em trabalhos coletivos, como prefere liderar ou colaborar..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Você sente dificuldades em se expressar ou ser entendido(a) pelos outros?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="c-expressar" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="c-expressar" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+        <label class="sn-opt"><input type="radio" name="c-expressar" value="av"><span class="sn-circle"></span><span class="sn-text">Às vezes</span></label>
+      </div>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Possui alguma estratégia para lidar com o estresse no trabalho ou em casa?</div>
+      <textarea id="c-estrategia" class="campo-textarea" rows="2" placeholder="Descreva o que você faz para se acalmar, reorganizar ou se recuperar de situações difíceis..."></textarea>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(4)">← Anterior</button>
+    <span class="nav-progress">6 de 8</span>
+    <button class="nav-btn" onclick="irPara(6)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     07 — FUNÇÕES EXECUTIVAS & AMBIENTE
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-6">
+  <div class="sec-eyebrow">Seção 07</div>
+  <div class="sec-title">Funções Executivas &amp; Ambiente</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Avaliação das Funções Executivas</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Como você se organiza no dia a dia — rotina, compromissos, horários?</div>
+      <textarea id="fe-rotina" class="campo-textarea" rows="2" placeholder="Descreva como estrutura seu dia, usa agendas, lembretes, rotinas fixas..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Você tem dificuldades para tomar decisões ou se organizar para realizar tarefas?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="fe-decisao" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="fe-decisao" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+        <label class="sn-opt"><input type="radio" name="fe-decisao" value="av"><span class="sn-circle"></span><span class="sn-text">Às vezes</span></label>
+      </div>
+      <textarea id="fe-decisao-obs" class="campo-textarea" rows="2" placeholder="Descreva as situações em que a tomada de decisão é mais desafiadora..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Consegue manter o foco em uma tarefa até finalizá-la ou se distrai facilmente?</div>
+      <textarea id="fe-foco" class="campo-textarea" rows="2" placeholder="Descreva como é sua capacidade de sustentar atenção — o que distrai, quanto tempo consegue se concentrar..."></textarea>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Fatores Ambientais e Recursos</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Quais são os principais fatores que dificultam sua aprendizagem ou desempenho?</div>
+      <textarea id="fa-fatores" class="campo-textarea" rows="2" placeholder="Ex.: barulho, desorganização do ambiente, falta de motivação, distração por celular..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Como é o ambiente onde você estuda ou trabalha?</div>
+      <textarea id="fa-ambiente" class="campo-textarea" rows="2" placeholder="Descreva o espaço físico, as condições de concentração, se estuda em casa ou fora..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> Você tem acesso a recursos que facilitam sua aprendizagem — internet, livros, materiais didáticos, apoio de colegas?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="fa-recursos" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="fa-recursos" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+        <label class="sn-opt"><input type="radio" name="fa-recursos" value="par"><span class="sn-circle"></span><span class="sn-text">Parcialmente</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(5)">← Anterior</button>
+    <span class="nav-progress">7 de 8</span>
+    <button class="nav-btn" onclick="irPara(7)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     08 — RELATÓRIO
+══════════════════════════════════ -->
+<div class="section-panel" id="panel-7">
+  <div class="sec-eyebrow">Seção 08</div>
+  <div class="sec-title">Relatório</div>
+  <hr class="sec-divider">
+
+  <div class="bloco">
+    <div class="bloco-title">Objetivos e Expectativas</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Quais são seus objetivos a curto e longo prazo — área profissional e pessoal?</div>
+      <textarea id="o-objetivos" class="campo-textarea" rows="3" placeholder="Descreva o que deseja alcançar nos próximos meses e no longo prazo..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Como você gostaria de melhorar sua aprendizagem ou suas habilidades no dia a dia?</div>
+      <textarea id="o-melhorar" class="campo-textarea" rows="2" placeholder="Descreva as habilidades que deseja desenvolver, o que quer aprender a fazer melhor..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">3.</span> O que você espera do acompanhamento psicopedagógico?</div>
+      <textarea id="o-expectativa" class="campo-textarea" rows="2" placeholder="Descreva o que espera ganhar com o processo — mudanças, descobertas, estratégias..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">4.</span> Você tem estratégias que usa para lidar com suas dificuldades de aprendizagem? Se sim, quais são?</div>
+      <textarea id="o-estrategias" class="campo-textarea" rows="2" placeholder="Descreva recursos ou estratégias que já utiliza para compensar suas dificuldades..."></textarea>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <div class="bloco-title">Outras Informações Relevantes</div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">1.</span> Há mais alguma coisa que você acredita ser importante para que eu saiba?</div>
+      <textarea id="o-outras" class="campo-textarea" rows="3" placeholder="Espaço livre para o(a) avaliado(a) compartilhar o que julgar relevante..."></textarea>
+    </div>
+    <div class="q-item">
+      <div class="q-texto"><span class="q-num">2.</span> Você já fez algum teste psicológico, neuropsicológico ou psicopedagógico anteriormente? Se sim, quais foram os resultados?</div>
+      <div class="sn-wrap">
+        <span class="sn-label">Resposta:</span>
+        <label class="sn-opt"><input type="radio" name="o-testes" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
+        <label class="sn-opt"><input type="radio" name="o-testes" value="nao"><span class="sn-circle"></span><span class="sn-text">Não</span></label>
+      </div>
+      <textarea id="o-testes-obs" class="campo-textarea" rows="2" placeholder="Descreva quais testes foram realizados, quando e os principais resultados..."></textarea>
+    </div>
+  </div>
+
+  <!-- ESCALA AUTOCUIDADO -->
+  <div class="bloco">
+    <div class="bloco-title">Escala de Autocuidado &nbsp;<span style="font-size:10pt;font-weight:400;color:var(--cinza)">— De 0 a 10, como você avalia cada item?</span></div>
+    <p class="bloco-sub">Mova o controle deslizante para indicar sua nota em cada aspecto do autocuidado.</p>
+    <div class="escala-wrap">
+      <div class="escala-head"><span>Aspecto</span><span class="eh-right">Nota (0 – 10)</span></div>
+      <div class="escala-grid" id="escala-autocuidado"></div>
+    </div>
+  </div>
+
+  <!-- ESCALA FREQUÊNCIA DE PROBLEMAS -->
+  <div class="bloco">
+    <div class="bloco-title">Frequência de Comportamentos &nbsp;<span style="font-size:10pt;font-weight:400;color:var(--cinza)">— Com que frequência (0 = nunca · 10 = sempre)?</span></div>
+    <p class="bloco-sub">Indique com qual frequência você enfrenta cada situação.</p>
+    <div class="escala-wrap">
+      <div class="escala-head"><span>Situação</span><span class="eh-right">Frequência (0 – 10)</span></div>
+      <div class="escala-grid" id="escala-problemas"></div>
+    </div>
+  </div>
+
+  <!-- OBSERVAÇÕES FINAIS -->
+  <div class="bloco">
+    <div class="bloco-title">Observações Finais da Profissional</div>
+    <p class="bloco-sub">Impressões clínicas, hipóteses iniciais e observações durante a entrevista.</p>
+    <textarea id="obs-finais" class="campo-textarea" rows="8" placeholder="Registre aqui suas observações clínicas, hipóteses diagnósticas iniciais e impressões sobre o(a) avaliado(a) durante a entrevista..."></textarea>
+  </div>
+
+  <button class="gerar-btn" onclick="gerarAnalise()">+ Gerar Análise Narrativa</button>
+
+  <div id="sec-analise">
+    <div class="analise-header-box">
+      <h3>ANÁLISE NARRATIVA</h3>
+      <p>Gerada automaticamente a partir das respostas &nbsp;·&nbsp; Clique no texto para editar antes de imprimir</p>
+    </div>
+    <div id="analise-output" contenteditable="true" spellcheck="true"></div>
+    <div class="analise-btns">
+      <button class="nav-btn" id="btn-copiar" onclick="copiarAnalise()">Copiar texto</button>
+      <button class="nav-btn" onclick="window.print()">Imprimir / PDF</button>
+      <button class="nav-btn ghost" onclick="gerarAnalise()">↺ Regenerar</button>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="nav-btn ghost" onclick="irPara(6)">← Anterior</button>
+    <span class="nav-progress">8 de 8</span>
+    <button class="nav-btn hidden">Próximo →</button>
+  </div>
+</div>
+
+</div><!-- /app-body -->
+
+<script>
+/* ═══════════════════════════════════════════
+   DADOS DAS ESCALAS
+═══════════════════════════════════════════ */
+var AUTOCUIDADO = [
+  'Procuro me manter sempre limpo(a)',
+  'Procuro me manter sempre cheiroso(a)',
+  'Faço com frequência academia/esporte',
+  'Me preocupo em me vestir bem',
+  'Tenho uma boa alimentação',
+  'Procuro dormir bem',
+  'Faço as coisas que gosto em primeiro lugar',
+  'Cuido da minha vida escolar — estudo diariamente',
+  'Mantenho conversas frequentes com quem convivo',
+  'Procuro organizar minha rotina e compromissos diariamente',
+  'Sempre que tenho problemas, solicito ajuda',
+  'Sei lidar com perdas e frustrações',
+  'Costumo falar a verdade',
+  'Enfrento tarefas difíceis com responsabilidade e pontualidade'
+];
+
+var PROBLEMAS = [
+  'Explosão de raiva',
+  'Choro ou tristeza',
+  'Desânimo — vontade de ficar somente no quarto',
+  'Agressividade verbal ou física',
+  'Sentimento de abandono',
+  'Perdido(a) nas tarefas',
+  'Infeliz com a própria aparência',
+  'Sentimento de inferioridade em relação aos outros',
+  'Sem sono e agitado(a) durante a noite',
+  'Com medo e inseguro(a)',
+  'Esquece compromissos e tem problemas de memória',
+  'Desempenho ruim em trabalhos',
+  'Age por impulsividade, sem pensar',
+  'Adia compromissos ou tarefas difíceis',
+  'Deixa tudo para a última hora',
+  'Quebra ou estraga objetos'
+];
+
+/* Constrói as linhas das escalas */
+function buildEscala(containerId, itens, prefix){
+  var cont = document.getElementById(containerId);
+  itens.forEach(function(label, i){
+    var row = document.createElement('div');
+    row.className = 'escala-row';
+    row.innerHTML =
+      '<span class="escala-item">' + label + '</span>' +
+      '<div class="escala-ctrl">' +
+        '<input type="range" min="0" max="10" value="5" id="' + prefix + '_' + i + '" ' +
+               'oninput="document.getElementById(\'' + prefix + '_val_' + i + '\').textContent=this.value">' +
+        '<span class="escala-val" id="' + prefix + '_val_' + i + '">5</span>' +
+      '</div>';
+    cont.appendChild(row);
+  });
+}
+
+buildEscala('escala-autocuidado', AUTOCUIDADO, 'ac');
+buildEscala('escala-problemas',   PROBLEMAS,   'pr');
+
+/* ═══════════════════════════════════════════
+   NAVEGAÇÃO
+═══════════════════════════════════════════ */
+var secaoAtual = 0;
+function irPara(n){
+  document.getElementById('panel-' + secaoAtual).classList.remove('active');
+  document.querySelectorAll('.tab-btn')[secaoAtual].classList.remove('active');
+  secaoAtual = n;
+  document.getElementById('panel-' + n).classList.add('active');
+  document.querySelectorAll('.tab-btn')[n].classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function confirmarLimpar(){
+  if(confirm('Limpar todos os campos? Esta ação não pode ser desfeita.')){
+    document.querySelectorAll('input[type="text"],textarea').forEach(function(el){ el.value=''; });
+    document.querySelectorAll('input[type="radio"]:checked').forEach(function(el){ el.checked=false; });
+    document.querySelectorAll('input[type="range"]').forEach(function(el){
+      el.value = 5;
+      var idx = el.id.replace(/[a-z_]+/,'').replace(/_$/,'');
+      var valEl = document.getElementById(el.id.replace('ac_','ac_val_').replace('pr_','pr_val_'));
+      if(valEl) valEl.textContent = '5';
+    });
+    document.getElementById('analise-output').innerHTML = '';
+    document.getElementById('sec-analise').style.display = 'none';
+  }
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+function v(id){ var e=document.getElementById(id); return e ? e.value.trim() : ''; }
+function radio(name){ var e=document.querySelector('input[name="'+name+'"]:checked'); return e ? e.value : null; }
+function escVal(prefix, i){ var e=document.getElementById(prefix+'_'+i); return e ? parseInt(e.value) : 5; }
+
+function ep(s){ s=(s||'').trim(); if(!s)return ''; if(!/[.!?]$/.test(s))s+='.'; return s; }
+function cap(s){ s=(s||'').trim(); if(!s)return ''; return s.charAt(0).toUpperCase()+s.slice(1); }
+function min(s){ s=(s||'').trim(); if(!s)return ''; return s.charAt(0).toLowerCase()+s.slice(1); }
+function semPonto(s){ return (s||'').trim().replace(/[.,!?]+$/,''); }
+function isNao(s){
+  if(!s) return true;
+  var t=s.toLowerCase().trim().replace(/[.!?,\s]+$/,'');
+  return ['não','nao','n','nenhum','nenhuma','não se aplica','não possui','não tem','sem'].indexOf(t)>=0;
+}
+function isSim(s){ if(!s)return false; var t=s.toLowerCase().trim().replace(/[.!?,\s]+$/,''); return t==='sim'||t==='s'; }
+function isGenerico(s){
+  if(!s) return true;
+  var t=s.toLowerCase().trim().replace(/[.!?,\s]+$/,'');
+  return ['normal','bom','boa','bem','ok','tranquilo','tranquila','adequado','adequada','regular'].indexOf(t)>=0;
+}
+function semPrefixo(s){ return (s||'').replace(/^(sim|não|nao)[,.:]\s*/i,'').trim(); }
+function integrar(base, txt){
+  base=semPonto(base).trim(); txt=(txt||'').trim();
+  if(!txt) return base;
+  if(txt.charAt(0)===txt.charAt(0).toLowerCase()&&/^[a-záàâãéêíóôõúüç]/i.test(txt)) return base+', '+txt;
+  return ep(base)+' '+cap(txt);
+}
+function frase(txt){
+  if(!txt||isNao(txt)||isSim(txt)) return '';
+  txt=semPrefixo(txt).trim();
+  if(!txt) return '';
+  return ep(cap(txt));
+}
+function p(txt){ txt=(txt||'').trim(); if(!txt)return ''; return '<p>'+txt+'</p>'; }
+function paragrafo(arr){ var f=arr.filter(function(x){return x&&x.trim();}); if(!f.length)return ''; return p(f.join(' ')); }
+
+/* Média de um bloco da escala */
+function mediaEscala(prefix, total){
+  var soma=0;
+  for(var i=0;i<total;i++) soma+=escVal(prefix,i);
+  return (soma/total).toFixed(1);
+}
+
+/* Itens acima de limiar */
+function itensAltos(prefix, labels, limiar){
+  var res=[];
+  labels.forEach(function(l,i){ if(escVal(prefix,i)>=limiar) res.push(l.toLowerCase()); });
+  return res;
+}
+function itensBaixos(prefix, labels, limiar){
+  var res=[];
+  labels.forEach(function(l,i){ if(escVal(prefix,i)<=limiar) res.push(l.toLowerCase()); });
+  return res;
+}
+
+/* ═══════════════════════════════════════════
+   GERAR ANÁLISE NARRATIVA
+═══════════════════════════════════════════ */
+function gerarAnalise(){
+  var nome       = v('id-nome');
+  var dataN      = v('id-datanasc');
+  var estcivil   = v('id-estcivil');
+  var profissao  = v('id-profissao');
+  var escolar    = v('id-escolaridade');
+  var dataV      = v('id-dataval');
+  var q6         = v('q6');
+  var q7         = v('q7');
+
+  var queixa     = v('queixa');
+  var qDesde     = v('q-desde');
+  var qImpacto   = v('q-impacto');
+
+  var sDiag      = v('s-diagnostico');
+  var sMed       = v('s-medicacao');
+  var sPsic      = v('s-psicologico');
+  var sTrat      = v('s-tratamento');
+  var sAcomp     = v('s-acomp');
+
+  var eEstado    = v('e-estadoatual');
+  var eEstresse  = v('e-estresse');
+  var eInfancia  = v('e-infancia');
+  var eTrauma    = v('e-trauma');
+
+  var aEscolar   = v('a-escolar');
+  var aSintomas  = v('a-sintomas');
+  var aConc      = radio('a-concentracao');
+  var aLerEsc    = v('a-leresc');
+  var aArea      = v('a-area');
+  var aApoio     = radio('a-apoio');
+  var aApoioObs  = v('a-apoio-obs');
+  var aAcompR    = radio('a-acomp');
+  var aAcompObs  = v('a-acomp-obs');
+
+  var cMem       = v('c-memoria');
+  var cOrg       = v('c-organizar');
+  var cPlan      = v('c-planejamento');
+  var cApr       = v('c-aprender');
+  var cLing      = v('c-linguagem');
+  var cSocial    = v('c-social');
+  var cEquipe    = v('c-equipe');
+  var cExp       = radio('c-expressar');
+  var cEstr      = v('c-estrategia');
+
+  var feRotina   = v('fe-rotina');
+  var feDecR     = radio('fe-decisao');
+  var feDecObs   = v('fe-decisao-obs');
+  var feFoco     = v('fe-foco');
+  var faFatores  = v('fa-fatores');
+  var faAmb      = v('fa-ambiente');
+
+  var oObj       = v('o-objetivos');
+  var oMelh      = v('o-melhorar');
+  var oExp       = v('o-expectativa');
+  var oEstr      = v('o-estrategias');
+  var oOutras    = v('o-outras');
+  var oTestesObs = v('o-testes-obs');
+  var oTestesR   = radio('o-testes');
+  var obs        = v('obs-finais');
+
+  var ref  = nome ? nome.split(' ')[0] : 'o(a) avaliado(a)';
+  var Ref  = cap(ref);
+
+  var html = '';
+
+  /* META */
+  var meta='';
+  if(dataV) meta+='Data: <strong>'+dataV+'</strong>';
+  if(nome)  meta+=(meta?' &nbsp;&middot;&nbsp; ':'')+' Avaliado(a): <strong>'+nome+'</strong>';
+  if(dataN) meta+=' &nbsp;&middot;&nbsp; Nascimento: '+dataN;
+  if(meta)  html+='<p class="meta">'+meta+'</p>';
+
+  /* ══ §1 IDENTIFICAÇÃO ══ */
+  var ab = nome ? '<strong>'+nome+'</strong>' : 'O(a) avaliado(a)';
+  if(dataN)     ab += ', nascido(a) em '+dataN+',';
+  if(estcivil && !isNao(estcivil)) ab += ' '+min(estcivil)+',';
+  if(profissao && !isNao(profissao)){
+    ab += ' com ocupação atual como <strong>'+min(profissao)+'</strong>';
+  }
+  if(escolar && !isNao(escolar)){
+    ab = ep(ab);
+    ab += ' Sua trajetória de escolarização inclui: '+min(semPrefixo(escolar))+'.';
+  } else {
+    ab = ep(ab);
+  }
+  if(q7 && !isNao(q7)){
+    var q7t = semPrefixo(q7).trim();
+    ab += ' '+ep(cap(q7t));
+  }
+  if(q6 && !isNao(q6)){
+    var q6t = semPrefixo(q6).trim();
+    if(q6t.charAt(0)===q6t.charAt(0).toLowerCase()){
+      ab += ' Quanto ao histórico de moradia, registra-se: '+q6t+'.';
+    } else {
+      ab += ' '+ep(q6t);
+    }
+  }
+  html += p(ab);
+
+  /* ══ §2 QUEIXA PRINCIPAL ══ */
+  if(queixa && !isNao(queixa)){
+    var qArr = [];
+    var qLimpa = semPrefixo(queixa).trim();
+    qArr.push(Ref+' apresenta como <strong>queixa principal</strong>: <em>&ldquo;'+cap(qLimpa)+'&rdquo;</em>.');
+    if(qDesde && !isNao(qDesde)){
+      var qdL = semPrefixo(qDesde).trim();
+      if(/^desde|^há|^a partir/i.test(qdL)){
+        qArr.push(ep('Essa dificuldade é percebida '+min(qdL)));
+      } else {
+        qArr.push(ep('A dificuldade tem início relatado '+min(qdL)));
+      }
+    }
+    if(qImpacto && !isNao(qImpacto)){
+      var qiL = semPrefixo(qImpacto).trim();
+      qArr.push(ep('No que se refere ao impacto cotidiano, '+min(qiL)));
+    }
+    html += paragrafo(qArr);
+  }
+
+  /* ══ §3 SAÚDE GERAL ══ */
+  var sArr = [];
+  var sIntro = 'No que se refere à <strong>saúde geral</strong>,';
+  if(sDiag && !isNao(sDiag)){
+    var sdL = sDiag.trim();
+    if(/^n[ãa]o\b/i.test(sdL)){
+      var sdR = semPrefixo(sdL).trim();
+      sArr.push(sIntro+' não há registro de diagnóstico médico formal.');
+      if(sdR && !isNao(sdR)) sArr.push(frase(sdR));
+    } else if(sdL.length > 40 || /\b(está|foi|aguarda|realiza|possui|tem)\b/i.test(sdL)){
+      sArr.push(sIntro+' '+min(sdL)+(!/[.!?]$/.test(sdL)?'.':''));
+    } else {
+      sArr.push(sIntro+' há registro de diagnóstico de <strong>'+sdL+'</strong>.');
+    }
+  } else {
+    sArr.push(sIntro+' não foram identificadas condições clínicas formalmente diagnosticadas até o momento.');
+  }
+  if(isNao(sMed)||!sMed){
+    sArr.push(Ref+' não faz uso de medicação.');
+  } else if(!isSim(sMed)){
+    sArr.push(Ref+' faz uso de <strong>'+semPrefixo(sMed)+'</strong>.');
+  }
+  if(sPsic && !isNao(sPsic)){
+    var spL = semPrefixo(sPsic).trim();
+    if(spL.charAt(0)===spL.charAt(0).toLowerCase()){
+      sArr.push(ep('No campo da saúde mental, há histórico de '+spL));
+    } else {
+      sArr.push(frase(spL));
+    }
+  }
+  if(sTrat && !isNao(sTrat) && !isSim(sTrat)){
+    sArr.push(frase(semPrefixo(sTrat)));
+  }
+  if(sAcomp && !isNao(sAcomp) && !isGenerico(sAcomp)){
+    sArr.push(frase(semPrefixo(sAcomp)));
+  }
+  html += paragrafo(sArr);
+
+  /* ══ §4 SAÚDE MENTAL E EMOCIONAL ══ */
+  var eArr = [];
+  if(eEstado && !isNao(eEstado) && !isGenerico(eEstado)){
+    var eeL = semPrefixo(eEstado).trim();
+    if(eeL.charAt(0)===eeL.charAt(0).toLowerCase()){
+      eArr.push(ep('Do ponto de vista <strong>emocional</strong>, '+ref+' relata sentir-se '+eeL));
+    } else {
+      eArr.push(ep('Do ponto de vista <strong>emocional</strong>:'));
+      eArr.push(frase(eeL));
+    }
+  } else {
+    eArr.push('Do ponto de vista <strong>emocional</strong>, o estado geral será aprofundado ao longo do processo avaliativo.');
+  }
+  if(eEstresse && !isNao(eEstresse)){
+    var esL = semPrefixo(eEstresse).trim();
+    if(esL.charAt(0)===esL.charAt(0).toLowerCase()){
+      eArr.push(ep('Diante de situações de estresse ou pressão, '+ref+' '+esL));
+    } else {
+      eArr.push(frase(esL));
+    }
+  }
+  if(eInfancia && !isNao(eInfancia) && !isGenerico(eInfancia)){
+    eArr.push(ep('Quanto ao histórico emocional na infância e adolescência: '+min(semPrefixo(eInfancia))));
+  }
+  if(eTrauma && !isNao(eTrauma) && !isGenerico(eTrauma)){
+    eArr.push(ep('São relatadas experiências de vida possivelmente traumáticas: '+min(semPrefixo(eTrauma))));
+  }
+  html += paragrafo(eArr);
+
+  /* ══ §5 HISTÓRICO DE APRENDIZAGEM ══ */
+  var hArr = [];
+  var hIntro = 'No que diz respeito ao <strong>histórico de aprendizagem</strong>';
+  if(aEscolar && !isNao(aEscolar)){
+    var aeL = semPrefixo(aEscolar).trim();
+    if(aeL.charAt(0)===aeL.charAt(0).toLowerCase()){
+      hArr.push(ep(hIntro+', '+aeL));
+    } else {
+      hArr.push(ep(hIntro+':'));
+      hArr.push(frase(aeL));
+    }
+  } else {
+    hArr.push(ep(hIntro+', a trajetória escolar será melhor explorada ao longo do processo'));
+  }
+  if(aSintomas && !isNao(aSintomas)){
+    var asL = semPrefixo(aSintomas).trim();
+    hArr.push(ep('Na infância e adolescência, foram observados os seguintes comportamentos ou sintomas: '+min(asL)));
+  }
+  if(aConc==='sim'){
+    hArr.push('São relatadas dificuldades de concentração e foco ao longo da vida escolar.');
+  } else if(aConc==='av'){
+    hArr.push('As dificuldades de concentração e foco se manifestaram de forma intermitente durante a vida escolar.');
+  }
+  if(aArea && !isNao(aArea)){
+    var aaL = semPrefixo(aArea).trim();
+    if(aaL.charAt(0)===aaL.charAt(0).toLowerCase()){
+      hArr.push(ep('Houve dificuldade específica em '+aaL));
+    } else {
+      hArr.push(frase(aaL));
+    }
+  }
+  if(aApoio==='sim'&&aApoioObs&&!isNao(aApoioObs)){
+    hArr.push(ep('Contou com apoio familiar e/ou escolar: '+min(semPrefixo(aApoioObs))));
+  } else if(aApoio==='nao'){
+    hArr.push(Ref+' não contou com apoio formal ao longo da trajetória educacional.');
+  }
+  if(aAcompR==='sim'&&aAcompObs&&!isNao(aAcompObs)){
+    hArr.push(ep('Realizou acompanhamento psicopedagógico ou terapêutico na infância/adolescência: '+min(semPrefixo(aAcompObs))));
+  } else if(aAcompR==='nao'){
+    hArr.push('Não houve acompanhamento psicopedagógico ou terapêutico na infância e adolescência.');
+  }
+  html += paragrafo(hArr);
+
+  /* ══ §6 COGNITIVO E SOCIAL ══ */
+  var cArr = [];
+  var cIntro = 'No que se refere ao <strong>funcionamento cognitivo</strong>';
+  var cPartes = [];
+  if(cMem && !isNao(cMem) && !isGenerico(cMem)){
+    cPartes.push('dificuldades de memória: '+min(semPrefixo(cMem)));
+  }
+  if(cOrg && !isNao(cOrg) && !isGenerico(cOrg)){
+    cPartes.push('em relação à organização de tarefas: '+min(semPrefixo(cOrg)));
+  }
+  if(cPlan && !isNao(cPlan) && !isGenerico(cPlan)){
+    cPartes.push('quanto ao planejamento e execução de atividades complexas: '+min(semPrefixo(cPlan)));
+  }
+  if(cApr && !isNao(cApr) && !isGenerico(cApr)){
+    cPartes.push('quanto à aquisição de novos conhecimentos: '+min(semPrefixo(cApr)));
+  }
+  if(cLing && !isNao(cLing)){
+    cPartes.push('quanto a episódios de dificuldades de linguagem: '+min(semPrefixo(cLing)));
+  }
+  if(cPartes.length){
+    cArr.push(ep(cIntro+', destacam-se: '+cPartes.join('; ')));
+  } else {
+    cArr.push(ep(cIntro+', o perfil será aprofundado por meio dos instrumentos avaliativos'));
+  }
+
+  /* Social */
+  var socArr2 = [];
+  if(cSocial && !isNao(cSocial)){
+    var csL = semPrefixo(cSocial).trim();
+    if(csL.charAt(0)===csL.charAt(0).toLowerCase()){
+      socArr2.push(ep('No <strong>aspecto social</strong>, '+ref+' '+csL));
+    } else {
+      socArr2.push(ep('No <strong>aspecto social</strong>:'));
+      socArr2.push(frase(csL));
+    }
+  }
+  if(cEquipe && !isNao(cEquipe) && !isGenerico(cEquipe)){
+    socArr2.push(frase(semPrefixo(cEquipe)));
+  }
+  if(cExp==='sim'){
+    socArr2.push('Há relato de dificuldade em se expressar ou ser compreendido(a) pelos outros.');
+  }
+  if(cEstr && !isNao(cEstr) && !isGenerico(cEstr)){
+    socArr2.push(ep('Como estratégia de enfrentamento ao estresse, '+ref+' '+min(semPrefixo(cEstr))));
+  }
+
+  html += paragrafo(cArr.concat(socArr2));
+
+  /* ══ §7 FUNÇÕES EXECUTIVAS ══ */
+  var feArr = [];
+  var feIntro = 'No que se refere às <strong>funções executivas</strong>';
+  var feParts = [];
+  if(feRotina && !isNao(feRotina) && !isGenerico(feRotina)){
+    feParts.push('quanto à organização da rotina: '+min(semPrefixo(feRotina)));
+  }
+  if(feDecR==='sim' && feDecObs && !isNao(feDecObs)){
+    feParts.push('apresenta dificuldades para tomar decisões: '+min(semPrefixo(feDecObs)));
+  } else if(feDecR==='sim'){
+    feParts.push('relata dificuldades para tomar decisões e organizar-se para realizar tarefas');
+  }
+  if(feFoco && !isNao(feFoco) && !isGenerico(feFoco)){
+    feParts.push('em relação à sustentação do foco: '+min(semPrefixo(feFoco)));
+  }
+  if(feParts.length){
+    feArr.push(ep(feIntro+', destacam-se: '+feParts.join('; ')));
+  } else {
+    feArr.push(ep(feIntro+', o desempenho será investigado por meio dos instrumentos avaliativos'));
+  }
+  if(faFatores && !isNao(faFatores) && !isGenerico(faFatores)){
+    feArr.push(ep('Os principais fatores que dificultam o desempenho são: '+min(semPrefixo(faFatores))));
+  }
+  if(faAmb && !isNao(faAmb) && !isGenerico(faAmb)){
+    var faL = semPrefixo(faAmb).trim();
+    feArr.push(ep('O ambiente de estudo/trabalho é descrito como: '+min(faL)));
+  }
+  html += paragrafo(feArr);
+
+  /* ══ §8 ESCALAS ══ */
+  var mediaAC = parseFloat(mediaEscala('ac', AUTOCUIDADO.length));
+  var mediaPR = parseFloat(mediaEscala('pr', PROBLEMAS.length));
+
+  var acBaixos = itensBaixos('ac', AUTOCUIDADO, 4);   /* autocuidado com nota ≤4 = fragilidade */
+  var prAltos  = itensAltos('pr',  PROBLEMAS,   7);   /* problemas com frequência ≥7 = relevante */
+
+  var escArr2 = [];
+  /* Autocuidado */
+  var acFrase = 'No que se refere ao <strong>autocuidado</strong>, a média geral indicada pelo(a) avaliado(a) é de <strong>'+mediaAC.toFixed(1)+'</strong> pontos.';
+  if(acBaixos.length){
+    acFrase += ' Os aspectos com menor investimento pessoal incluem: '+acBaixos.join(', ')+', sinalizando áreas que merecem atenção no processo de acompanhamento.';
+  } else {
+    acFrase += ' O perfil de autocuidado mostra um conjunto equilibrado de hábitos.';
+  }
+  escArr2.push(acFrase);
+
+  /* Frequência de problemas */
+  var prFrase = 'Em relação à <strong>frequência de comportamentos desafiadores</strong>, a média apontada é de <strong>'+mediaPR.toFixed(1)+'</strong> pontos.';
+  if(prAltos.length){
+    prFrase += ' As situações relatadas com maior frequência são: '+prAltos.join(', ')+', o que sugere a necessidade de investigação aprofundada e intervenção direcionada.';
+  } else {
+    prFrase += ' Os comportamentos desafiadores se apresentam em frequência moderada ou baixa.';
+  }
+  escArr2.push(prFrase);
+
+  html += paragrafo(escArr2);
+
+  /* ══ §9 OBJETIVOS ══ */
+  var oArr = [];
+  if(oObj && !isNao(oObj)){
+    var ooL = semPrefixo(oObj).trim();
+    if(ooL.charAt(0)===ooL.charAt(0).toLowerCase()){
+      oArr.push(ep('Em relação a <strong>objetivos e expectativas</strong>, '+ref+' busca '+ooL));
+    } else {
+      oArr.push(ep('Em relação a <strong>objetivos e expectativas</strong>:'));
+      oArr.push(frase(ooL));
+    }
+  }
+  if(oExp && !isNao(oExp)){
+    var oeL = semPrefixo(oExp).trim();
+    if(oeL.charAt(0)===oeL.charAt(0).toLowerCase()){
+      oArr.push(ep('Do acompanhamento psicopedagógico, espera-se que '+oeL));
+    } else {
+      oArr.push(frase(oeL));
+    }
+  }
+  if(oEstr && !isNao(oEstr) && !isGenerico(oEstr)){
+    oArr.push(ep('Como estratégias já utilizadas para lidar com as dificuldades: '+min(semPrefixo(oEstr))));
+  }
+  if(oTestesR==='sim' && oTestesObs && !isNao(oTestesObs)){
+    oArr.push(ep('Quanto a avaliações anteriores: '+min(semPrefixo(oTestesObs))));
+  } else if(oTestesR==='nao'){
+    oArr.push('Não há registro de avaliações psicológicas, neuropsicológicas ou psicopedagógicas anteriores.');
+  }
+  if(oOutras && !isNao(oOutras)){
+    oArr.push(frase(semPrefixo(oOutras)));
+  }
+  if(oArr.length) html += paragrafo(oArr);
+
+  /* ══ §10 OBSERVAÇÕES ══ */
+  if(obs && !isNao(obs)){
+    html += p('<strong>Observações da profissional:</strong> '+cap(semPrefixo(obs)));
+  }
+
+  /* ══ SÍNTESE ══ */
+  var sint = 'As informações coletadas nesta anamnese constituem a base para o planejamento do processo de avaliação psicopedagógica de <strong>'+(nome||'o(a) avaliado(a)')+'</strong>. Os dados registrados deverão ser articulados com os instrumentos avaliativos aplicados e as observações clínicas ao longo do processo, visando à compreensão integral do perfil de aprendizagem e ao delineamento de intervenções adequadas às necessidades e potencialidades apresentadas.';
+  html += '<div class="sintese">'+sint+'</div>';
+
+  var saida = document.getElementById('analise-output');
+  saida.innerHTML = html;
+  document.getElementById('sec-analise').style.display = 'block';
+  document.getElementById('sec-analise').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* COPIAR */
+function copiarAnalise(){
+  var el=document.getElementById('analise-output');
+  var txt=el.innerText||el.textContent||'';
+  navigator.clipboard.writeText(txt).then(function(){
+    var btn=document.getElementById('btn-copiar');
+    btn.textContent='Copiado!';
+    setTimeout(function(){ btn.textContent='Copiar texto'; },2000);
+  }).catch(function(){
+    var sel=window.getSelection();
+    var range=document.createRange();
+    range.selectNodeContents(el);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+  });
+}
+</script>
+</body>
+</html>
