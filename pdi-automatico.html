@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano Interventivo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --p:#3D1A06;--s:#C9A227;--acc:#F5EDE0;
+  --a-bg:#D5F5E3;--a-fg:#1A7A3E;
+  --n-bg:#FEF9E7;--n-fg:#7D6608;
+  --i-bg:#FDEDEC;--i-fg:#C0392B;
+  --z-bg:#F4F4F4;--z-fg:#888;
+  --bdr:#DDD;--txt:#212121;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F0E8DC;color:var(--txt);min-height:100vh}
+#wrap{max-width:900px;margin:0 auto;padding:24px 18px}
+.hdr{background:#3D1A06;color:#fff;padding:22px 30px;border-radius:14px;margin-bottom:22px;display:flex;align-items:center;gap:16px;box-shadow:0 6px 24px rgba(61,26,6,.32)}
+.hdr-ic{font-size:2.6rem;line-height:1;flex-shrink:0}
+.hdr h1{font-size:1.35rem;font-weight:700;letter-spacing:.3px}
+.steps{display:flex;align-items:center;gap:6px;margin-bottom:20px}
+.stp{display:flex;align-items:center;gap:8px}
+.stp-n{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;transition:.25s}
+.stp-l{font-size:.82rem;font-weight:600;white-space:nowrap;transition:.25s}
+.stp.active .stp-n{background:var(--s);color:#fff}
+.stp.done .stp-n{background:#27AE60;color:#fff}
+.stp.pend .stp-n{background:#CCC;color:#888}
+.stp.active .stp-l{color:var(--s)}
+.stp.done .stp-l{color:#27AE60}
+.stp.pend .stp-l{color:#999}
+.sdiv{flex:1;height:2px;background:#CCC;min-width:14px;transition:.25s}
+.sdiv.done{background:#27AE60}
+.card{background:#fff;border-radius:12px;padding:26px;box-shadow:0 2px 14px rgba(0,0,0,.07);margin-bottom:18px}
+/* Upload */
+.upz{border:2.5px dashed var(--s);border-radius:10px;padding:40px 24px;text-align:center;cursor:pointer;transition:.2s}
+.upz:hover,.upz.drag{background:var(--acc);border-color:var(--p)}
+.upz-ic{font-size:2.8rem;margin-bottom:10px;display:block}
+.upz h3{color:var(--p);font-size:1rem;margin-bottom:6px}
+.upz p{color:#888;font-size:.85rem}
+.upz input{display:none}
+.fbadge{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--acc);border-radius:8px;margin-top:12px;border:1px solid #D4B896}
+.fbadge .fb-ic{font-size:1.6rem}
+.fbadge .fb-name{font-weight:700;color:var(--p);font-size:.9rem;margin-bottom:1px}
+.fbadge .fb-sz{font-size:.76rem;color:#888}
+/* Frequência */
+.freq-box{margin-top:18px;padding:16px 20px;background:#FAF5EE;border:1.5px solid #D4B896;border-radius:10px}
+.freq-box label{display:block;font-size:.82rem;font-weight:700;color:var(--p);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+.freq-grid{display:flex;flex-wrap:wrap;gap:8px}
+.freq-opt{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:.85rem;background:#fff;transition:.15s;font-weight:600;color:#555}
+.freq-opt:hover{border-color:var(--s);background:var(--acc)}
+.freq-opt.sel{border-color:var(--p);background:var(--acc);color:var(--p)}
+.freq-opt input{display:none}
+/* Loading */
+.ldg-box{border-radius:10px;background:linear-gradient(135deg,var(--acc),#fff);padding:26px 22px;text-align:center;border:1px solid #D4B896;margin-top:14px}
+.ldg-spin{width:42px;height:42px;border:4px solid #D4B896;border-top-color:var(--s);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+.ldg-title{color:var(--p);font-weight:700;font-size:.95rem;margin-bottom:4px}
+.ldg-sub{color:#888;font-size:.82rem;margin-bottom:14px}
+.ldg-steps{display:flex;flex-direction:column;gap:5px;text-align:left;max-width:290px;margin:0 auto}
+.ldg-step{display:flex;align-items:center;gap:7px;font-size:.81rem}
+.ldg-step.done-s{color:#27AE60}.ldg-step.curr-s{color:var(--s);font-weight:600}.ldg-step.wait-s{color:#CCC}
+.ldg-step .ic{width:14px;text-align:center;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Alerts */
+.alrt{padding:11px 15px;border-radius:8px;font-size:.86rem;margin-bottom:14px;line-height:1.5}
+.alrt-err{background:#FDEDEC;border-left:4px solid #E74C3C;color:#C0392B}
+/* Buttons */
+.btn{padding:11px 22px;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;border:none;transition:.16s;display:inline-flex;align-items:center;gap:7px;line-height:1}
+.btn-p{background:var(--s);color:#fff}.btn-p:hover{background:#a8841e}
+.btn-g{background:#27AE60;color:#fff}.btn-g:hover{background:#219A52}
+.btn-gr{background:#eee;color:#555;border:1px solid #ddd}.btn-gr:hover{background:#e0e0e0}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+/* Preview */
+.pvbox{border:1px solid var(--bdr);border-radius:9px;background:#fafafa;padding:20px;max-height:640px;overflow:auto}
+/* ─── PDI DOCUMENT STYLES ─── */
+.pdi{font-family:Arial,Helvetica,sans-serif;font-size:9.5pt;color:#1a1a1a;max-width:760px;margin:0 auto}
+.pdi-banner{background:#3D1A06;color:#fff;padding:18px 22px}
+.pdi-banner h1{font-size:13pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.pdi-banner p{font-size:8pt;opacity:.9}
+.pdi-it{width:100%;border-collapse:collapse;border:1px solid #CCC;margin-bottom:0}
+.pdi-it td{padding:5px 9px;border:1px solid #CCC;font-size:8.5pt;vertical-align:top}
+.pdi-it .lb{font-weight:700;background:#F5EDE0;color:#3D1A06;white-space:nowrap;width:22%}
+.pdi-sec{background:#3D1A06;color:#fff;padding:7px 13px;font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:13px}
+.pdi-area{background:#C9A227;color:#fff;padding:6px 13px;font-size:9pt;font-weight:700;margin-top:6px}
+.pdi-skill-hdr{background:#FAF5EE;padding:5px 10px;font-size:8.5pt;font-weight:700;color:#3D1A06;border:1px solid #CCC;border-bottom:none}
+.pdi-meta-tbl{width:100%;border-collapse:collapse;margin-bottom:0}
+.pdi-meta-tbl th{background:#F5EDE0;padding:5px 8px;text-align:left;font-size:7.5pt;color:#3D1A06;border:1px solid #CCC;font-weight:700;text-transform:uppercase;letter-spacing:.2px}
+.pdi-meta-tbl td{padding:5px 8px;border:1px solid #CCC;font-size:8pt;vertical-align:top;line-height:1.45}
+.pdi-meta-tbl td.col-meta{width:83%}
+.pdi-meta-tbl td.col-prazo{width:17%;text-align:center;font-weight:700;color:#3D1A06}
+.pdi-sess{background:#FEF9EE;padding:5px 8px;font-size:7.5pt;border:1px solid #CCC;border-top:none;line-height:1.6;color:#555}
+.pdi-sess strong{color:#7D6608}
+.ca{background:#D5F5E3;color:#1A7A3E;font-weight:700}
+.cn{background:#FEF9E7;color:#7D6608;font-weight:700}
+.ci{background:#FDEDEC;color:#C0392B;font-weight:700}
+.cz{background:#F4F4F4;color:#888;font-weight:700}
+.pdi-sint-tbl{width:100%;border-collapse:collapse}
+.pdi-sint-tbl th{background:#F5EDE0;padding:5px 8px;text-align:left;font-size:7.5pt;color:#3D1A06;border:1px solid #CCC;font-weight:700}
+.pdi-sint-tbl td{padding:4px 8px;border:1px solid #CCC;font-size:8pt;vertical-align:top}
+.pdi-sint-tbl td.sn{font-weight:700}
+.pdi-leg{margin:12px 0;padding:8px 12px;border:1px solid #CCC;font-size:7.5pt;line-height:2}
+.pdi-foot{margin-top:32px;padding-top:14px;border-top:2px solid #3D1A06;text-align:center;font-size:7.5pt;color:#666}
+.pdi-sigs{display:flex;justify-content:center;gap:70px;margin-top:18px}
+.pdi-sig{text-align:center}
+.pdi-sl{border-top:1px solid #333;width:175px;margin:0 auto 5px;padding-top:5px}
+.pb{page-break-before:always}
+@media print{body{background:#fff}#wrap{display:none}#prtArea{display:block!important}}
+#prtArea{display:none}
+@media(max-width:600px){.freq-grid{flex-direction:column}.hdr{flex-direction:column;text-align:center}.steps{display:none}}
+</style>
+</head>
+<body>
+<div id="prtArea"></div>
+<div id="wrap">
+
+  <div class="hdr">
+    <div class="hdr-ic">🧠</div>
+    <div><h1>Plano Interventivo</h1></div>
+  </div>
+
+  <div class="steps">
+    <div class="stp active" id="si1"><div class="stp-n">1</div><div class="stp-l">Enviar Laudo</div></div>
+    <div class="sdiv" id="d12"></div>
+    <div class="stp pend" id="si2"><div class="stp-n">2</div><div class="stp-l">PDI Pronto</div></div>
+  </div>
+
+  <!-- PASSO 1 -->
+  <div id="step1">
+    <div class="card">
+      <div id="alrt1"></div>
+
+      <div class="freq-box">
+        <label>📅 Frequência de atendimento</label>
+        <div class="freq-grid" id="freqGrid">
+          <label class="freq-opt" onclick="selFreq(this,2)"><input type="radio" name="freq" value="2">Quinzenal <span style="color:#aaa;font-weight:400">(2 sessões/mês)</span></label>
+          <label class="freq-opt sel" onclick="selFreq(this,4)"><input type="radio" name="freq" value="4" checked>1x por semana <span style="color:#aaa;font-weight:400">(4 sessões/mês)</span></label>
+          <label class="freq-opt" onclick="selFreq(this,8)"><input type="radio" name="freq" value="8">2x por semana <span style="color:#aaa;font-weight:400">(8 sessões/mês)</span></label>
+          <label class="freq-opt" onclick="selFreq(this,12)"><input type="radio" name="freq" value="12">3x por semana <span style="color:#aaa;font-weight:400">(12 sessões/mês)</span></label>
+        </div>
+      </div>
+
+      <div class="upz" id="upz" style="margin-top:16px" onclick="document.getElementById('fi').click()">
+        <span class="upz-ic">📄</span>
+        <h3>Arraste o laudo aqui ou clique para selecionar</h3>
+        <p>Formatos aceitos: <strong>.docx</strong> · <strong>.pdf</strong> · <strong>.txt</strong></p>
+        <input type="file" id="fi" accept=".docx,.pdf,.txt" onchange="onFile(this.files[0])">
+      </div>
+      <div id="fbadge" style="display:none"></div>
+
+      <div id="btnGerar" style="display:none;margin-top:16px">
+        <button class="btn btn-p" style="width:100%;justify-content:center;padding:14px;font-size:1rem" onclick="startAnalysis()">▶ Gerar PDI</button>
+      </div>
+
+      <div id="ldgBox" style="display:none">
+        <div class="ldg-box">
+          <div class="ldg-spin"></div>
+          <div class="ldg-title" id="ldgTitle">Gerando PDI…</div>
+          <div class="ldg-sub" id="ldgSub">Aguarde.</div>
+          <div class="ldg-steps">
+            <div class="ldg-step" id="ls1"><span class="ic">⏳</span>Extraindo texto do arquivo</div>
+            <div class="ldg-step wait-s" id="ls2"><span class="ic">•</span>Identificando dados do paciente</div>
+            <div class="ldg-step wait-s" id="ls3"><span class="ic">•</span>Classificando habilidades</div>
+            <div class="ldg-step wait-s" id="ls4"><span class="ic">•</span>Gerando metas por sessão</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados ocultos -->
+  <div style="display:none">
+    <input id="fn"><input id="fi2"><input id="fse"><input id="fes">
+    <input id="ftu"><input id="fre"><input id="fdi"><input id="fqu"><input id="fen">
+    <input id="fpr"><input id="fdt"><div id="skSec"></div>
+  </div>
+
+  <!-- PASSO 2 -->
+  <div id="step2" style="display:none">
+    <div class="card">
+      <h2 style="color:var(--p);margin-bottom:6px;font-size:1.1rem">✅ PDI gerado com sucesso!</h2>
+      <p style="color:#666;font-size:.86rem;margin-bottom:4px" id="pdiSummary"></p>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="doPrint()">🖨️ Imprimir / Salvar PDF</button>
+        <button class="btn btn-g" onclick="doDL()">📥 Baixar Word (.doc)</button>
+        <button class="btn btn-gr" onclick="goStep(1)">🔄 Novo laudo</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="color:var(--p);font-size:.92rem;font-weight:700;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--acc);display:flex;align-items:center;gap:6px">👁 Pré-visualização</div>
+      <div class="pvbox" id="pvBox"></div>
+    </div>
+  </div>
+
+</div>
+<script>
+/* ══ ÁREAS E HABILIDADES ══ */
+const AREAS={
+  leitura:{label:'Leitura',icon:'📖',skills:['Reconhecimento do alfabeto','Decodificação de palavras simples (CV, CVC)','Decodificação de palavras complexas','Fluência leitora (velocidade, entonação, precisão)','Compreensão de palavras isoladas','Compreensão de frases','Reconto de textos e interpretação','Nomeação automática rápida (RAN)']},
+  escrita:{label:'Escrita',icon:'✍️',skills:['Escrita espontânea','Ditado de palavras simples','Ditado de palavras complexas','Sistema ortográfico','Segmentação de palavras e frases','Produção textual','Velocidade de escrita','Caligrafia','Orientação espacial na linha/folha']},
+  linguagem:{label:'Linguagem Oral',icon:'🗣️',skills:['Vocabulário expressivo','Nomeação de objetos','Compreensão de instruções simples','Compreensão de instruções complexas','Produção oral clara e coerente','Uso de pronomes, tempos verbais e coesão']},
+  consciencia:{label:'Consciência Fonológica',icon:'🔤',skills:['Rimas e aliterações','Segmentação e manipulação silábica','Segmentação e manipulação fonêmica','Consciência de palavras na frase','Discriminação fonológica']},
+  executivas:{label:'Funções Executivas e Atenção',icon:'🧠',skills:['Planejamento','Organização','Memória de curto prazo (visual e auditiva)','Memória de trabalho (visual e auditiva)','Controle inibitório (pensamentos e ações)','Flexibilidade cognitiva','Tomada de decisões','Atenção sustentada','Atenção seletiva','Atenção alternada e dividida','Velocidade de processamento']},
+  matematica:{label:'Matemática',icon:'🔢',skills:['Escrita por extenso','Leitura de números','Sequências numéricas (crescente e decrescente)','Quantificação','Composição e decomposição numérica','Estratégias de cálculo','Cálculos isolados (adição, subtração, multiplicação, divisão)','Resolução de problemas','Raciocínio lógico-matemático','Noções de grandeza e comparação','Noções temporais']},
+  motricidade:{label:'Motricidade',icon:'🏃',skills:['Coordenação motora global (correr, pular, chutar)','Coordenação motora fina (pega do lápis, recorte, encaixe)','Lateralidade','Esquema corporal','Percepção espacial / temporal']},
+  emocional:{label:'Aspectos Emocionais e Sociais',icon:'❤️',skills:['Autoestima','Insegurança em atividades escolares','Lida com frustrações','Motivação para atividades escolares','Compreensão de regras e instruções','Finalização de tarefas iniciadas','Resistência ou esquiva a demandas']}
+};
+
+/* ══ TEMPLATES DE METAS ESPECÍFICAS ══ */
+const GT={
+  'Atenção sustentada':{
+    meta_cp:'Manter foco em atividades estruturadas por 15 minutos consecutivos com no máximo 2 redirecionamentos',
+    est_cp:'Protocolo Pomodoro adaptado: blocos de 10→15 min de foco + pausa de 3→5 min (ampulheta visível na mesa). Tarefa estruturada: "Caixa de tarefas" com fichas numeradas — o paciente retira uma ficha por vez e devolve ao concluir. Lista de verificação visual afixado no espaço de trabalho com 3–5 etapas ilustradas. Cartão de autorregulação: "PARA → RESPIRA → FOCA". Atividades de aquecimento cognitivo: caça-palavras temático (3 min) ou labirinto antes de tarefas exigentes. Orientação à família: registro diário de tempo de foco em tarefa escolar (planilha simples). Ref.: Seabra & Dias (2012); Barkley (2015)',
+    crit_cp:'≥80% das sessões com ≤2 redirecionamentos durante 15 min (registro observacional da psicopedagoga)',
+    meta_lp:'Manter foco em atividades acadêmicas por 25 min com autonomia crescente em 80% das tentativas',
+    est_lp:'Progressão Pomodoro: 15→20→25 min com pausas; automonitoramento metacognitivo com ficha de autoanálise ("Consegui focar? O que me atrapalhou?"); generalização para sala de aula via orientação docente; protocolo de comunicação escola–família para monitoramento semanal.',
+    crit_lp:'80% das tentativas com foco sustentado de 25 min — observação em sessão + relato da professora ao semestre'
+  },
+  'Velocidade de processamento':{
+    meta_cp:'Reduzir em 20% o tempo de execução em tarefas de rastreamento visual sequencial em relação ao linha de base da 1ª sessão',
+    est_cp:'Protocolo de rastreamento visual graduado: tarefas de cancelamento de letras/números (folha A4 com 5 linhas, simples→complexo). Tarefa cronometrada: "Quanto tempo você leva hoje?" — registro gráfico na parede para o paciente visualizar sua evolução. Aquecimento cognitivo de 3–5 min (ex.: Stroop simplificado, trilhas de pontos). Jogo de velocidade perceptiva: cartas de memória com tempo cronometrado. Atividades de cópia rápida com feedback imediato. Ref.: Fonseca (2014); Trail Making Test A (Spreen & Strauss)',
+    crit_cp:'Redução ≥20% no tempo de execução ao fim do mês (registro cronometrado por sessão com gráfico de progresso)',
+    meta_lp:'Atingir velocidade de processamento dentro da média esperada para a série em reavaliação padronizada',
+    est_lp:'Treino progressivo de velocidade com aumento gradual da complexidade; generalização para cópia de texto, leitura oral cronometrada e resolução de operações; articulação com escola para adaptações (tempo extra quando necessário); reavaliação com Trilhas A.',
+    crit_lp:'Escore padronizado ≥85 no Teste de Trilhas A em reavaliação semestral'
+  },
+  'Planejamento':{
+    meta_cp:'Nomear pelo menos 3 passos antes de iniciar qualquer atividade em sessão, com apoio do organizador visual',
+    est_cp:'Protocolo "Antes de começar": cartão com 3 perguntas fixas ("O que vou fazer? Como vou fazer? O que preciso?") respondidas em voz alta antes de cada tarefa. Recurso: mapa de etapas (folha dividida em 3 colunas: Início / Meio / Fim) preenchido pelo paciente. Tarefa de planejamento concreto: montar um lanche, organizar uma mochila ou montar um jogo de encaixe seguindo roteiro. Modelagem pela psicopedagoga com pensamento em voz alta (think-aloud). Progressão: do planejamento verbal→escrito→autônomo. Ref.: Vygotsky (ZDP); Dawson & Guare (2010)',
+    crit_cp:'≥80% das atividades iniciadas com verbalização prévia dos 3 passos (registro por sessão)',
+    meta_lp:'Executar tarefas multi-etapas de forma autônoma, planejando antes de iniciar, em 80% das situações',
+    est_lp:'Organizador gráfico semanal (agenda de tarefas com colunas: Tarefa / Passos / Prazo); generalização para trabalhos escolares; protocolo de revisão com a família; retirada progressiva do suporte externo ao longo do semestre.',
+    crit_lp:'80% das tarefas escolares executadas com planejamento autônomo — relato positivo da professora ao semestre'
+  },
+  'Organização':{
+    meta_cp:'Concluir atividades dentro do tempo estimado, com cronômetro e divisão em etapas, em 75% das tentativas',
+    est_cp:'Recurso "Caixa do tempo": cronômetro visual (Cronômetro visual ou ampulheta) posicionado na frente do paciente. Tarefa em etapas: cada atividade dividida em cartões numerados; o paciente vira o cartão ao concluir cada etapa. Rotina de início de sessão: "mochila organizada em 2 minutos" com lista de verificação fixo. Jogo de organização: "Desafio da mesa" — organizar materiais em categorias em tempo determinado. Caderno de registro diário enviado para casa: 3 itens da mochila + 1 tarefa cumprida. Ref.: Dawson & Guare (2010); Barkley (2015)',
+    crit_cp:'75% das tarefas concluídas no tempo estimado (registro por sessão)',
+    meta_lp:'Organizar materiais e planejar etapas de tarefas com autonomia e mínima mediação',
+    est_lp:'Agenda visual semanal construída junto com o paciente; rotina matinal ilustrada afixada em casa; protocolo de lista de verificação de materiais escolares revisado com a família; redução progressiva da mediação (andaimento progressivo fading).',
+    crit_lp:'Redução observável da mediação necessária em sessão + relato positivo de família e professora ao semestre'
+  },
+  'Autoestima':{
+    meta_cp:'Iniciar tarefas desafiadoras sem verbalizações de recusa ou esquiva em 80% das tentativas',
+    est_cp:'Recurso "Portfólio de conquistas": pasta física onde o paciente arquiva produções de que se orgulha — revisada no início de cada sessão. Tarefa de gradação: atividades calibradas 10% abaixo do limiar de frustração, com aumento semanal de complexidade. Psicoeducação sobre perfil cognitivo: linguagem dos pontos fortes ("Você é bom em…"), adaptada à idade. Protocolo de mentalidade de crescimento (Dweck): substituir "não consigo" por "ainda não consigo — o que me ajudaria?". Reforço diferencial ao esforço, não ao resultado. Orientação familiar: roteiro de elogio específico ao esforço. Ref.: Dweck (2006); Hallowell & Ratey (2015)',
+    crit_cp:'Redução ≥50% nas verbalizações negativas em relação ao linha de base (registro observacional por sessão)',
+    meta_lp:'Demonstrar narrativa positiva sobre suas capacidades, aceitando desafios sem esquiva em 80% das situações',
+    est_lp:'Continuidade do portfólio; reestruturação cognitiva gradual com fichas de pensamento ("Pensei X → Posso pensar Y"); articulação com psicólogo para aprofundamento; revisão semestral do portfólio com a família.',
+    crit_lp:'Equilíbrio de verbalizações positivas/negativas em sessão + relato positivo da família ao semestre'
+  },
+  'Insegurança em atividades escolares':{
+    meta_cp:'Aceitar e iniciar tarefas desafiadoras sem resistência em 75% das tentativas',
+    est_cp:'Protocolo de exposição gradual: hierarquia de tarefas do mais fácil ao mais difícil, avançando 1 nível por sessão somente após sucesso consistente. Recurso "Termômetro de confiança": escala visual de 1 a 5; paciente avalia antes e após a tarefa — psicopedagoga explora a diferença. Tarefa ancora: sempre iniciar a sessão por algo que o paciente já domina para ativar o senso de competência. Psicoeducação sobre perfil: mapa de pontos fortes construído com o paciente. Protocolo de comunicação família-escola: informe quinzenal de avanços para reforçar narrativa positiva em casa. Ref.: Bandura (autoeficácia); Dweck (2006)',
+    crit_cp:'75% de iniciação de tarefas sem resistência (registro por sessão)',
+    meta_lp:'Demonstrar autoconfiança crescente, iniciando tarefas escolares com autonomia e sem suporte emocional constante',
+    est_lp:'Suporte emocional progressivo com retirada gradual com retirada sistemática; diário de conquistas semanal; parceria com psicólogo para aprofundamento; orientação docente para práticas de fortalecimento em sala.',
+    crit_lp:'Início autônomo em 80% das situações — relato da família e professora ao semestre'
+  },
+  'Lida com frustrações':{
+    meta_cp:'Utilizar estratégia de autorregulação (pausa + respiração) diante de 70% das situações frustrantes identificadas em sessão',
+    est_cp:'Recurso "Termômetro das emoções": escala visual de 5 níveis com cores (verde→vermelho); afixado na parede da sala. Protocolo de regulação em 3 passos: (1) Identificar o nível no termômetro; (2) Aplicar estratégia do nível (ex.: nível 3 = respiração 4-7-8; nível 4 = pausa de 2 min + água); (3) Retornar à tarefa. Ensino explícito de respiração diafragmática: 4 tempos inspira / 4 segura / 4 expira. Dramatização de situações frustrantes com análise reflexiva. Cartão de bolso com as estratégias para uso em casa e escola. Orientação familiar: como responder aos episódios sem reforçar a esquiva. Ref.: Gross (2015); Siegel & Bryson (2015)',
+    crit_cp:'Uso de estratégia em ≥70% das situações frustrantes identificadas (registro observacional)',
+    meta_lp:'Manejar frustrações com autonomia, sem episódios de explosividade, em 80% das situações',
+    est_lp:'Generalização das estratégias para casa e escola com treino in vivo; protocolo de comunicação família-escola para consistência; articulação com psicólogo para aprofundamento emocional; reavaliação do termômetro ao semestre.',
+    crit_lp:'Ausência de episódios de explosividade e uso autônomo de estratégia em 80% das situações — relato de pais e professora'
+  },
+  'Finalização de tarefas iniciadas':{
+    meta_cp:'Concluir ≥80% das atividades propostas em sessão, com lista de verificação e tarefas divididas em micro-etapas',
+    est_cp:'Recurso "Quadro de micro-tarefas": cada atividade quebrada em 3–5 micro-etapas escritas em post-its; paciente remove cada post-it ao concluir (reforço físico imediato). Timer de 10 min por bloco com sinal sonoro. Protocolo de reforço diferencial: elogio específico apenas ao finalizar ("Você terminou! Isso é o que importa"). Tarefa de conclusão obrigatória: cada sessão termina com uma produção concluída (desenho, texto, cálculo) para pasta do portfólio. Registro de tarefa iniciada vs. concluída em gráfico de barras semanal. Orientação para casa: "regra do 1 item" — concluir sempre pelo menos 1 tarefa por dia antes de qualquer atividade prazerosa. Ref.: Barkley (2015); Dawson & Guare (2010)',
+    crit_cp:'≥80% de tarefas iniciadas e concluídas por sessão (registro em tabela)',
+    meta_lp:'Executar tarefas multi-etapas com autonomia crescente e suporte mínimo em contextos variados',
+    est_lp:'Lista de verificação autônomo elaborado pelo próprio paciente; agenda semanal de tarefas escolares; redução progressiva do suporte ao longo do semestre; generalização para casa com orientação familiar.',
+    crit_lp:'80% de tarefas multi-etapas concluídas com autonomia em sessão + relato positivo de família e professora'
+  },
+  'Segmentação de palavras e frases':{
+    meta_cp:'Escrever frases de até 8 palavras sem hipossegmentação (junção indevida de palavras) em 70% das tentativas',
+    est_cp:'Protocolo de consciência de palavra: ditado reflexivo com pausa após cada palavra ("escreve — levanta o lápis — próxima palavra"). Recurso de fichas físicas: cada palavra da frase em uma ficha separada; paciente monta a frase e depois transcreve. Contagem gestual de palavras antes de escrever (bater palma a cada palavra da frase oral). Leitura apontada com dedo separando cada palavra no texto. Tarefa de análise de erro: paciente identifica e corrige hipossegmentações em textos com erros propositais. Caderno de erros com coluna "Errei assim / Correto é". Ref.: Moojen et al. — CONFIAS (2003); Capovilla & Seabra (2012)',
+    crit_cp:'≤30% de hipossegmentações em 5 frases ditadas por sessão (análise de escrita)',
+    meta_lp:'Eliminar hipossegmentação na escrita espontânea e em ditados de nível da série',
+    est_lp:'Ensino explícito e sistemático de fronteira de palavra; produção textual com revisão orientada; generalização para cópia e ditado escolar; protocolo de revisão em dupla em sala.',
+    crit_lp:'Ausência de hipossegmentação em amostra de escrita espontânea em reavaliação semestral'
+  },
+  'Sistema ortográfico':{
+    meta_cp:'Reduzir em 40% os erros de trocas fonológicas (ex.: b/d, p/q, f/v, s/z) no ditado reflexivo',
+    est_cp:'Protocolo Orton-Gillingham adaptado: ensino multissensorial (ver + ouvir + escrever + falar simultaneamente). Atividade de pares mínimos: cartelas com pares b/d, p/q — paciente distingue auditiva e visualmente antes de escrever. Tarefa "banco de palavras": lista semanal de 10 palavras com o erro característico do paciente; escrita, ilustração e uso em frase. Ditado reflexivo: psicopedagoga dita, paciente escreve, relê em voz alta e autocorrige antes da confirmação. Caderno de erros ortográficos: tabela (Palavra / Como escrevi / Como se escreve / Exemplo em frase). Tarefa de memória visual: fichas de memorização com as palavras de maior dificuldade. Ref.: Orton-Gillingham (1937/adapt.); Capovilla & Seabra (2012)',
+    crit_cp:'Redução ≥40% nos erros em ditado de 20 palavras em relação ao linha de base da 1ª sessão',
+    meta_lp:'Reduzir trocas fonológicas para <10% em ditado de 20 palavras do nível da série',
+    est_lp:'Ensino ortográfico explícito e sistemático por grupos de regras; método multissensorial contínuo; generalização para produção textual espontânea; análise qualitativa dos erros a cada sessão.',
+    crit_lp:'≥90% de acertos em ditado de 20 palavras em reavaliação semestral'
+  },
+  'Controle inibitório (pensamentos e ações)':{
+    meta_cp:'Aguardar a vez e controlar impulsos em 75% das situações de alta demanda cognitiva em sessão',
+    est_cp:'Protocolo "Para–Pensa–Age": cartão de mesa com as 3 etapas ilustradas; psicopedagoga solicita o cartão antes de tarefas desafiadoras. Tarefa de sinalização: paciente usa um cartão vermelho para "pausar" antes de responder impulsivamente. Jogo Stop! adaptado: paciente deve parar toda ação quando ouve um sinal, treina inibição motora e verbal. Dramatização com scripts: situações cotidianas de espera (fila, rodada do jogo) com ensaio comportamental e análise reflexiva. Automonitoramento: ficha de registro de "vezes que esperei" vs. "vezes que agi sem pensar". Orientação familiar: rotinas previsíveis reduzem demanda inibitória; antecipação verbal de regras antes de situações desafiadoras. Ref.: Barkley (2015); Diamond (2013)',
+    crit_cp:'Redução ≥40% nos episódios de impulsividade por sessão (registro observacional)',
+    meta_lp:'Demonstrar controle inibitório funcional de forma autônoma em contextos variados (sessão, escola, casa)',
+    est_lp:'Generalização das estratégias de pausa para contextos escolares e domésticos; protocolo de comunicação escola-família; parceria com psicólogo para aprofundamento; reavaliação semestral com instrumento de autorrelato.',
+    crit_lp:'Ausência de impulsividade inadequada em sessão + relato positivo de família e professora ao semestre'
+  },
+  'Compreensão de instruções complexas':{
+    meta_cp:'Executar comandos de 2 etapas de forma autônoma, sem repetição, em 75% das situações em sessão',
+    est_cp:'Protocolo de escuta ativa em 3 passos: (1) Olha para quem fala; (2) Repete internamente o comando; (3) Executa. Recurso pictográfico: sequências de instruções em cartões ilustrados (ex.: "pegue o lápis azul → sublinhe a palavra"). Tarefa de seguir instruções escritas com complexidade crescente (1→2→3 etapas). Jogo "Simon diz" adaptado com comandos de 2 etapas. Estratégia de autorrepetição em voz alta: "Vou repetir para mim: primeiro faço X, depois Y". Registro de acertos por sessão com gráfico visível para o paciente. Ref.: ASHA (2016); Seabra & Dias (2012)',
+    crit_cp:'75% de comandos de 2 etapas executados autonomamente por sessão (registro)',
+    meta_lp:'Executar comandos de 3+ etapas com autonomia e sem repetição em 80% das situações',
+    est_lp:'Progressão sistemática 1→2→3→4 etapas; generalização para instrução escolar com orientação docente; redução progressiva de suporte visual; protocolo de comunicação com família para consistência em casa.',
+    crit_lp:'80% de comandos multi-etapas executados autonomamente ao semestre'
+  },
+  'Composição e decomposição numérica':{
+    meta_cp:'Compor e decompor números até a centena utilizando material concreto em 75% das tentativas',
+    est_cp:'Protocolo CPA (Concreto → Pictórico → Abstrato — Bruner): Fase C: material dourado (cubinhos, barrinhas, plaquinhas); ábaco de argolas coloridas. Fase P: representação em desenho/grid antes do numeral. Fase A: numeral escrito apenas após domínio concreto. Tarefa "banco de troca": paciente troca 10 cubinhos por 1 barrinha, 10 barrinhas por 1 plaquinha. Jogo de composição com dados: dois dados de 10 faces — compõe o maior número possível. Ficha de registro: "Tenho ___ centenas, ___ dezenas, ___ unidades = ___". Ref.: Bruner (1966); Nunes & Bryant (1996)',
+    crit_cp:'75% de acertos em 10 situações de composição/decomposição com material concreto por sessão',
+    meta_lp:'Compor e decompor números com autonomia no nível da série, sem material concreto',
+    est_lp:'Progressão concreta→pictórica→abstrata; armamento de operações com compreensão posicional; generalização para problemas escritos; articulação com professora para uso do material em sala.',
+    crit_lp:'80% de acertos sem material concreto em situações de composição/decomposição em reavaliação'
+  },
+  'Resolução de problemas':{
+    meta_cp:'Identificar o que é pedido no problema e escolher a operação adequada em 70% das tentativas',
+    est_cp:'Protocolo de 4 etapas (Polya adaptado): (1) Leia e releia; (2) Sublinhe a pergunta e os dados; (3) Escolha a operação; (4) Resolva e confira. Tarefa de dramatização: o problema é encenado com objetos concretos antes do cálculo. Recurso de palavras-chave: cartela visual com termos operacionais (ao todo / sobrou / ganhou / perdeu → operação correspondente). Problema sem número: paciente primeiro decide qual operação usaria, depois resolve com valores inseridos. Jogo de criação: paciente cria um problema a partir de uma ilustração. Progressão: 1 operação → 2 operações → dados irrelevantes. Ref.: Polya (1945); Nunes & Bryant (1996)',
+    crit_cp:'70% de problemas com identificação correta da operação por sessão (registro)',
+    meta_lp:'Resolver problemas escritos com interpretação e execução autônoma em 80% das situações do nível da série',
+    est_lp:'Gradação de complexidade; generalização para problemas do livro didático; articulação com professora; protocolo de resolução afixado na agenda escolar.',
+    crit_lp:'80% de acertos em prova de resolução de problemas do nível da série em reavaliação semestral'
+  },
+  'Reconhecimento do alfabeto':{
+    meta_cp:'Nomear corretamente todas as letras do alfabeto (maiúsculas e minúsculas) em 90% das tentativas',
+    est_cp:'Protocolo multissensorial: letras em lixa (tátil), letras imantadas (visual-motor), canto do alfabeto com apontamento (auditivo). Tarefa de correspondência: associar letra maiúscula à minúscula com cartões duplos. Jogo de bingo de letras: psicopedagoga dita o nome, paciente marca na cartela. Dado de letras: paciente nomeia a letra que cair. Caligrafia de letras individuais com modelos pontilhados. Recurso: alfabeto ilustrado personalizado (cada letra associada a uma palavra/imagem significativa para o paciente). Ref.: Scliar-Cabral (2003); Método Fônico',
+    crit_cp:'≥90% de acertos na nomeação de letras em ordem aleatória (avaliação com fichas de memorização)',
+    meta_lp:'Reconhecer e nomear todas as letras com automatismo em leitura e escrita espontânea',
+    est_lp:'Automatização via leitura diária de alfabeto; integração em tarefas de leitura e escrita; generalização para outros contextos impressos (livros, rótulos, placas).',
+    crit_lp:'Nomeação automática de todas as letras em ≤1 segundo por letra em reavaliação'
+  },
+  'Decodificação de palavras simples (CV, CVC)':{
+    meta_cp:'Decodificar palavras simples (padrão CV e CVC) com precisão em 75% das tentativas de leitura oral',
+    est_cp:'Método fônico sistemático: ensino explícito da correspondência grafema-fonema, do simples ao complexo (C+V antes de encontros). Protocolo Orton-Gillingham: cartões de sílabas com cor diferente para consoante (azul) e vogal (vermelho); fusão sílaba a sílaba. Tarefa de leitura encadeada: listas de palavras CVC organizadas por família silábica. Jogo de dominó de sílabas: paciente encadeia sílabas para formar palavras. Leitura oral cronometrada: 20 palavras simples — registra tempo e erros. Caderno de palavras novas: 5 palavras por sessão, ilustradas e lidas no início da sessão seguinte. Ref.: Capovilla & Seabra (2012); RAVE-O Program',
+    crit_cp:'75% de palavras simples lidas com precisão em leitura oral por sessão',
+    meta_lp:'Decodificar palavras simples com automatismo e fluência no nível da série',
+    est_lp:'Leitura oral diária cronometrada; progressão para palavras complexas; leitura em eco (psicopedagoga lê primeiro); generalização para textos do nível da série.',
+    crit_lp:'90% de precisão em leitura oral de palavras simples + fluência dentro da norma para a série em reavaliação'
+  },
+  'Fluência leitora (velocidade, entonação, precisão)':{
+    meta_cp:'Ler um texto curto do nível da série com precisão ≥85% e entonação mínima (pausas em pontuação)',
+    est_cp:'Protocolo de leitura repetida (Samuels, 1979): mesmo texto lido 3 vezes na sessão — registra tempo e erros a cada leitura, paciente vê a melhora no gráfico. Leitura em eco: psicopedagoga lê uma frase, paciente repete com a mesma entonação. Leitura em coro: leitura simultânea com suporte. Teatro de leitores: textos em forma de diálogo para leitura com entonação. Fita de leitura: paciente grava sua leitura e ouve para autoavaliação. Marcador de texto para identificar pontuação antes de ler. Ref.: Rasinski (2010); Protocolo DIBELS',
+    crit_cp:'≥85% de precisão e pausas em 100% das pontuações em leitura oral de texto curto (avaliação em sessão)',
+    meta_lp:'Atingir fluência leitora (precisão, velocidade e prosódia) dentro da norma esperada para a série',
+    est_lp:'Leitura oral diária em casa (5 min) com registro de progresso; progressão de textos por complexidade; generalização para leitura em voz alta em sala; reavaliação com protocolo de fluência.',
+    crit_lp:'Velocidade e precisão dentro da norma para a série em reavaliação semestral (ex.: TDE, PROLEC-R)'
+  },
+  'Memória de trabalho (visual e auditiva)':{
+    meta_cp:'Reter e manipular sequências de 4 itens auditivos e 4 itens visuais em 70% das tentativas',
+    est_cp:'Protocolo de treino de memória de trabalho (Cogmed adaptado): tarefas de amplitude auditiva de memória crescente (repetição de sequências de dígitos, palavras, frases). Recurso visual: tarefa de localização em grade (onde estava o quadradinho vermelho?). Jogo de memória de sequência: Genius/Simon com feedback auditivo e visual. Estratégia de agrupamento: reunir informações em blocos de 2–3 para facilitar a retenção. Estratégia de repetição subvocal: "repito para mim enquanto faço". Correspondência sequencial: apresentar uma sequência e pedir o item de 2 posições antes. Orientação familiar: instruções orais em no máximo 2 etapas até consolidação. Ref.: Gathercole & Alloway (2008); Seabra & Dias (2012)',
+    crit_cp:'70% de acertos em tarefas de amplitude auditiva de memória (4 dígitos) e visual (4 posições) por sessão',
+    meta_lp:'Atingir desempenho de memória de trabalho dentro da norma para a faixa etária',
+    est_lp:'Treino progressivo com ampliação gradual da capacidade de memória de trabalho; generalização para seguir instruções escolares; estratégias metacognitivas de organização da informação.',
+    crit_lp:'Escore de memória de trabalho dentro da faixa média em reavaliação padronizada (ex.: WISC, NEPSY-II)'
+  },
+  'Rimas e aliterações':{
+    meta_cp:'Identificar e produzir rimas e aliterações com 80% de precisão em atividades estruturadas',
+    est_cp:'Protocolo CONFIAS (Moojen et al., 2003): tarefas de identificação de rima (qual palavra rima com "bola"?) e produção (fale uma palavra que rime com "sol"). Jogo de rima com baralho ilustrado: paciente une pares de imagens que rimam. Tarefa de aliteração: "qual começa com o mesmo som de PATO?" — usando imagens. Criação de quadrinhas simples com rimas: psicopedagoga inicia, paciente completa. Trabalho com músicas e trava-línguas. Ref.: Moojen et al. — CONFIAS (2003); Stackhouse & Wells (1997)',
+    crit_cp:'80% de acertos em tarefas de identificação e produção de rimas/aliterações (registro por sessão)',
+    meta_lp:'Dominar rimas e aliterações como base para consciência fonológica aplicada à leitura e escrita',
+    est_lp:'Integração com tarefas de leitura e escrita; progressão para segmentação silábica e fonêmica; generalização para jogos de linguagem em casa.',
+    crit_lp:'90% de acertos em subtestes de rima e aliteração do CONFIAS em reavaliação'
+  },
+  'Segmentação e manipulação silábica':{
+    meta_cp:'Segmentar e manipular sílabas (inversão, exclusão, adição) em 75% das tentativas',
+    est_cp:'Protocolo CONFIAS — nível silábico: tarefas de segmentação (bater palma por sílaba), inversão (fale "pato" de trás para frente = "to-pa"), exclusão (fale "mesa" sem "me" = "sa") e adição (acrescente "bo" antes de "la" = "bola"). Material concreto: fichas de sílabas coloridas que o paciente manipula fisicamente. Tarefa de trem de sílabas: montar palavras encadeando cartões silábicos. Jogo de cruzadinha silábica. Ref.: Moojen et al. — CONFIAS (2003); Capovilla & Seabra (2012)',
+    crit_cp:'75% de acertos em tarefas de segmentação e manipulação silábica por sessão',
+    meta_lp:'Dominar manipulação silábica como base para segmentação fonêmica e decodificação',
+    est_lp:'Progressão para nível fonêmico; integração com leitura de palavras; generalização para escrita espontânea.',
+    crit_lp:'Escore no nível silábico do CONFIAS dentro da norma para a série em reavaliação'
+  },
+  'Raciocínio lógico-matemático':{
+    meta_cp:'Identificar padrões e relações lógicas em sequências e classificações em 70% das tentativas',
+    est_cp:'Protocolo de raciocínio indutivo: sequências de formas, cores e números — paciente identifica a regra e completa. Material: blocos lógicos de Dienes (classificação por cor, forma, tamanho). Tarefas de analogia visual simples (A está para B como C está para ?). Jogo de Sudoku numérico adaptado (4x4). Tarefa de seriação: ordenar objetos por tamanho, peso estimado, valor. Resolução de enigmas matemáticos simples com orientação socrática (perguntas em vez de explicações diretas). Ref.: Piaget (operações concretas); Raven (2000)',
+    crit_cp:'70% de acertos em tarefas de padrão, classificação e analogia por sessão',
+    meta_lp:'Demonstrar raciocínio lógico-matemático funcional no nível da série',
+    est_lp:'Progressão de raciocínio concreto para abstrato; generalização para problemas escolares; articulação com professora.',
+    crit_lp:'Desempenho dentro da norma em tarefas de raciocínio em reavaliação semestral'
+  }
+};
+
+/* ══ ANÁLISE LOCAL ══ */
+function norm(t){return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s%,.]/g,' ');}
+
+function extractPercentil(ctx){
+  const m=ctx.match(/percentil\s*[=:]?\s*(\d+(?:[.,]\d+)?)|pc\s*(\d+)|p(\d+)\b/i);
+  if(m)return parseFloat((m[1]||m[2]||m[3]).replace(',','.'));
+  return null;
+}
+function clsByPercentil(p){
+  if(p===null)return null;
+  if(p>=26)return 'Assimilado';
+  if(p>=10)return 'Necessita de aprimoramento';
+  return 'Necessita de intervenção';
+}
+const POS_KW=['adequado','adequada','preservado','preservada','dentro do esperado','dentro da media','acima da media','mediano','bom desempenho','sem dificuldades','sem dificuldade','consolidado','consolidada','dentro da norma','superior','muito bom','competente','fluente','eficaz','satisfatorio','satisfatoria','desenvolvimento tipico','tipico','sem alteracoes','sem alteracao','resultado medio superior'];
+const INT_KW=['deficit','deficitario','deficitaria','muito abaixo','muito baixo','muito baixa','abaixo do esperado','abaixo da media','comprometido','comprometida','nao consolidado','nao consolidada','lentificacao significativa','lentificado','lentificada','dificuldade significativa','dificuldades significativas','grave','severo','severa','nao realiza','nao consegue','necessita de intervencao','prioritaria','prioridade de intervencao','ausente','baixissimo','baixissima','inferior ao esperado','resultado muito baixo'];
+const APR_KW=['em processo','em desenvolvimento','necessita de aprimoramento','necessita aprimoramento','alerta','abaixo do esperado para a idade','abaixo para a idade','ligeiramente abaixo','limitado','limitada','fraco','fraca','necessita apoio','necessita de apoio','com dificuldade','com dificuldades','incipiente','emergente','parcialmente consolidado','nivel de alerta','nivel alerta','resultado abaixo','resultado baixo','baixo'];
+const AREA_KW={
+  leitura:['leitura','decodificacao','fluencia leitora','compreensao leitora','leitura oral','reconhecimento de letras','alfabeto','nomeacao','ran','rapid','reconto','interpretacao'],
+  escrita:['escrita','ditado','ortografia','caligrafia','producao textual','texto escrito','copia','escrita espontanea','segmentacao','hipossegmentacao','hipersegmentacao','trocas ortograficas','erros ortograficos'],
+  linguagem:['linguagem oral','vocabulario','nomeacao','instrucoes','compreensao auditiva','expressao oral','fala','producao oral','pronuncia','articulacao'],
+  consciencia:['consciencia fonologica','rimas','aliteracoes','silabas','fonemas','manipulacao silabica','manipulacao fonemica','discriminacao fonologica','prova de consciencia'],
+  executivas:['funcoes executivas','atencao','memoria de trabalho','memoria operacional','controle inibitorio','planejamento','organizacao','flexibilidade cognitiva','velocidade de processamento','tomada de decisao','memoria de curto prazo','wisc','neat','stroop','trilhas','d2','snap','conners'],
+  matematica:['matematica','numeros','calculo','operacoes','resolucao de problemas','raciocinio logico','raciocinio matematico','quantificacao','numeracia','composicao numerica','decomposicao numerica','sequencias numericas'],
+  motricidade:['motricidade','coordenacao motora','lateralidade','esquema corporal','percepcao espacial','motricidade fina','motricidade grossa','pega do lapis','recorte'],
+  emocional:['autoestima','emocional','social','frustracao','relacionamento','familia','familiar','motivacao','comportamento','ansiedade','esquiva','resistencia','regras','impulsividade']
+};
+
+/* ── Extrai trecho real do documento como justificativa ── */
+function extractJustFromDoc(skillName,areaKey,origTxt,pc){
+  // Divide o texto original em sentenças preservando pontuação
+  const sents=origTxt
+    .replace(/\r\n|\r/g,' ').replace(/\n+/g,' ')
+    .split(/(?<=[.!?;])\s+/)
+    .map(s=>s.trim())
+    .filter(s=>s.length>18&&s.length<500);
+
+  const skWords=norm(skillName).split(/\s+/).filter(w=>w.length>3);
+  const aKws=(AREA_KW[areaKey]||[]).slice(0,7);
+  // Termos que indicam que a sentença é avaliativa (não genérica)
+  const evalTerms=['percentil','escore','desempenho','apresentou','demonstrou','obteve',
+    'realiza','nao realiza','nao consegue','dificuldade','deficit','abaixo','acima',
+    'dentro do esperado','pontuacao','resultado','comprometido','comprometida',
+    'inadequado','inadequada','apresenta','evidenciou','avaliado','avaliada',
+    'identificado','identificada','nivel','classificado','classificada'];
+
+  const scored=[];
+  for(const s of sents){
+    const sN=norm(s);
+    let score=0;
+    for(const w of skWords)if(sN.includes(w))score+=3;
+    for(const kw of aKws)if(sN.includes(kw))score+=2;
+    for(const t of evalTerms)if(sN.includes(t))score+=1;
+    if(score>=2)scored.push({s,score});
+  }
+  scored.sort((a,b)=>b.score-a.score);
+
+  if(scored.length>0){
+    let result=scored[0].s.trim();
+    // Se a sentença for curta, agrega a segunda melhor
+    if(result.length<130&&scored.length>1&&scored[1].score>=scored[0].score-1){
+      const s2=scored[1].s.trim();
+      if(!result.includes(s2.substring(0,20)))result+=' '+s2;
+    }
+    // Limita o tamanho
+    return result.length>300?result.substring(0,297)+'…':result;
+  }
+  // Fallback com percentil se disponível
+  if(pc!==null)return`Percentil ${pc} registrado no documento para esta habilidade.`;
+  return '';
+}
+
+function classifySkill(skillName,areaKey,txt){
+  const tNorm=norm(txt);
+  const skNorm=norm(skillName);
+  let ctx='';
+  const idx=tNorm.indexOf(skNorm.split(' ')[0]);
+  if(idx!==-1)ctx=tNorm.substring(Math.max(0,idx-80),Math.min(tNorm.length,idx+260));
+  const aKws=AREA_KW[areaKey]||[];
+  for(const kw of aKws){const ki=tNorm.indexOf(kw);if(ki!==-1)ctx+=' '+tNorm.substring(Math.max(0,ki-60),Math.min(tNorm.length,ki+220));}
+  if(!ctx)ctx=tNorm.substring(0,1800);
+  const pc=extractPercentil(ctx);
+  const pcCls=clsByPercentil(pc);
+  let posH=0,intH=0,aprH=0;
+  for(const kw of POS_KW)if(ctx.includes(kw))posH++;
+  for(const kw of INT_KW)if(ctx.includes(kw))intH++;
+  for(const kw of APR_KW)if(ctx.includes(kw))aprH++;
+  let cls=null;
+  if(pcCls){
+    cls=pcCls;
+  }else if(intH>aprH&&intH>posH){
+    cls='Necessita de intervenção';
+  }else if(aprH>posH){
+    cls='Necessita de aprimoramento';
+  }else if(posH>0){
+    cls='Assimilado';
+  }
+  // Justificativa extraída diretamente do documento
+  let just=extractJustFromDoc(skillName,areaKey,txt,pc);
+  // Se não encontrou trecho específico, gera fallback descritivo
+  if(!just){
+    if(cls==='Necessita de intervenção')just='Documento indica comprometimento ou dificuldade significativa nesta habilidade.';
+    else if(cls==='Necessita de aprimoramento')just='Documento aponta desempenho abaixo do esperado para a faixa etária/série.';
+    else if(cls==='Assimilado')just='Documento indica desempenho preservado ou dentro do esperado nesta habilidade.';
+    else just='Habilidade não avaliada diretamente no documento.';
+  }
+  return{cls,just};
+}
+
+function extractIdent(txt){
+  const id={nome:'',idade:'',serie:'',escola:'',turno:'',responsavel:'',profissional:''};
+  const nPs=[/(?:nome\s*[:\-]\s*)([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,5})/i,/(?:paciente\s*[:\-]\s*)([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,5})/i,/(?:avaliando\s*[:\-]\s*)([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,5})/i];
+  for(const p of nPs){const m=txt.match(p);if(m&&m[1].length>3){id.nome=m[1].trim();break;}}
+  const iM=txt.match(/(\d{1,2})\s*anos?|idade\s*[:\-]?\s*(\d{1,2})/i);if(iM)id.idade=(iM[1]||iM[2])+' anos';
+  const sM=txt.match(/(\d+[ºª°]?\s*(?:ano|serie|série|turma)(?:\s+do\s+\w+)?)/i);if(sM)id.serie=sM[1].trim();
+  const eM=txt.match(/(?:escola|colégio|institui[çc][ãa]o)\s*[:\-]\s*([^\n,\.]{3,60})/i);if(eM)id.escola=eM[1].trim();
+  const tM=txt.match(/(?:turno\s*[:\-]\s*)?(matutino|vespertino|noturno|integral)/i);if(tM)id.turno=tM[1];
+  const rM=txt.match(/(?:responsável|mãe|pai)\s*[:\-]\s*([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,4})/i);if(rM)id.responsavel=rM[1].trim();
+  const prPs=[/(?:psicopedagoga?|terapeuta|avaliadora?|profissional\s+responsável?|responsável\s+técnico)\s*[:\-]\s*([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,5})/i,/(?:elaborado\s+por|realizado\s+por|emitido\s+por)\s*[:\-]?\s*([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][a-záàâãéêíóôõúç]+){1,5})/i];
+  for(const p of prPs){const m=txt.match(p);if(m&&m[1].length>3){id.profissional=m[1].trim();break;}}
+  return id;
+}
+
+function extractClinico(txt){
+  const cl={diagnostico:'',queixas:'',encaminhamentos:''};
+  const dM=txt.match(/(?:diagnóstico|hipótese diagnóstica|CID|DSM)\s*[:\-]?\s*([^\n]{5,200})/i);if(dM)cl.diagnostico=dM[1].trim();
+  const cidM=txt.match(/(F\d{2}(?:\.\d+)?|Z\d{2}(?:\.\d+)?)/g);if(cidM)cl.diagnostico=(cl.diagnostico?cl.diagnostico+' ':'')+cidM.join(', ');
+  const qM=txt.match(/(?:queixa[s]?\s*(?:principal[is]?)?\s*[:\-]|motivo(?:\s+de\s+consulta)?\s*[:\-])([^]*?)(?:\n\s*\n|\n[A-Z])/i);if(qM)cl.queixas=qM[1].trim().substring(0,300);
+  const encM=txt.match(/(?:encaminhamento[s]?|terapia[s]?|acompanhamento[s]?)\s*[:\-]\s*([^\n]{5,200})/i);if(encM)cl.encaminhamentos=encM[1].trim();
+  return cl;
+}
+
+function analyzeLaudo(txt){
+  const ident=extractIdent(txt);
+  const clinico=extractClinico(txt);
+  const sintese={};
+  Object.entries(AREAS).forEach(([k,a])=>{
+    sintese[k]=a.skills.map(sk=>{
+      const{cls,just}=classifySkill(sk,k,txt);
+      return[sk,cls||'[Não avaliado]',just||''];
+    });
+  });
+  return{identificacao:ident,clinico,sintese};
+}
+
+/* ══ SESSÕES POR MÊS ══ */
+let numSessoes=4;
+function selFreq(el,n){
+  numSessoes=n;
+  document.querySelectorAll('.freq-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+/* ══ FAIXA ETÁRIA ══ */
+function getAgeBand(idStr){
+  const m=(idStr||'').match(/(\d+)/);
+  const age=m?parseInt(m[1]):9;
+  if(age<=7)return{b:'p',faixa:'Pequena infância (5–7 anos)',age};
+  if(age<=10)return{b:'m',faixa:'Infância média (8–10 anos)',age};
+  if(age<=13)return{b:'g',faixa:'Pré-adolescência (11–13 anos)',age};
+  return{b:'a',faixa:'Adolescência (14+ anos)',age};
+}
+
+/* ══ ATIVIDADES POR FAIXA ETÁRIA (p=5-7 · m=8-10 · g=11-13 · a=14+) ══ */
+const AGEEX={
+'Atenção sustentada':{p:'bolhas de sabão; caça ao tesouro na sala; memória com 6–8 pares; colorir com ampulheta de 5 min',m:'caça-palavras temático; Dobble; construção com Lego por instrução; jogo Stop! cronometrado',g:'Sudoku 4×4; palavras cruzadas; leitura silenciosa com ficha de questões; sequências numéricas',a:'texto acadêmico com questões; xadrez; projeto autônomo de 20 min; simulação de prova cronometrada'},
+'Velocidade de processamento':{p:'cancelamento de figuras simples (estrelas, corações); trilha de pontos 1–10; memória com 8 pares',m:'cancelamento de letras; trilha numérica 1–25; cartas de memória cronometradas; Dobble',g:'Trilha A; Stroop adaptado; leitura oral cronometrada de lista de palavras; Rapidinho de cartas',a:'Trail Making A e B; cópia cronometrada de parágrafo; leitura oral cronometrada de texto'},
+'Planejamento':{p:'montar lanche em 3 passos; sequência de 4 figuras de história; organizar brinquedos por categoria',m:'quebra-cabeça com estratégia (bordas primeiro); planejar redação em 3 partes; organizar mochila com lista de verificação',g:'planejar projeto escolar em etapas; xadrez básico (pensar antes de mover); criar roteiro de apresentação',a:'projeto multi-etapas com prazo; planejar estudo para prova; mapa mental de organização de conteúdo'},
+'Organização':{p:'caixa de categorias com ilustrações; mochila com foto dos itens obrigatórios; calendário com adesivos',m:'agenda ilustrada semanal; lista de verificação de materiais escolares; fichas numeradas de etapas com cronômetro',g:'caderno de planejamento semanal; mapa de prioridades; estimativa de tempo por tarefa',a:'bullet journal simples; planner semanal com tempo estimado; organização de estudo por disciplina'},
+'Autoestima':{p:'caixa do "Eu consigo!"; livro personalizado "Sou bom em..."; fantoches para encenar superação',m:'portfólio de conquistas; cartas de pontos fortes; jogo cooperativo sem perdedor (Orchard, Pandemic Kids)',g:'diário de conquistas; projeto de fortalecimento pessoal; produção antes × depois para comparar',a:'diário de autoconhecimento; análise de competências; mapa de pontos fortes e desafios'},
+'Insegurança em atividades escolares':{p:'escada de dificuldade com adesivos de conquista; atividades com material colorido e lúdico; fantoches',m:'termômetro de confiança; hierarquia de tarefas ilustrada; jogo cooperativo sem perdedor',g:'escala de autoeficácia; portfólio de progressão; tarefas do nível escolar com suporte decrescente',a:'autoavaliação estruturada; exposição gradual a contextos acadêmicos reais; registro de superações'},
+'Lida com frustrações':{p:'bolinha antiestresse; dado das emoções; sopro de bolhas; termômetro das emoções com cores',m:'termômetro das emoções; dramatização com fantoches; Stop! como treino de espera; cartão de estratégias',g:'diário de regulação emocional; dramatização de situações escolares; análise de episódios com análise reflexiva',a:'automonitoramento emocional; técnica de mindfulness; análise de gatilhos e estratégias pessoais'},
+'Finalização de tarefas iniciadas':{p:'post-its coloridos de mini-tarefas; quadro magnético "fiz/vou fazer"; história em 4 quadrinhos para completar',m:'lista de verificação ilustrada; gráfico "iniciei × concluí"; caixa de micro-tarefas numeradas; cronômetro visual',g:'agenda de tarefas com status; Pomodoro com registro; planejamento de tempo por etapa',a:'técnica de organização por prioridades; planner com tempo estimado; automonitoramento de conclusão semanal'},
+'Segmentação de palavras e frases':{p:'fichas de palavras para montar frases; palmas por palavra; blocos com sílabas e letras',m:'fichas de palavras; ditado reflexivo com pausa e lápis levantado; leitura apontada; caderno de erros',g:'texto com erros propositais para encontrar e corrigir; produção com revisão orientada; ditado de frases longas',a:'revisão de produções próprias; análise contrastiva de erros; autocorreção sistemática'},
+'Sistema ortográfico':{p:'letras em lixa; alfabeto móvel; bingo de palavras simples; caderno de palavras ilustradas',m:'banco de 10 palavras semanais; fichas de memorização de memorização visual; Stop ortográfico; ditado reflexivo',g:'cartaz de regras ortográficas; Stop temático; análise qualitativa de erros por categoria; produção revisada',a:'análise linguística das regras; produção textual com autocorreção; ditado semanal comparativo com gráfico'},
+'Controle inibitório (pensamentos e ações)':{p:'Estátua; Simão diz simples; dado da espera; atividades com turno alternado',m:'Stop! adaptado; dramatização com fantoches; Cara-a-Cara; Uno com regras; ficha de automonitoramento',g:'Mastermind; Uno com regras extras; dramatização de situações escolares; análise de consequências',a:'xadrez (pensar antes de agir); análise de situações reais; estratégias de pausa em contextos variados'},
+'Compreensão de instruções complexas':{p:'Simão diz com 1 etapa; cartões ilustrados sequenciais; seguir receita simples com figuras',m:'Simão diz com 2 etapas; construção por instrução verbal; caça ao tesouro com pistas encadeadas',g:'instrução de 3 etapas sem suporte visual; construção por descrição oral; enunciados escolares reais',a:'instrução multi-etapas acadêmica; protocolo de compreensão leitora; enunciados de prova reais'},
+'Composição e decomposição numérica':{p:'material dourado; ábaco colorido; banco de troca com moedas de brinquedo; blocos de 10',m:'material dourado; dados de 10 faces; jogo Banco de Troca; ficha de registro C/D/U',g:'decomposição em situações-problema; números de 3 dígitos; conexão com operações de reagrupamento',a:'decomposição em contexto real (dinheiro, medidas); conexão com operações complexas e problemas'},
+'Resolução de problemas':{p:'dramatização com objetos concretos; dividir balas com objetos reais; situações do cotidiano encenadas',m:'cartela de palavras-chave operacionais; problema sem número; dramatização + resolução; problemas do livro',g:'problemas com dados irrelevantes; criação de problemas a partir de ilustrações; problemas de 2 operações',a:'problemas contextualizados reais; conexão com finanças pessoais; raciocínio em situações cotidianas'},
+'Reconhecimento do alfabeto':{p:'letras em lixa; alfabeto imantado; bingo de letras; dado de letras; caligrafia pontilhada',m:'fichas de memorização cronometrados; memória maiúscula-minúscula; leitura de letras no ambiente real; caligrafia',g:'automatização via leitura oral; identificação rápida em textos; integração com leitura e escrita fluente',a:'automatização total; foco em letras residualmente problemáticas; integração em leitura corrente'},
+'Decodificação de palavras simples (CV, CVC)':{p:'sílabas coloridas (azul/vermelho); dominó de sílabas; pescaria de sílabas; caderno com ilustração',m:'dominó de sílabas; listas de palavras cronometradas; montagem de palavras; leitura em eco com sílabas',g:'leitura de frases e textos curtos; análise de padrões de erro; leitura oral cronometrada de lista',a:'leitura de textos do nível; análise de dificuldades residuais específicas; generalização para fluência'},
+'Fluência leitora (velocidade, entonação, precisão)':{p:'leitura em eco de frases curtas; livros com texto mínimo; teatro com fantoches simples',m:'leitura repetida (mesmo texto 3×); teatro de leitores; leitura em coro; gravação + audição própria',g:'textos informativos e narrativos variados; teatro de leitores com personagens; cronometragem com gráfico',a:'textos do interesse do adolescente; análise de prosódia e entonação; leitura oral de textos reais'},
+'Memória de trabalho (visual e auditiva)':{p:'Genius/Simon com 3 cores; "O que sumiu?" da mesa; sequência de 2–3 palavras concretas',m:'Genius/Simon; jogo de sequência de palavras; localização em grade 3×3; amplitude de dígitos crescente',g:'atividade de correspondência sequencial; tarefas duais simples; jogo de estratégia com informações múltiplas',a:'correspondência sequencial avançada; tarefas duais acadêmicas; estratégias de memorização para estudo e provas'},
+'Rimas e aliterações':{p:'músicas infantis com rimas; baralho de imagens que rimam; completar verso de quadrinha cantada',m:'Stop de rimas; criação de quadrinha simples; CONFIAS; jogo do intruso de rimas',g:'análise de rimas em músicas do interesse do paciente; criação de rap simples; identificação em textos',a:'criação de paródia de música conhecida; análise de letras de música; jogo de rimas rápidas cronometrado'},
+'Segmentação e manipulação silábica':{p:'palmas por sílaba; fichas coloridas de sílabas; trem de sílabas; músicas com segmentação rítmica',m:'CONFIAS (nível silábico); trem de sílabas; fichas de inversão e exclusão; dados de sílabas',g:'manipulação fonêmica avançada; análise de palavras complexas; conexão com leitura e ortografia',a:'análise morfológica básica; decomposição de palavras complexas; conexão direta com ortografia'},
+'Raciocínio lógico-matemático':{p:'blocos lógicos de Dienes; sequências de formas simples; classificação de objetos por atributo; quebra-cabeça',m:'Sudoku 4×4; Mastermind versão infantil; sequências numéricas; blocos lógicos com 2 atributos',g:'Sudoku 6×6; Mastermind; analogias visuais e verbais; problemas de raciocínio dedutivo',a:'Sudoku 9×9; xadrez; problemas de lógica formal; enigmas matemáticos com múltiplas variáveis'}
+};
+
+/* ══ PLANOS DE SESSÃO DETALHADOS (O QUE FAZER EM CADA FASE) ══ */
+const SP={
+'Atenção sustentada':{
+f1:`<strong>Avalie a linha de base:</strong> proponha uma atividade simples cronometrada (caça-palavras temático, labirinto ou colorir por número) e registre quantos minutos a criança mantém o foco sem redirecionamento — esse é o ponto de partida. <strong>Apresente o Pomodoro adaptado:</strong> posicione o Cronômetro visual ou ampulheta na mesa (10 min foco + 3 min pausa) e explique o funcionamento. Monte a "Caixa de tarefas": caixa com fichas numeradas das atividades — a criança retira uma por vez, executa e devolve ao concluir (reforço físico imediato da conclusão). Afixe na parede um lista de verificação ilustrado com os passos da sessão.`,
+f2:`<strong>Amplie o bloco para 12–15 min</strong> usando atividades de atenção seletiva já conhecidas (cancelamento de letras, trilha de números). Introduza o cartão de autorregulação na mesa: PARA ✋ · RESPIRA 🌬️ · FOCA 👁 — quando a atenção dispersar, aponte sem verbalizar. Registre quantos redirecionamentos foram necessários e compare sessão a sessão. Envie para casa uma tabela simples de "tempo de foco" para a família preencher diariamente em tarefa escolar.`,
+f3:`<strong>Amplie para 15–20 min com tarefas mais exigentes:</strong> cópia de texto com autoavaliação, resolução de operações ou leitura oral seguida de pergunta. Introduza o automonitoramento: ao final do bloco a criança responde "Precisei ser chamada de volta? Quantas vezes?" e preenche o gráfico de barras na parede — ela vê sua própria curva de evolução. Reduza gradualmente o cronômetro visível.`,
+f4:`<strong>Bloco de 20–25 min com tarefa acadêmica real</strong> (lição de casa, produção de texto, atividade escolar). A criança gerencia o próprio cronômetro sem mediação. Ao final, metacognição: "O que te ajudou a focar hoje? O que te atrapalhou?" Compare o registro atual com o linha de base da sessão 1. Oriente a professora sobre o protocolo de cronômetro para uso em sala.`
+},
+'Velocidade de processamento':{
+f1:`<strong>Linha de base com Cancelamento de Letras:</strong> entregue folha A4 com 5 linhas de letras aleatórias, peça que circule todas as letras "A" em 1 minuto. Cronometre, conte acertos e erros e registre como ponto de partida. Cole um gráfico de barras na parede — a cada sessão a criança preenche o próprio tempo e vê a evolução. Inicie aquecimento cognitivo de 3 min (trilha de pontos conectar 1→2→3 em sequência, ou Stroop simplificado: dizer a cor, não a palavra).`,
+f2:`<strong>Rastreamento visual graduado:</strong> cancelas de números, letras, símbolos com densidade crescente (3→5 linhas). Use cartas de memória cronometradas: espalhe 10 pares, cronometre a localização de todos, registre no gráfico. Introduza cópia rápida: copiar uma frase de 8–10 palavras cronometrando — sem cobrar caligrafia, o foco é velocidade. Feedback imediato: "Hoje foi 2 segundos mais rápido!"`,
+f3:`<strong>Trilha A adaptada:</strong> pontos numerados de 1 a 25 em folha, cronometre a conexão em sequência. Leitura oral cronometrada: lista de 20 palavras conhecidas — registre tempo e erros, compare com sessões anteriores. Use jogos como Dobble ou Spot it! (identificação visual rápida de símbolo comum entre cartas) — excelente para agilidade perceptiva e muito motivador.`,
+f4:`<strong>Generalização para tarefas acadêmicas:</strong> cópia de enunciado, leitura de lista de palavras da série. Compare o tempo atual com o linha de base. Discuta: "Olha onde você começou e onde está agora." Se o ritmo ainda impactar o desempenho escolar, formalize com a escola a adaptação de tempo extra em provas.`
+},
+'Planejamento':{
+f1:`<strong>Tarefa concreta de planejamento:</strong> peça para organizar uma mochila escolar ou montar um lanche seguindo uma ordem. Antes, pergunte: "O que você fará primeiro? E depois? O que precisa?" Observe se planeja espontaneamente ou age por impulso. Apresente o Mapa de Etapas: folha dividida em 3 colunas (Início / Meio / Fim) que a criança preenche antes de iniciar qualquer atividade. Modele em voz alta (think-aloud): "Antes de começar, penso: o que preciso fazer? Como? Que materiais precisarei?"`,
+f2:`<strong>Cartão "Antes de começar"</strong> com 3 perguntas fixas na mesa: "O que vou fazer? Como vou fazer? O que preciso?" — a criança responde em voz alta antes de toda atividade. Use tarefas multi-etapas: montar quebra-cabeça com estratégia (bordas primeiro), construir algo com blocos seguindo modelo, ou resolver roteiro escrito. O mapa de etapas é preenchido sempre. Reforce o esforço de planejar, mesmo que a execução seja imperfeita.`,
+f3:`<strong>Planejamento escrito autônomo</strong> sem o mapa impresso: a criança lista os passos por conta própria. Trabalhe projeto simples: "Vamos fazer um cartão — como organizamos isso?" A criança escreve os passos. Introduza a agenda de tarefas escolares: coluna Tarefa / Passos / Prazo. Construa em sessão e oriente a família a revisar diariamente em casa.`,
+f4:`<strong>Generalização para tarefas acadêmicas reais:</strong> a criança planeja uma redação, trabalho ou projeto escolar usando o mapa de etapas de forma autônoma, sem prompt. Avalie: ela consegue planejar antes de agir sem mediação verbal? Encaminhe à escola o cartão "Antes de começar" para uso antes de provas e trabalhos.`
+},
+'Organização':{
+f1:`<strong>Linha de base de organização:</strong> observe o estado da mochila, do material sobre a mesa e a capacidade de localizar itens. Use o Desafio da Mesa: espalhe materiais e peça à criança para organizar em categorias (escrever / colorir / recortar) em 2 minutos com cronômetro visível. Apresente o lista de verificação de materiais com ilustrações dos itens necessários no início da sessão — a criança marca cada item antes de começar. Torne esse lista de verificação ritual de abertura em todas as sessões.`,
+f2:`<strong>Fichas de etapas numeradas:</strong> cada atividade vem em cartões numerados e a criança vira o cartão ao concluir cada etapa — concretiza visualmente o progresso. Rotina de fim de sessão: guardar tudo no lugar em 2 minutos com cronômetro. Use Cronômetro visual ou ampulheta para cada bloco. Para casa: envie tabela de "Mochila organizada às 21h" para preenchimento diário com a família.`,
+f3:`<strong>Estimativa de tempo:</strong> "Quanto tempo você acha que vai levar para fazer isso?" Cronometre e compare com a estimativa — desenvolve senso de tempo, componente essencial da organização. Construa com a criança uma agenda semanal simples (dias da semana / tarefas escolares) onde ela decide o que fará em cada dia. Trabalhe a antecipação: "O que precisa estar pronto para amanhã?"`,
+f4:`<strong>Uso autônomo da agenda:</strong> a criança organiza a própria sessão sem mediação e relata como foi em casa. Avalie: precisou de menos mediação? A família relata mochila mais organizada e menos itens esquecidos? Reduza progressivamente o suporte.`
+},
+'Autoestima':{
+f1:`<strong>Monte o Portfólio de Conquistas:</strong> pasta física que a criança decora na primeira sessão — ela escolhe cores e um símbolo que a representa. Arquiva produções de que se orgulha. Toda sessão começa revisando o portfólio. Construa o Mapa de Pontos Fortes: silhueta do corpo onde a criança escreve/desenha o que faz bem ("mãos boas para desenhar", "cabeça boa para memorizar músicas"). Calibre as atividades 10% abaixo do limiar de frustração — garanta sucesso desde o início.`,
+f2:`<strong>Psicoeducação sobre perfil:</strong> use linguagem de pontos fortes ("Você raciocina muito bem, só precisa de um caminho diferente para ler"). Introduza o protocolo de mentalidade de crescimento: quando disser "não consigo", intervenha com "Você disse 'não consigo ainda' — o que te ajudaria?" Cole na mesa o cartão: "Ainda não… mas estou chegando lá!" Reforce exclusivamente o esforço: "Você tentou de novo mesmo sendo difícil — isso é o que importa."`,
+f3:`<strong>Reestruturação cognitiva lúdica:</strong> fichas de pensamento — a criança escreve "Pensei que não conseguia ___ → mas consegui ___". Acumule fichas no portfólio. Tarefas progressivamente mais desafiadoras, uma por vez, garantindo sucesso antes de avançar. Oriente a família com roteiro de elogio específico ao esforço — nunca ao resultado: não "você é inteligente" mas "você se esforçou muito nisso."`,
+f4:`<strong>Avaliação narrativa:</strong> peça à criança para se descrever em 3 adjetivos hoje e compare com o que disse na primeira sessão. Ela verbaliza competências espontaneamente? Aceita desafios sem esquiva? Reveja o portfólio completo. Se a baixa autoestima tiver raízes mais profundas, recomende articulação com psicólogo.`
+},
+'Insegurança em atividades escolares':{
+f1:`<strong>Tarefa âncora:</strong> sempre inicie com algo que a criança já domina — ativa o senso de competência antes de qualquer desafio. Linha de base com Termômetro de Confiança: escala de 1 (muito inseguro) a 5 (muito confiante) — a criança marca antes de uma tarefa nova. Observe comportamentos de esquiva: recusa, "não sei", demora em começar, busca excessiva de confirmação. Registre os padrões e construa a hierarquia de tarefas do mais fácil ao mais difícil para as próximas sessões.`,
+f2:`<strong>Exposição gradual:</strong> avance um nível de dificuldade por sessão — somente após sucesso consistente. Use o termômetro antes e depois de cada tarefa: "Antes você estava no 2, agora está no 4 — o que mudou?" Envie quinzenalmente para família e escola um informe de avanços: "Esta semana [Nome] conseguiu ___." Isso reforça a narrativa positiva em casa e na escola.`,
+f3:`<strong>Aproximação de tarefas escolares reais:</strong> traga atividades do livro didático, lição de casa ou prova antiga. A criança realiza com suporte decrescente. Trabalhe a estratégia da "primeira linha": em qualquer tarefa intimidadora, a meta é só escrever a primeira linha — depois o restante flui. Discuta: "O que foi mais fácil do que você esperava?"`,
+f4:`<strong>Independência em sessão:</strong> proponha atividade do nível escolar sem suporte verbal. Observe se inicia sem resistência. Oriente a professora: estratégias de fortalecimento em sala, como dar à criança um papel de protagonismo em atividades que ela domina (ler em voz alta um texto que já treinou, explicar algo que aprendeu).`
+},
+'Lida com frustrações':{
+f1:`<strong>Apresente o Termômetro das Emoções:</strong> escala de 5 níveis com cores (verde=calmo → vermelho=muito irritado) afixada na parede. Nomeie os níveis com a linguagem da criança. Ensine a respiração 4-7-8: inspire 4 tempos, segure 7, expire 8 — pratique 3 vezes no início de cada sessão como ritual. Mapeie os gatilhos: em que tipo de tarefa a criança sobe para o nível 4 ou 5? Registre para calibrar a progressão.`,
+f2:`<strong>Protocolo de regulação em 3 passos:</strong> (1) Aponte o termômetro — "Em que nível você está?"; (2) Aplique a estratégia do nível (nível 3 = respiração, nível 4 = pausa de 2 min + água, nível 5 = pausa longa + troca de atividade); (3) Retorne à tarefa. Faça dramatização de situações frustrantes: encenar "o jogo deu errado", "errou a resposta", "não terminou a tempo" — roteirode como reagir, ensaio, análise reflexiva. Oriente a família: validar o sentimento sem remover a demanda.`,
+f3:`<strong>Automonitoramento:</strong> a criança registra sozinha no termômetro durante tarefas desafiadoras. Introduza o cartão de bolso com as estratégias para usar em casa e escola. Generalize com dramatização de situações escolares (nota baixa, conflito com colega, tarefa difícil). Reduza progressivamente o prompt verbal.`,
+f4:`<strong>Exposição deliberada:</strong> introduza uma tarefa mais difícil que você sabe que pode frustrar. Observe se a criança usa a estratégia espontaneamente, sem prompt. Avalie: usou regulação em ≥70% das situações frustrantes? Encaminhe protocolo com as estratégias da criança para a escola.`
+},
+'Finalização de tarefas iniciadas':{
+f1:`<strong>Linha de base:</strong> proponha 2 tarefas de 5–7 min cada e observe quantas a criança conclui vs. abandona. Apresente o Quadro de Micro-tarefas: escreva cada atividade em um post-it, cole na parede — a criança remove o post-it ao concluir (reforço físico imediato). Regra inegociável da sessão: toda sessão termina com pelo menos uma produção completa que vai para o portfólio (desenho finalizado, texto completo, cálculo corrigido). Use cronômetro de 10 min por bloco.`,
+f2:`<strong>Reforço diferencial da conclusão:</strong> elogio específico apenas ao finalizar — "Você terminou! Isso é o que conta" — nunca ao início ou ao meio. Introduza o gráfico de barras semanal: "Tarefas iniciadas vs. concluídas" — a criança preenche ao final de cada sessão e compara com a anterior. Para casa: Regra do 1 item — concluir pelo menos 1 tarefa por dia antes de qualquer atividade prazerosa.`,
+f3:`<strong>Atividades multi-etapas com lista de verificação autônomo:</strong> a criança cria seu próprio lista de verificação para a tarefa (sem o da profissional). Trabalhe com tarefas escolares reais: lista de exercícios, redação curta. Retire gradualmente os post-its, mantenha o cronômetro. Avalie se a criança percebe sozinha quando está se desviando da tarefa.`,
+f4:`<strong>Tarefas abertas sem estrutura pré-definida:</strong> a criança planeja e executa uma atividade de A a Z (história curta, página de exercícios). Avalie: 80% das tarefas iniciadas e concluídas por sessão? Relato positivo da família e professora sobre finalização de lição de casa?`
+},
+'Segmentação de palavras e frases':{
+f1:`<strong>Avalie o perfil de erros:</strong> dite 5 frases curtas e analise — há hipossegmentação ("dacasa"), hipersegmentação ("da ca sa") ou ambas? Registre tipo e frequência. Atividade de fichas físicas: escreva cada palavra de uma frase em uma ficha separada, embaralhe e peça que monte a frase em ordem. Discuta: "Cada ficha é uma palavra. Na escrita, cada palavra fica separada assim." Contagem gestual: bater palma a cada palavra da frase oral antes de escrever — torna a fronteira de palavra concreta e física.`,
+f2:`<strong>Ditado reflexivo com pausa:</strong> você dita, a criança escreve palavra por palavra com pausa e lápis levantado entre cada palavra. Após escrever, relê em voz alta apontando cada palavra — ativa a revisão. Leitura apontada: em qualquer texto lido, a criança aponta cada palavra com o dedo, separando-as. Caderno de erros: coluna "Escrevi assim / Correto é / Exemplo em frase" — revisado no início de cada sessão.`,
+f3:`<strong>Análise de erro em texto com erros propositais:</strong> entregue um parágrafo com hipossegmentações inseridas por você. A criança encontra e corrige — exige identificar o erro sem ter sido ela quem o cometeu (olhar externo). Generalize para ditado de frases mais longas (8–10 palavras). Retire gradualmente a pausa e o lápis levantado.`,
+f4:`<strong>Produção textual espontânea:</strong> a criança escreve 3–5 frases sobre tema do seu interesse. Analise as segmentações. Compare com o linha de base da primeira sessão. Articule com a professora para revisão orientada dos textos escolares.`
+},
+'Sistema ortográfico':{
+f1:`<strong>Levantamento de perfil de erros:</strong> aplique ditado de 20 palavras do nível da série e categorize os erros (trocas b/d, p/q, f/v, s/z, m/n antes de consoante, uso de h, etc.). Monte o ranking dos 3 erros mais frequentes — esses serão o foco. Apresente o método multissensorial: cartões de pares mínimos para o erro prioritário (ex.: imagens de "bola" / "dola") — a criança distingue auditiva e visualmente antes de escrever. Ver + ouvir + escrever + falar simultaneamente.`,
+f2:`<strong>Banco de palavras semanal:</strong> selecione 10 palavras com o erro característico. Em sessão: lê, ilustra e usa cada palavra em frase oral. Em casa: releitura diária. Ditado reflexivo: você dita, criança escreve, relê em voz alta e autocorrige antes da confirmação. Fichas de memorização de memória visual: palavras de maior dificuldade — ver, tapar, escrever de memória, conferir. Caderno de erros atualizado a cada sessão: a criança percebe a própria evolução.`,
+f3:`<strong>Ensino de regras por grupos</strong> (ex.: M antes de P e B): regra com exemplos abundantes, não memorização de exceções. Cartaz de regras afixado na parede para consulta durante a escrita — suporte que será retirado gradualmente. Jogo de Stop ortográfico: cada letra da rodada, a criança escreve palavras com o padrão trabalhado. Avalie os erros qualitativamente a cada sessão.`,
+f4:`<strong>Ditado ampliado e produção textual:</strong> ditado de 20 palavras + produção espontânea de 3–5 frases. Compare com o linha de base. Retire gradualmente o cartaz de regras. Avalie: redução ≥40% dos erros do tipo prioritário em relação ao início?`
+},
+'Controle inibitório (pensamentos e ações)':{
+f1:`<strong>Mapeie os padrões de impulsividade:</strong> observe quando a criança age sem pensar (responde antes de ouvir a pergunta completa, pula etapas, mexe nos materiais sem instrução). Registre os gatilhos. Apresente o cartão "Para–Pensa–Age" na mesa com 3 etapas ilustradas — antes de qualquer tarefa, a criança verbaliza os 3 passos. Jogo Stop! adaptado: você dá comandos e ocasionalmente diz "STOP!" — a criança para toda ação imediatamente. Frequência alta de "stop" no início, reduzindo progressivamente.`,
+f2:`<strong>Cartão vermelho de pausa:</strong> a criança segura um cartão vermelho para "pausar" antes de responder impulsivamente. Quando perceber que vai agir por impulso, usa o cartão. Dramatização de situações cotidianas: "Você está em fila e alguém passa na sua frente — o que você faz?" Roteiro de 3 passos → ensaio → análise reflexiva. Ficha de automonitoramento: "Vezes que esperei / vezes que agi sem pensar" — preenchida ao final da sessão.`,
+f3:`<strong>Jogos de inibição de resposta:</strong> Cara-a-Cara (inferir antes de perguntar), Uno (respeitar regras com espera), Quem sou eu? (formular hipóteses antes de agir). Tarefas com alta demanda inibitória: múltipla escolha onde a resposta errada é "óbvia" (precisa pensar contra o impulso). Criança usa "Para–Pensa" antes de cada resposta. Reduza prompts externos.`,
+f4:`<strong>Generalização autônoma:</strong> observe se a criança usa as estratégias de pausa sem ser lembrada. Avalie: redução ≥40% dos episódios de impulsividade em sessão? Encaminhe protocolo escrito para escola e família com orientação de como responder aos episódios sem reforçar a impulsividade.`
+},
+'Compreensão de instruções complexas':{
+f1:`<strong>Linha de base:</strong> dê 1 instrução simples, depois 2 etapas, depois 3. Observe em qual nível a compreensão falha. Apresente a estratégia de escuta ativa em 3 passos: (1) Olha para quem fala e acena; (2) Repete internamente; (3) Executa. Modele explicitamente: "Eu vou fazer do jeito certo para você ver." Recurso pictográfico: instrução com 2 etapas em cartões ilustrados sequenciais — a criança executa seguindo os cartões.`,
+f2:`<strong>Jogo "Simão diz" com 2 etapas:</strong> "Simão diz: bata palmas 3 vezes e depois levante a mão esquerda." Comece com 1 etapa, avance para 2. Tarefas escritas com complexidade crescente: instrução escrita + ilustração. Estratégia de autorrepetição em voz alta: "Primeiro faço X, depois faço Y" — a criança repete a instrução antes de executar. Registre % de acertos por sessão.`,
+f3:`<strong>Instruções sem suporte visual:</strong> retire os cartões ilustrados. Instrução verbal de 2 etapas → execução. Avance para 3 etapas ao atingir 75% de acertos em 2. Jogo de construção por instrução: você descreve verbalmente como montar algo sem mostrar o modelo — a criança constrói. Exige compreensão e memória de trabalho simultâneas.`,
+f4:`<strong>Instruções de 3+ etapas com tarefas acadêmicas reais:</strong> enunciados de atividades escolares, instruções de prova. Avalie autonomia sem repetição. Oriente a professora: reformular instruções com pausas entre etapas e confirmar compreensão com pergunta antes de liberar a atividade.`
+},
+'Composição e decomposição numérica':{
+f1:`<strong>Linha de base com material concreto:</strong> peça para representar o número 35 com material dourado (cubinhos, barrinhas, plaquinhas). Se não compreende a estrutura posicional, inicie o Protocolo CPA na fase Concreta. Jogo Banco de Troca: tabuleiro com colunas C/D/U — a criança troca 10 cubinhos por 1 barrinha, 10 barrinhas por 1 plaquinha. Verbalize sempre: "10 unidades viram 1 dezena." Ábaco de argolas coloridas: representar o número físicamente no ábaco antes de escrever.`,
+f2:`<strong>Fase Pictórica (P do CPA):</strong> antes de escrever o numeral, a criança representa com desenho — retângulos para dezenas, quadradinhos para unidades. Jogo de dados de 10 faces: dois dados → compõe o maior número possível. Ficha de registro: "Tenho ___ centenas, ___ dezenas, ___ unidades = ___". Sempre materializar antes de abstrair — não avançar para a fase abstrata sem domínio sólido da fase pictórica.`,
+f3:`<strong>Fase Abstrata (A do CPA):</strong> a criança escreve o numeral sem material de apoio — somente após domínio das fases C e P. Decomposição de centenas: "245 = 200 + 40 + 5 — como você representaria?" Jogo Quem tem mais?: você dá um numeral, a criança decompõe e explica. Introduza situações de adição e subtração que exigem reagrupamento com compreensão posicional.`,
+f4:`<strong>Generalização para operações:</strong> adição e subtração com reagrupamento resolvidas com e sem material. Avalie: 75% de acertos em composição/decomposição sem material concreto? Articule com a professora o uso do material dourado em sala quando necessário.`
+},
+'Resolução de problemas':{
+f1:`<strong>Linha de base:</strong> apresente 3 problemas simples e observe: lê até o fim? Identifica o que é pedido? Escolhe a operação corretamente? Registre onde há ruptura. Apresente o protocolo de 4 etapas (Polya adaptado) com cartão na mesa: (1) Leia e releia; (2) Sublinhe a pergunta e os dados; (3) Escolha a operação; (4) Resolva e confira. Modele em voz alta com um problema simples, pensando em voz alta cada etapa.`,
+f2:`<strong>Dramatização do problema:</strong> encene o enunciado com objetos concretos antes do cálculo. "Lucas tem 8 figurinhas e deu 3 para Pedro — vamos representar com blocos." Depois resolve no papel. Cartela de palavras-chave operacionais: ao todo → soma | sobrou/perdeu → subtração | cada/vezes → multiplicação | repartiu → divisão. A criança consulta antes de decidir. Problema sem número: "Qual operação você usaria?" — depois insira os valores.`,
+f3:`<strong>Problema com dados irrelevantes:</strong> enunciados com informação que não deve ser usada — exige interpretação mais apurada. Criação de problemas: a criança cria um problema a partir de uma ilustração ou situação do cotidiano — quem cria entende a estrutura. Avance para problemas com 2 operações em sequência.`,
+f4:`<strong>Problemas do livro didático da série sem apoio do protocolo:</strong> a criança usa os 4 passos de forma autônoma. Avalie: 70% com operação correta e resolução adequada? Articule com professora: afixar cartão com os 4 passos na agenda ou caderno escolar.`
+},
+'Reconhecimento do alfabeto':{
+f1:`<strong>Linha de base com fichas de memorização:</strong> mostre letras em ordem aleatória (maiúsculas e minúsculas) e registre quais nomeia corretamente, quais confunde (b/d, p/q) e quais não reconhece. Foque nas letras de maior dificuldade. Atividade multissensorial: letras em lixa — a criança traça com o dedo enquanto fala o nome (tátil + auditiva + visual simultâneos). Letras imantadas no quadro: move e nomeia. Crie o alfabeto personalizado: cada letra associada a uma palavra significativa para a criança.`,
+f2:`<strong>Bingo de letras:</strong> você dita o nome, a criança marca na cartela. Varie: dite o som, criança nomeia a letra. Dado de letras: nomeia a letra que cair e fala uma palavra que começa com ela. Caligrafia com modelo pontilhado: trace, depois copie sem modelo, depois escreva de memória. Trabalhe em grupos as letras que geram confusão (b/d/p/q — nunca todas juntas, trabalhe um par por vez).`,
+f3:`<strong>Correspondência maiúscula-minúscula:</strong> jogo de memória com pares (A/a, B/b). Automatização: "Quanto tempo você leva para nomear todas as letras do alfabeto?" Cronometre e compare sessão a sessão. Leitura de letras em livros, embalagens, placas do ambiente — generalize para contextos reais.`,
+f4:`<strong>Fichas de memorização em ordem aleatória cronometrados:</strong> avalie ≥90% de acertos e velocidade. A identificação de letras deve ser automática, não esforçada. Integre em tarefas de leitura e escrita — se ainda há hesitação em letras específicas, continue trabalhando o par problemático.`
+},
+'Decodificação de palavras simples (CV, CVC)':{
+f1:`<strong>Linha de base de leitura oral:</strong> lista de 20 palavras simples (CV: bola, faca, mato; CVC: cama, lobo, vida). Registre % de acertos e tipo de erro (substituição, omissão, adivinhação pelo contexto). Ensino explícito grafema-fonema pelo método fônico: cartões de sílabas com cor diferente para consoante (azul) e vogal (vermelho). A criança funde: B (azul) + O (vermelho) = "BO". Apresente famílias silábicas uma por vez: ba-be-bi-bo-bu antes de avançar.`,
+f2:`<strong>Leitura encadeada por família silábica:</strong> lista de palavras com a família trabalhada (BA: bala, bata, baba, cabo). Lê devagar, sílaba a sílaba. Dominó de sílabas: peças com sílabas que a criança encadeia para formar palavras. Leitura oral cronometrada semanal: 20 palavras, tempo e erros registrados no gráfico. Caderno de palavras novas: 5 palavras por sessão, relidas no início da próxima sessão (revisão espaçada).`,
+f3:`<strong>Leitura em eco:</strong> você lê primeiro com ritmo e precisão, criança repete. Avance para palavras com encontros consonantais simples (bra, glo, pla). Jogo de pescaria de sílabas: peixinhos com sílabas — a criança pesca e monta palavras. Leitura de frases curtas com as palavras trabalhadas — dá contexto sem texto longo ainda.`,
+f4:`<strong>Leitura oral de texto curto:</strong> observe precisão, automatismo e fluência inicial. Avalie: 75% de palavras simples lidas com precisão? Inicie progressão para palavras complexas (encontros consonantais, dígrafos) na próxima fase de intervenção.`
+},
+'Fluência leitora (velocidade, entonação, precisão)':{
+f1:`<strong>Linha de base de fluência:</strong> a criança lê texto curto do nível da série por 1 minuto. Registre: palavras por minuto, número de erros, presença de pausas em pontuação. Apresente a leitura repetida (Samuels): o mesmo texto será lido 3 vezes na sessão. Na 1ª leitura não interrompa — deixe ler e registre. Mostre no gráfico: "Esta é a sua leitura hoje. Vamos ver como fica depois de mais duas leituras."`,
+f2:`<strong>Leitura em eco:</strong> você lê uma frase com entonação e ritmo corretos, criança repete imediatamente. Use marca-texto para a pontuação antes de ler: vírgula = pausa curta, ponto = pausa longa, exclamação = voz mais forte. Leitura em coro: leia simultaneamente apoiando o ritmo. Teatro de leitores: textos em forma de diálogo, cada personagem com uma voz — a criança escolhe e interpreta.`,
+f3:`<strong>Gravação e autoavaliação:</strong> grave a leitura (celular). A criança ouve e identifica: "Onde pausei corretamente? Onde minha voz ficou expressiva?" Lista de verificação de autoavaliação: precisão ✓ · pausa na pontuação ✓ · entonação ✓. Compare a gravação da sessão 1 com a atual — a diferença é muito motivadora.`,
+f4:`<strong>Leitura oral de texto novo sem treino prévio:</strong> avalie precisão e prosódia em material inédito. Calcule palavras por minuto. Leitura diária em casa (5 min) com texto do nível — oriente a família a ouvir sem interromper durante a leitura, corrigindo apenas ao final de cada frase se necessário.`
+},
+'Memória de trabalho (visual e auditiva)':{
+f1:`<strong>Avaliação inicial de amplitude de memória:</strong> diga sequências de dígitos crescentes (2→3→4→5 números) — registre o amplitude máxima de memória. Para visual: grade 3x3, ilumine células em sequência, a criança aponta na mesma ordem. Apresente o Genius/Simon (jogo de sequência de cores e sons) — comece com sequência de 2 e avance. Estratégia de chunking: "Em vez de lembrar 7 números separados, agrupe: 371 | 495 — dois grupos são mais fáceis do que 6 números."`,
+f2:`<strong>Amplitude de memória com palavras concretas</strong> em vez de dígitos — mais fáceis de visualizar mentalmente: "gato, mesa, sol, porta." Ensine a repetição subvocal: "Repito mentalmente enquanto faço — gato, mesa, sol..." Tarefa de localização em grade: onde estão 3–4 objetos numa grade? Cubra — a criança aponta de memória. Aumente gradualmente o número de itens.`,
+f3:`<strong>Atividade de correspondência sequencial:</strong> mostre uma sequência de letras e peça que indique quando a letra atual é igual à que apareceu 2 posições antes (comece com 1 posição, depois 2). Tarefas duais simples: ouvir uma sequência e ao mesmo tempo selecionar itens de uma categoria — exige manter e manipular informações simultaneamente. Estratégia de visualização: "Forme uma imagem mental da sequência."`,
+f4:`<strong>Generalização para tarefas acadêmicas:</strong> seguir instrução de 3 etapas sem repetição, copiar enunciado sem olhar a cada palavra. Avalie: 70% de acertos em amplitude auditiva de memória de 4 dígitos e visual de 4 posições? Oriente a família: instruções orais em no máximo 2 etapas até consolidação.`
+},
+'Rimas e aliterações':{
+f1:`<strong>Linha de base com CONFIAS:</strong> aplique tarefas de identificação e produção de rima e aliteração. Registre o nível. Jogo de rima com baralho ilustrado: cartas com imagens — a criança forma pares que rimam (bola/cola, pato/rato). Concreto, lúdico, sem texto. Cante quadrinhas e músicas com rimas marcantes: "O sapo não lava o pé, não lava porque não ___" — a criança completa. Isso ativa a intuição fonológica antes da instrução explícita.`,
+f2:`<strong>Produção de rimas:</strong> "Fale uma palavra que rime com SOL." Se necessário, ofereça 3 opções e a criança escolhe. Avance para produção sem opções. Aliteração: "Quais palavras começam com o mesmo som de PATO?" com imagens de apoio. Jogo de aliteração em cadeia: "PATO → PIPA → PALHA → …" — quem tiver o mesmo som inicial continua. Criação de trava-línguas simples juntos.`,
+f3:`<strong>Rima em texto:</strong> leia uma quadrinha e peça que sublinhe as palavras que rimam. Criação de quadrinha em dupla: você dá o primeiro verso, a criança completa com rima. Jogo do intruso: "Qual palavra NÃO rima? BOLA / COLA / MOLA / GATO." Exige identificar e rejeitar a não-rima — mais exigente cognitivamente.`,
+f4:`<strong>Rima e aliteração em contexto de leitura:</strong> identifique rimas em texto de leitura da sessão. Avalie com subtestes do CONFIAS: ≥80% de acertos em identificação e produção? Integre progressivamente com trabalho de consciência silábica e fonêmica.`
+},
+'Segmentação e manipulação silábica':{
+f1:`<strong>Linha de base com CONFIAS — nível silábico:</strong> aplique tarefas de segmentação, inversão, exclusão e adição. Registre o perfil. Segmentação com palmas: diga uma palavra, a criança bate palmas em cada sílaba e conta. Use palavras do cotidiano (bo-la, ca-sa, ja-ne-la). Fichas de sílabas coloridas: cada sílaba em uma ficha — a criança manipula fisicamente ao segmentar, tornando concreto o que é abstrato.`,
+f2:`<strong>Inversão silábica:</strong> "Fale PATO de trás para frente = TO-PA." Comece com palavras de 2 sílabas, avance para 3. Exclusão: "Fale MESA sem ME = SA." Sempre comece pela sílaba inicial (mais fácil), depois final, depois medial. Trem de sílabas: cartões de sílabas enfileirados formando uma palavra — a criança adiciona ou remove um "vagão".`,
+f3:`<strong>Adição silábica:</strong> "Acrescente BO antes de LA = BO-LA." Cruzadinha silábica: grade onde preenche sílabas para formar palavras. Jogo de banco de sílabas: sortear fichas e montar o maior número de palavras possível. Avance para nível fonêmico se o silábico estiver consolidado (≥75% nas tarefas).`,
+f4:`<strong>Generalização para leitura e escrita:</strong> segmentação de palavras novas durante a leitura oral como apoio à decodificação. Ditado onde a criança segmenta silabicamente antes de escrever. Avalie com CONFIAS: escore dentro da norma para a série?`
+},
+'Raciocínio lógico-matemático':{
+f1:`<strong>Linha de base:</strong> sequência de formas (○ △ ○ △ ___?), classificação de objetos por atributo, analogia simples. Registre onde há ruptura. Blocos Lógicos de Dienes: classifique por 1 atributo (cor), depois 2 (cor + forma), depois 3 (cor + forma + tamanho). Verbalize o raciocínio: "Este bloco é vermelho E quadrado — vai para este grupo porque tem as duas características." Torne o pensamento em voz alta um hábito desde a primeira sessão.`,
+f2:`<strong>Sequências crescentes de dificuldade:</strong> padrões com 1 atributo → 2 atributos → padrão numérico. Seriação: ordenar objetos por tamanho, número de lados, peso estimado. Sudoku 4x4: cada número de 1 a 4 aparece uma vez em cada linha, coluna e quadrante. Oriente com perguntas socráticas: "O que você já sabe? Que informação você tem? O que ainda precisa descobrir?" — pensamento dedutivo em voz alta.`,
+f3:`<strong>Analogias visuais:</strong> "A está para B como C está para ___?" com figuras geométricas e objetos. Avance para analogias verbais simples. Mastermind (versão infantil): lógica dedutiva para descobrir uma sequência com pistas. Enigmas matemáticos: a profissional faz perguntas, não dá a resposta — a criança chega à conclusão sozinha.`,
+f4:`<strong>Generalização para situações escolares:</strong> problemas matemáticos que exigem raciocínio lógico, interpretação e dedução, não apenas cálculo. Avalie: 70% de acertos em tarefas de padrão, classificação e analogia? Articule com professora o uso de perguntas socráticas em sala.`
+}
+};
+
+/* ══ FILTRO: APENAS ATIVIDADES DO CONSULTÓRIO ══ */
+function filterInOffice(txt){
+  if(!txt)return txt;
+  // Remove sentenças que se referem a família, casa, escola ou orientações externas
+  const homeRx=/famil[ií]?[a]?\b|para casa\b|\bem casa\b|\bescola\b|professor[a]?\b|docent[e]?\b|oriente [ao]\b|orientação para|envie para|encaminh[ea]\b|protocolo de comunicação|relato da|relato positivo|articulação com escola|comunica[çc][ãa]o escola|generaliz[ea] para o contexto|semanalmente em casa/i;
+  // Divide em sentenças pelo padrão ". Capital" ou ". <strong>"
+  const parts=txt.replace(/\.\s+([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ<])/g,'.|$1').split('|');
+  const kept=parts.filter(p=>p.trim().length>5&&!homeRx.test(p));
+  if(!kept.length)return txt; // fallback: retorna original se tudo for filtrado
+  let r=kept.join(' ').replace(/\s{2,}/g,' ').trim();
+  if(r&&!/[.!?]$/.test(r))r+='.';
+  return r;
+}
+
+/* ══ PROGRESSÃO DETALHADA POR SESSÃO ══ */
+function buildDetailedSessionPlan(sk,cls,nSess,est,ident){
+  ident=ident||{};
+  const intense=cls==='Necessita de intervenção';
+  const p1=Math.max(1,Math.ceil(nSess*0.25));
+  const p2=Math.max(p1+1,Math.ceil(nSess*0.5));
+  const p3=Math.max(p2+1,Math.ceil(nSess*0.75));
+
+  // Faixa etária (sem nome/idade do paciente)
+  const ag=getAgeBand(ident.idade||'');
+  const serie=ident.serie?` · ${ident.serie}`:'';
+  const aeEx=(AGEEX[sk]&&AGEEX[sk][ag.b])||'';
+  const intensLabel=intense?'<span style="background:#FDEDEC;color:#C0392B;font-weight:700;padding:1px 6px;border-radius:3px;font-size:7pt">INTERVENÇÃO</span>':'<span style="background:#FEF9E7;color:#7D6608;font-weight:700;padding:1px 6px;border-radius:3px;font-size:7pt">APRIMORAMENTO</span>';
+
+  // Caixa de recursos por faixa etária
+  const ageBox=aeEx?`<div style="background:#FEF9E7;border-left:3px solid #C9A227;padding:5px 10px;margin-bottom:8px;font-size:7.5pt;line-height:1.6"><strong style="color:#7D6608">🎯 Recursos e atividades indicados — ${ag.faixa}${serie} — ${intensLabel}:</strong><br>${aeEx}.</div>`:'';
+
+  // Usa SP (plano especializado) se disponível; senão gera fases com conteúdo garantido
+  const sp=SP[sk];
+  const rawPhases=sp?[sp.f1,sp.f2,sp.f3,sp.f4]:null;
+  // Aplica filtro de consultório em todas as fases
+  const phases=rawPhases?rawPhases.map(filterInOffice):null;
+
+  let fallPhases=null;
+  if(!phases){
+    const body=est.replace(/Ref\.:[\s\S]*/,'').trim();
+    const raw=body.split(/\.\s+(?=[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ])/g).map(s=>s.trim()).filter(s=>s.length>12);
+    const q=Math.max(1,Math.ceil(raw.length/4));
+    const skL=sk.toLowerCase();
+    const def=[
+      `Aplique uma tarefa diagnóstica de ${skL} e registre o desempenho como linha de base. Modele o protocolo principal em voz alta — você executa primeiro, depois o paciente tenta com suporte total.`,
+      `Realize atividades de complexidade crescente com suporte direto. Reforce imediatamente o esforço — não o resultado. Avance somente após 75% de acertos consistentes.`,
+      `Reduza gradualmente os suportes visuais e verbais. O paciente aplica a estratégia com menor mediação. Registre acertos e erros para ajustar a progressão.`,
+      `O paciente executa de forma autônoma dentro da sessão. Compare o desempenho atual com o linha de base da sessão 1. Verifique se o critério do mês foi atingido.`
+    ];
+    fallPhases=[
+      filterInOffice(raw.slice(0,q).join('. ').trim())||def[0],
+      filterInOffice(raw.slice(q,q*2).join('. ').trim())||def[1],
+      filterInOffice(raw.slice(q*2,q*3).join('. ').trim())||def[2],
+      filterInOffice(raw.slice(q*3).join('. ').trim())||def[3]
+    ];
+  }
+  const refMatch=est.match(/Ref\.:[\s\S]*/);
+  const refPart=refMatch?refMatch[0].trim():'';
+
+  const faseIntro=[intense?'⚠️ Abordagem intensiva. ':'','','',''];
+  const fL=[[1,p1,'Linha de base + Introdução'],[p1+1,p2,'Prática guiada'],[p2+1,p3,'Semi-independente'],[p3+1,nSess,'Autonomia + Avaliação']];
+
+  if(nSess<=2){
+    const c1=phases?phases[0]:fallPhases[0];
+    const c2=phases?phases[3]:fallPhases[3];
+    return`<div class="pdi-sess">${ageBox}<strong>Sessão 1 — Linha de base + Introdução:</strong> ${c1}<br><br><strong>Sessão ${nSess} — Prática guiada:</strong> ${c2}</div>`;
+  }
+
+  let rows='';
+  fL.forEach(([ini,fim,label],i)=>{
+    const bg=i%2===0?'background:#f9fff9':'background:#fff';
+    const content=faseIntro[i]+((phases?phases[i]:fallPhases[i])||'Continuar a progressão da fase anterior.');
+    rows+=`<tr style="${bg}">
+<td style="border:1px solid #CCC;padding:5px 8px;font-weight:700;color:#3D1A06;font-size:7.5pt;white-space:nowrap;vertical-align:top">Sessões ${ini}–${fim}<br><span style="font-weight:400;color:#666;font-size:7pt">${label}</span></td>
+<td style="border:1px solid #CCC;padding:5px 8px;font-size:7.5pt;line-height:1.65;vertical-align:top">${content}</td>
+</tr>`;
+  });
+  if(refPart)rows+=`<tr><td colspan="2" style="border:1px solid #CCC;padding:4px 8px;font-size:6.8pt;color:#888;font-style:italic">${refPart}</td></tr>`;
+
+  return`<div class="pdi-sess">${ageBox}<strong style="color:#7D6608">O que fazer nas ${nSess} sessões do mês:</strong>
+<table style="width:100%;border-collapse:collapse;margin-top:7px">
+<thead><tr>
+<th style="border:1px solid #CCC;padding:4px 8px;background:#F5EDE0;color:#3D1A06;font-size:7.5pt;text-align:left;width:18%">Fase / Sessões</th>
+<th style="border:1px solid #CCC;padding:4px 8px;background:#F5EDE0;color:#3D1A06;font-size:7.5pt;text-align:left">Atividades, recursos e como conduzir</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table></div>`;
+}
+
+/* ══ GERAÇÃO DE METAS GENÉRICAS ══ */
+function genMetaGenerica(skill,cls,area){
+  const inter=cls==='Necessita de intervenção';
+  return{
+    meta_cp:`${inter?'Desenvolver':'Aprimorar'} ${skill.toLowerCase()}, atingindo ${inter?'70%':'80%'} de desempenho adequado ao longo do mês com apoio de estratégias estruturadas`,
+    est_cp:`Atividades graduadas do simples ao complexo; andaimento progressivo com retirada progressiva; reforço ao esforço; material concreto e visual; articulação com escola e família`,
+    crit_cp:`${inter?'70%':'80%'} de desempenho adequado em sessão ao final do mês (registro observacional)`,
+    meta_lp:`Consolidar ${skill.toLowerCase()} com desempenho funcional e autonomia dentro do nível da série/faixa etária`,
+    est_lp:`Generalização das estratégias aprendidas; redução progressiva do suporte; articulação com escola e família para consistência`,
+    crit_lp:`Desempenho funcional observável em reavaliação semestral; relato positivo de professora e família`
+  };
+}
+
+/* ══ EXTRAÇÃO DE TEXTO ══ */
+async function extractText(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='txt')return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});
+  if(ext==='docx')return new Promise((res,rej)=>{const r=new FileReader();r.onload=async e=>{try{const o=await mammoth.extractRawText({arrayBuffer:e.target.result});res(o.value);}catch(err){rej(err);}};r.onerror=rej;r.readAsArrayBuffer(file);});
+  if(ext==='pdf'){
+    if(typeof pdfjsLib==='undefined')throw new Error('Biblioteca PDF não carregada. Verifique sua conexão.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    return new Promise((res,rej)=>{const r=new FileReader();r.onload=async e=>{try{const pdf=await pdfjsLib.getDocument({data:new Uint8Array(e.target.result)}).promise;let txt='';for(let i=1;i<=pdf.numPages;i++){const p=await pdf.getPage(i);const c=await p.getTextContent();txt+=c.items.map(s=>s.str).join(' ')+'\n';}res(txt);}catch(err){rej(err);}};r.onerror=rej;r.readAsArrayBuffer(file);});
+  }
+  throw new Error('Formato não suportado. Use .docx, .pdf ou .txt');
+}
+
+/* ══ ESTADO ══ */
+let curFile=null,docHTML='';
+
+function goStep(n){
+  [1,2].forEach(i=>document.getElementById('step'+i).style.display=i===n?'block':'none');
+  document.getElementById('si1').className='stp '+(n>1?'done':'active');
+  document.getElementById('si2').className='stp '+(n>=2?'active':'pend');
+  document.getElementById('d12').className='sdiv'+(n>=2?' done':'');
+  if(n===1){
+    curFile=null;
+    document.getElementById('fbadge').style.display='none';
+    document.getElementById('btnGerar').style.display='none';
+    document.getElementById('fi').value='';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showA(step,type,msg){const el=document.getElementById('alrt'+step);el.innerHTML=msg?`<div class="alrt alrt-${type}">${msg}</div>`:'';}
+
+function setLdgStep(n,title,sub){
+  if(title)document.getElementById('ldgTitle').textContent=title;
+  if(sub)document.getElementById('ldgSub').textContent=sub;
+  [1,2,3,4].forEach(i=>{const el=document.getElementById('ls'+i);if(i<n){el.className='ldg-step done-s';el.querySelector('.ic').textContent='✓';}else if(i===n){el.className='ldg-step curr-s';el.querySelector('.ic').textContent='⏳';}else{el.className='ldg-step wait-s';el.querySelector('.ic').textContent='•';}});
+}
+
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+const upz=document.getElementById('upz');
+upz.addEventListener('dragover',e=>{e.preventDefault();upz.classList.add('drag');});
+upz.addEventListener('dragleave',()=>upz.classList.remove('drag'));
+upz.addEventListener('drop',e=>{e.preventDefault();upz.classList.remove('drag');if(e.dataTransfer.files[0])onFile(e.dataTransfer.files[0]);});
+
+function onFile(f){
+  if(!f)return;
+  curFile=f;
+  const ext=f.name.split('.').pop().toLowerCase();
+  document.getElementById('fbadge').style.display='flex';
+  document.getElementById('fbadge').innerHTML=`<div class="fbadge"><span class="fb-ic">${ext==='pdf'?'📕':ext==='txt'?'📃':'📘'}</span><div><div class="fb-name">${f.name}</div><div class="fb-sz">${(f.size/1024).toFixed(1)} KB · ${ext.toUpperCase()}</div></div></div>`;
+  showA(1,'','');
+  document.getElementById('btnGerar').style.display='block';
+}
+
+async function startAnalysis(){
+  if(!curFile){showA(1,'err','Selecione um arquivo antes de gerar.');return;}
+  document.getElementById('btnGerar').style.display='none';
+  document.getElementById('ldgBox').style.display='block';
+  document.getElementById('upz').style.pointerEvents='none';
+  document.getElementById('upz').style.opacity='.45';
+  setLdgStep(1,'Gerando PDI…','Extraindo texto do arquivo.');
+  try{
+    const txt=await extractText(curFile);
+    await delay(200);
+    setLdgStep(2,'Gerando PDI…','Identificando dados do paciente.');
+    await delay(200);
+    setLdgStep(3,'Gerando PDI…','Classificando habilidades por área.');
+    await delay(300);
+    const data=analyzeLaudo(txt);
+    setLdgStep(4,'Gerando PDI…','Gerando metas por sessão.');
+    await delay(400);
+    // Preenche ocultos
+    const set=(id,v)=>{const e=document.getElementById(id);if(e&&v)e.value=v;};
+    const id=data.identificacao,cl=data.clinico;
+    set('fn',id.nome);set('fi2',id.idade);set('fse',id.serie);set('fes',id.escola);set('ftu',id.turno);set('fre',id.responsavel);set('fpr',id.profissional);
+    set('fdi',cl.diagnostico);set('fqu',cl.queixas);set('fen',cl.encaminhamentos);
+    document.getElementById('fdt').value=new Date().toISOString().split('T')[0];
+    // Constrói skills ocultos (necessário para readForm)
+    buildSkillsHidden(data.sintese);
+    // Gera documento
+    const d=readForm(data.sintese);
+    docHTML=buildDoc(d,numSessoes);
+    document.getElementById('pvBox').innerHTML=docHTML;
+    document.getElementById('prtArea').innerHTML=docHTML;
+    // Resumo
+    const tots=countTargets(data.sintese);
+    document.getElementById('pdiSummary').textContent=`${tots.inter} habilidade(s) com necessidade de intervenção · ${tots.apr} com necessidade de aprimoramento · ${numSessoes} sessões/mês`;
+    document.getElementById('ldgBox').style.display='none';
+    document.getElementById('upz').style.pointerEvents='';
+    document.getElementById('upz').style.opacity='';
+    goStep(2);
+  }catch(err){
+    document.getElementById('ldgBox').style.display='none';
+    document.getElementById('upz').style.pointerEvents='';
+    document.getElementById('upz').style.opacity='';
+    document.getElementById('btnGerar').style.display='block';
+    showA(1,'err','<strong>Erro ao processar o arquivo:</strong> '+err.message);
+  }
+}
+
+function countTargets(sintese){
+  let inter=0,apr=0;
+  Object.values(sintese).forEach(skills=>skills.forEach(([,cls])=>{if(cls==='Necessita de intervenção')inter++;else if(cls==='Necessita de aprimoramento')apr++;}));
+  return{inter,apr};
+}
+
+function buildSkillsHidden(sintese){
+  const cont=document.getElementById('skSec');
+  cont.innerHTML='';
+  Object.entries(AREAS).forEach(([k,a])=>{
+    (sintese[k]||[]).forEach((sd,idx)=>{
+      const tr=document.createElement('tr');
+      tr.dataset.area=k;tr.dataset.idx=idx;
+      tr.innerHTML=`<td class="sn">${sd[0]}</td><td><select><option value="${sd[1]}" selected>${sd[1]}</option></select></td><td><textarea>${sd[2]||''}</textarea></td>`;
+      cont.appendChild(tr);
+    });
+  });
+}
+
+function readForm(sintese){
+  const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+  return{
+    identificacao:{nome:g('fn')||'',idade:g('fi2')||'[A definir]',serie:g('fse')||'[A definir]',escola:g('fes')||'',turno:g('ftu')||'',responsavel:g('fre')||'',profissional:g('fpr')||'',data:g('fdt')||new Date().toISOString().split('T')[0]},
+    clinico:{diagnostico:g('fdi')||'[A definir]',queixas:g('fqu')||'[A definir]',encaminhamentos:g('fen')||'[A definir]'},
+    sintese
+  };
+}
+
+/* ══ CONSTRUÇÃO DO DOCUMENTO ══ */
+function buildDoc(d,nSess){
+  const id=d.identificacao,cl=d.clinico,sint=d.sintese;
+  const freqLabel={2:'Quinzenal',4:'1x por semana',8:'2x por semana',12:'3x por semana'}[nSess]||(nSess+'x/mês');
+  const dtBase=id.data?new Date(id.data+'T12:00:00'):new Date();
+  const fmtDate=d=>d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const today=fmtDate(dtBase);
+  const dtAtual=new Date(dtBase);dtAtual.setMonth(dtAtual.getMonth()+1);
+  const dataAtualizacao=fmtDate(dtAtual);
+  const clsC=c=>c==='Assimilado'?'ca':c==='Necessita de aprimoramento'?'cn':c==='Necessita de intervenção'?'ci':'cz';
+
+  let h=`<div class="pdi">
+<div class="pdi-banner"><h1>Plano Interventivo</h1><p>Psicopedagogia Clínica &nbsp;·&nbsp; ${today}</p></div>
+<table class="pdi-it">
+<tr><td class="lb">Paciente</td><td colspan="3" style="color:#888;font-style:italic">Identificação preservada no prontuário</td></tr>
+<tr><td class="lb">Idade</td><td>${id.idade}</td><td class="lb">Série / Ano</td><td>${id.serie}</td></tr>
+<tr><td class="lb">Frequência</td><td>${freqLabel} (${nSess} sessões/mês)</td><td class="lb">Profissional</td><td>${id.profissional||'___________________________'}</td></tr>
+<tr><td class="lb">Data de início do PDI</td><td>${today}</td><td class="lb">Data de atualização</td><td>${dataAtualizacao}</td></tr>
+</table>
+<div class="pdi-sec">Dados Clínicos</div>
+<table class="pdi-it">
+<tr><td class="lb" style="width:28%">Hipótese diagnóstica</td><td colspan="3">${cl.diagnostico||'—'}</td></tr>
+<tr><td class="lb">Queixas principais</td><td colspan="3">${cl.queixas||'—'}</td></tr>
+<tr><td class="lb">Encaminhamento</td><td colspan="3">${cl.encaminhamentos||'—'}</td></tr>
+</table>`;
+
+  /* ── Síntese de habilidades ── */
+  h+=`<div class="pdi-sec">Síntese das Habilidades</div>`;
+  Object.entries(AREAS).forEach(([k,a])=>{
+    h+=`<div class="pdi-area">${a.icon} ${a.label}</div>
+<table class="pdi-sint-tbl"><thead><tr><th style="width:30%">Habilidade</th><th style="width:18%">Classificação</th><th>O que o documento diz sobre esta habilidade</th></tr></thead><tbody>`;
+    (sint[k]||[]).forEach(([sk,cls,just])=>{
+      h+=`<tr><td class="sn">${sk}</td><td class="${clsC(cls)}">${cls}</td><td style="font-size:7.8pt;line-height:1.5;color:#333">${just||'—'}</td></tr>`;
+    });
+    h+=`</tbody></table>`;
+  });
+  h+=`<div class="pdi-leg"><strong>Legenda:</strong>
+<span class="ca" style="padding:2px 8px;border-radius:3px;margin:0 3px">Assimilado</span>
+<span class="cn" style="padding:2px 8px;border-radius:3px;margin:0 3px">Necessita de aprimoramento</span>
+<span class="ci" style="padding:2px 8px;border-radius:3px;margin:0 3px">Necessita de intervenção</span>
+<span class="cz" style="padding:2px 8px;border-radius:3px;margin:0 3px">Não avaliado</span></div>`;
+
+  /* ── Metas por área — curto prazo ── */
+  h+=`<div class="pb"></div><div class="pdi-sec">Metas Terapêuticas — Curto Prazo (1 mês · ${nSess} sessões)</div>`;
+  h+=buildMetasSection(sint,nSess,'cp',id);
+
+  /* ── Metas por área — longo prazo ── */
+  h+=`<div class="pdi-sec" style="margin-top:16px">Metas Terapêuticas — Longo Prazo (6 meses)</div>`;
+  h+=buildMetasSection(sint,nSess,'lp',id);
+
+  h+=`<div class="pdi-foot">
+<p>Este Plano Interventivo foi elaborado com base na avaliação psicopedagógica clínica.</p>
+<p style="margin-top:4px">Documento de uso exclusivo da equipe terapêutica, família e escola. Não tem fins jurídicos.</p>
+<div class="pdi-sigs">
+<div class="pdi-sig"><div class="pdi-sl"></div><strong>${id.profissional||'Psicopedagoga Clínica'}</strong><br><span style="color:#888">Psicopedagoga Clínica</span></div>
+<div class="pdi-sig"><div class="pdi-sl"></div><strong>Responsável pelo paciente</strong><br><span style="color:#888">Data: ${today}</span></div>
+</div></div></div>`;
+  return h;
+}
+
+function buildMetasSection(sint,nSess,tipo,ident){
+  ident=ident||{};
+  let h='';
+  let temAlgo=false;
+  Object.entries(AREAS).forEach(([k,a])=>{
+    const alvos=(sint[k]||[]).filter(([,cls])=>cls==='Necessita de intervenção'||cls==='Necessita de aprimoramento');
+    if(!alvos.length)return;
+    temAlgo=true;
+    h+=`<div class="pdi-area">${a.icon} ${a.label}</div>`;
+    alvos.forEach(([sk,cls])=>{
+      const tpl=GT[sk]||genMetaGenerica(sk,cls,a.label);
+      const meta=tpl['meta_'+tipo]||tpl.meta_cp||'';
+      const est=tpl.est_cp||'';
+      const prazo=tipo==='cp'?`1 mês<br>${nSess} sessões`:'6 meses';
+      h+=`<div class="pdi-skill-hdr">${sk} <span class="${cls==='Necessita de intervenção'?'ci':'cn'}" style="padding:1px 7px;border-radius:3px;font-size:7.5pt;margin-left:6px">${cls}</span></div>
+<table class="pdi-meta-tbl"><thead><tr><th class="col-meta">Meta terapêutica</th><th class="col-prazo">Prazo</th></tr></thead>
+<tbody><tr><td class="col-meta">${meta}</td><td class="col-prazo">${prazo}</td></tr></tbody></table>`;
+      if(tipo==='cp'){
+        h+=buildDetailedSessionPlan(sk,cls,nSess,est,ident);
+      }
+    });
+  });
+  if(!temAlgo)h+=`<p style="padding:10px;color:#888;font-size:8pt">Nenhuma habilidade com necessidade de intervenção ou aprimoramento identificada.</p>`;
+  return h;
+}
+
+/* ══ EXPORTAR ══ */
+function doPrint(){window.print();}
+function doDL(){
+  const nome=document.getElementById('fn').value.trim()||'Paciente';
+  const dt=new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+  const css=`body{font-family:Arial,sans-serif;font-size:9.5pt;color:#1a1a1a}
+.pdi-banner{background:#3D1A06;color:white;padding:16px 20px;border-bottom:none}
+.pdi-banner h1{font-size:13pt;font-weight:bold;text-transform:uppercase}
+.pdi-banner p{font-size:8pt}
+.pdi-it{width:100%;border-collapse:collapse;border:1px solid #CCC}
+.pdi-it td{padding:5px 8px;border:1px solid #CCC;font-size:8.5pt}
+.pdi-it .lb{font-weight:bold;background:#F5EDE0;color:#3D1A06}
+.pdi-sec{background:#3D1A06;color:white;padding:6px 12px;font-size:9pt;font-weight:bold;margin-top:12px}
+.pdi-area{background:#C9A227;color:white;padding:5px 12px;font-size:9pt;font-weight:bold;margin-top:5px}
+.pdi-skill-hdr{background:#FAF5EE;padding:5px 9px;font-size:8.5pt;font-weight:bold;color:#3D1A06;border:1px solid #CCC;border-bottom:none}
+.pdi-meta-tbl{width:100%;border-collapse:collapse}
+.pdi-meta-tbl th{background:#F5EDE0;padding:5px 7px;text-align:left;font-size:7.5pt;border:1px solid #CCC;font-weight:bold;color:#3D1A06}
+.pdi-meta-tbl td{padding:5px 7px;border:1px solid #CCC;font-size:8pt;vertical-align:top}
+.pdi-sess{background:#FEF9EE;padding:5px 8px;font-size:7.5pt;border:1px solid #CCC;border-top:none;color:#555}
+.pdi-sint-tbl{width:100%;border-collapse:collapse}
+.pdi-sint-tbl th{background:#F5EDE0;padding:5px 7px;font-size:7.5pt;border:1px solid #CCC;font-weight:bold;color:#3D1A06}
+.pdi-sint-tbl td{padding:4px 7px;border:1px solid #CCC;font-size:8pt}
+.sn{font-weight:bold}
+.ca{background:#D5F5E3;color:#1A7A3E;font-weight:bold}
+.cn{background:#FEF9E7;color:#7D6608;font-weight:bold}
+.ci{background:#FDEDEC;color:#C0392B;font-weight:bold}
+.cz{background:#F4F4F4;color:#888;font-weight:bold}
+.col-prazo{text-align:center;font-weight:bold;color:#3D1A06}
+.pdi-leg{margin:10px 0;padding:7px 11px;border:1px solid #CCC;font-size:7.5pt}
+.pdi-foot{margin-top:28px;padding-top:12px;border-top:2px solid #3D1A06;text-align:center;font-size:7.5pt;color:#666}
+.pdi-sigs{display:flex;gap:60px;justify-content:center;margin-top:14px}
+.pdi-sig{text-align:center}
+.pdi-sl{border-top:1px solid #333;width:170px;margin:0 auto 4px;padding-top:4px}
+.pb{page-break-before:always}`;
+  const full=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='UTF-8'><style>${css}</style></head><body>${docHTML}</body></html>`;
+  const blob=new Blob([full],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`PDI_${nome}_${dt}.doc`;a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
