@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Anamnese Psicopedagógica — Clube Raiz</title>
+<title>Anamnese Psicopedagógica</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -442,6 +442,30 @@ body{
   .bloco,.check-wrap{page-break-inside:avoid}
   #sec-analise{display:block !important}
   #analise-output{border:none;min-height:0}
+  /* oculta textareas e mostra os proxies que expõem todo o conteúdo */
+  textarea{display:none !important}
+  .print-proxy{
+    display:block !important;
+    font-family:'Inter',Arial,sans-serif;
+    font-size:10.5pt;
+    line-height:1.6;
+    color:#1C1410;
+    padding:8px 14px;
+    background:#FAF5EC;
+    border:1.5px solid #D4AF5A;
+    white-space:pre-wrap;
+    word-break:break-word;
+    width:100%;
+    min-height:20px;
+  }
+  /* proxy dentro do queixa-box herda fundo escuro */
+  .queixa-box .print-proxy{
+    background:rgba(255,255,255,0.07);
+    border:1.5px solid rgba(212,175,90,0.4);
+    color:#FAF5EC;
+    font-size:11pt;
+    line-height:1.7;
+  }
 }
 </style>
 </head>
@@ -451,7 +475,7 @@ body{
 <div class="app-header">
   <div class="app-header-left">
     <h1>ANAMNESE PSICOPEDAGÓGICA</h1>
-    <p>Clube Raiz &nbsp;·&nbsp; Roteiro de Entrevista &nbsp;·&nbsp; Uso Exclusivo da Profissional</p>
+    <p> &nbsp;·&nbsp; Roteiro de Entrevista &nbsp;·&nbsp; Uso Exclusivo da Profissional</p>
   </div>
   <div class="app-header-right">
     <button class="hdr-btn" onclick="window.print()">Imprimir / PDF</button>
@@ -561,7 +585,7 @@ body{
   <div class="bloco">
     <div class="bloco-title">Planejamento e Gestação</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">9.</span> A gravidez foi planejada?</div>
+      <div class="q-texto"><span class="q-num">1.</span> A gravidez foi planejada?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q9" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -569,7 +593,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">10.</span> A gravidez foi desejada?</div>
+      <div class="q-texto"><span class="q-num">2.</span> A gravidez foi desejada?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q10" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -577,7 +601,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">11.</span> Como foi a gestação? Houve complicações? Quais foram os cuidados pré-natais?</div>
+      <div class="q-texto"><span class="q-num">3.</span> Como foi a gestação? Houve complicações? Quais foram os cuidados pré-natais?</div>
       <textarea id="q11" class="campo-textarea" rows="3" placeholder="Descreva como foi o período gestacional, intercorrências, uso de medicamentos, pré-natal..."></textarea>
     </div>
   </div>
@@ -585,11 +609,11 @@ body{
   <div class="bloco">
     <div class="bloco-title">Nascimento e Amamentação</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">12.</span> A criança nasceu a termo? Houve intercorrências no parto — cesárea, prematuridade, dificuldade respiratória, sofrimento fetal, lesões?</div>
+      <div class="q-texto"><span class="q-num">4.</span> A criança nasceu a termo? Houve intercorrências no parto — cesárea, prematuridade, dificuldade respiratória, sofrimento fetal, lesões?</div>
       <textarea id="q12" class="campo-textarea" rows="3" placeholder="Descreva as condições do nascimento, tipo de parto e possíveis intercorrências..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">14.</span> Como foi o período de amamentação? Houve dificuldades na introdução alimentar?</div>
+      <div class="q-texto"><span class="q-num">5.</span> Como foi o período de amamentação? Houve dificuldades na introdução alimentar?</div>
       <textarea id="q14" class="campo-textarea" rows="3" placeholder="Informe sobre amamentação, desmame, introdução alimentar, recusas ou dificuldades..."></textarea>
     </div>
   </div>
@@ -612,15 +636,15 @@ body{
   <div class="bloco">
     <div class="bloco-title">Marcos do Desenvolvimento</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">13.</span> Quais foram os principais marcos do desenvolvimento nos primeiros anos — primeiros passos, primeiras palavras?</div>
+      <div class="q-texto"><span class="q-num">6.</span> Quais foram os principais marcos do desenvolvimento nos primeiros anos — primeiros passos, primeiras palavras?</div>
       <textarea id="q13" class="campo-textarea" rows="3" placeholder="Informe quando começou a andar, falar, idade dos primeiros marcos..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">15.</span> Como foi o desenvolvimento motor e cognitivo? Houve preocupações com marcos como falar, andar ou se alimentar com autonomia?</div>
+      <div class="q-texto"><span class="q-num">7.</span> Como foi o desenvolvimento motor e cognitivo? Houve preocupações com marcos como falar, andar ou se alimentar com autonomia?</div>
       <textarea id="q15" class="campo-textarea" rows="3" placeholder="Descreva o desenvolvimento motor, cognitivo, e possíveis atrasos ou dificuldades observadas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">16.</span> Quando ocorreu o desfralde? Como foi esse processo — incluindo escapes noturnos e idas ao banheiro?</div>
+      <div class="q-texto"><span class="q-num">8.</span> Quando ocorreu o desfralde? Como foi esse processo — incluindo escapes noturnos e idas ao banheiro?</div>
       <textarea id="q16" class="campo-textarea" rows="3" placeholder="Informe a idade do desfralde diurno e noturno, como foi o processo..."></textarea>
     </div>
   </div>
@@ -628,7 +652,7 @@ body{
   <div class="bloco">
     <div class="bloco-title">Primeiros Anos Escolares</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">17.</span> A criança ou adolescente apresenta dificuldades escolares desde os primeiros anos?</div>
+      <div class="q-texto"><span class="q-num">9.</span> A criança ou adolescente apresenta dificuldades escolares desde os primeiros anos?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q17" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -637,7 +661,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">18.</span> Como a criança ou adolescente lida com a aprendizagem? Há comportamentos específicos na escola — dificuldades com leitura, escrita, concentração?</div>
+      <div class="q-texto"><span class="q-num">10.</span> Como a criança ou adolescente lida com a aprendizagem? Há comportamentos específicos na escola — dificuldades com leitura, escrita, concentração?</div>
       <textarea id="q18" class="campo-textarea" rows="3" placeholder="Descreva como a criança se relaciona com o aprendizado, quais as principais dificuldades observadas..."></textarea>
     </div>
   </div>
@@ -660,27 +684,27 @@ body{
   <div class="bloco">
     <div class="bloco-title">Saúde Geral</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">3.</span> O(a) paciente possui algum diagnóstico? Qual, quando foi recebido e quem realizou a avaliação?</div>
+      <div class="q-texto"><span class="q-num">11.</span> O(a) paciente possui algum diagnóstico? Qual, quando foi recebido e quem realizou a avaliação?</div>
       <textarea id="q3" class="campo-textarea" rows="3" placeholder="Informe o diagnóstico, data de recebimento, profissional que realizou..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">2.</span> O(a) paciente faz uso de algum medicamento? Informar nome, dosagem e horário.</div>
+      <div class="q-texto"><span class="q-num">12.</span> O(a) paciente faz uso de algum medicamento? Informar nome, dosagem e horário.</div>
       <textarea id="q2" class="campo-textarea" rows="2" placeholder="Nome do medicamento · dosagem · horário de administração (ou 'Não faz uso')"></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">37.</span> Há algum histórico médico relevante — doenças crônicas, alergias, hospitalizações?</div>
+      <div class="q-texto"><span class="q-num">13.</span> Há algum histórico médico relevante — doenças crônicas, alergias, hospitalizações?</div>
       <textarea id="q37" class="campo-textarea" rows="3" placeholder="Informe doenças crônicas, alergias diagnosticadas, hospitalizações importantes..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">38.</span> Já passou por algum tratamento psicológico, psiquiátrico ou psicoeducacional? Como foi?</div>
+      <div class="q-texto"><span class="q-num">14.</span> Já passou por algum tratamento psicológico, psiquiátrico ou psicoeducacional? Como foi?</div>
       <textarea id="q38" class="campo-textarea" rows="3" placeholder="Descreva os tratamentos realizados, período, resultado..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">39.</span> Como é a rotina de cuidados com a saúde? Há acompanhamento médico regular?</div>
+      <div class="q-texto"><span class="q-num">15.</span> Como é a rotina de cuidados com a saúde? Há acompanhamento médico regular?</div>
       <textarea id="q39" class="campo-textarea" rows="2" placeholder="Descreva a rotina de saúde, especialidades acompanhadas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">40.</span> Apresenta queixas físicas frequentes — dores de cabeça, dores no corpo — que possam estar relacionadas a questões emocionais?</div>
+      <div class="q-texto"><span class="q-num">16.</span> Apresenta queixas físicas frequentes — dores de cabeça, dores no corpo — que possam estar relacionadas a questões emocionais?</div>
       <textarea id="q40" class="campo-textarea" rows="2" placeholder="Informe queixas físicas recorrentes e possível relação com fatores emocionais..."></textarea>
     </div>
   </div>
@@ -688,23 +712,23 @@ body{
   <div class="bloco">
     <div class="bloco-title">Histórico Familiar</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">4.</span> Como a família descreve a dinâmica de convivência entre seus membros?</div>
+      <div class="q-texto"><span class="q-num">17.</span> Como a família descreve a dinâmica de convivência entre seus membros?</div>
       <textarea id="q4" class="campo-textarea" rows="3" placeholder="Descreva a dinâmica familiar, rotinas de convivência, qualidade das relações..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">5.</span> Há histórico de doenças psicológicas, psiquiátricas ou neurológicas na família?</div>
+      <div class="q-texto"><span class="q-num">18.</span> Há histórico de doenças psicológicas, psiquiátricas ou neurológicas na família?</div>
       <textarea id="q5" class="campo-textarea" rows="2" placeholder="Informe se há histórico familiar de transtornos, diagnósticos, condições neurológicas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">6.</span> Algum membro da família já recebeu diagnóstico de transtorno de aprendizagem, autismo, TDAH ou problemas emocionais?</div>
+      <div class="q-texto"><span class="q-num">19.</span> Algum membro da família já recebeu diagnóstico de transtorno de aprendizagem, autismo, TDAH ou problemas emocionais?</div>
       <textarea id="q6" class="campo-textarea" rows="2" placeholder="Cite o parentesco e o diagnóstico recebido..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">7.</span> A criança ou adolescente tem irmãos? Como é a relação entre eles?</div>
+      <div class="q-texto"><span class="q-num">20.</span> A criança ou adolescente tem irmãos? Como é a relação entre eles?</div>
       <textarea id="q7" class="campo-textarea" rows="2" placeholder="Informe número de irmãos, idades e qualidade do relacionamento..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">8.</span> Como a família lida com conflitos? Há algo que dificulta a comunicação entre os membros?</div>
+      <div class="q-texto"><span class="q-num">21.</span> Como a família lida com conflitos? Há algo que dificulta a comunicação entre os membros?</div>
       <textarea id="q8" class="campo-textarea" rows="3" placeholder="Descreva como conflitos são tratados em casa e possíveis dificuldades de comunicação..."></textarea>
     </div>
   </div>
@@ -727,11 +751,11 @@ body{
   <div class="bloco">
     <div class="bloco-title">Histórico Escolar</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">21.</span> Como foi a adaptação escolar?</div>
+      <div class="q-texto"><span class="q-num">22.</span> Como foi a adaptação escolar?</div>
       <textarea id="q21" class="campo-textarea" rows="3" placeholder="Descreva a chegada à escola, período de adaptação, reações..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">22.</span> Tem histórico de dificuldades de aprendizagem ou de retenção escolar?</div>
+      <div class="q-texto"><span class="q-num">23.</span> Tem histórico de dificuldades de aprendizagem ou de retenção escolar?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q22" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -739,7 +763,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">26.</span> Já ficou retido(a) em algum ano?</div>
+      <div class="q-texto"><span class="q-num">24.</span> Já ficou retido(a) em algum ano?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q26" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -747,7 +771,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">27.</span> É frequente na escola?</div>
+      <div class="q-texto"><span class="q-num">25.</span> É frequente na escola?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q27" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -756,7 +780,7 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">28.</span> Já está alfabetizado(a)?</div>
+      <div class="q-texto"><span class="q-num">26.</span> Já está alfabetizado(a)?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q28" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -764,19 +788,19 @@ body{
       </div>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">23.</span> Há algum tipo de apoio escolar — reforço, acompanhamento psicopedagógico ou psicológico?</div>
+      <div class="q-texto"><span class="q-num">27.</span> Há algum tipo de apoio escolar — reforço, acompanhamento psicopedagógico ou psicológico?</div>
       <textarea id="q23" class="campo-textarea" rows="2" placeholder="Informe os apoios escolares que a criança já recebe ou recebeu..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">24.</span> Quais são as dificuldades que mais se destacam na escola — atenção, memória, disciplina, comportamento?</div>
+      <div class="q-texto"><span class="q-num">28.</span> Quais são as dificuldades que mais se destacam na escola — atenção, memória, disciplina, comportamento?</div>
       <textarea id="q24" class="campo-textarea" rows="3" placeholder="Descreva as principais dificuldades observadas na escola..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">25.</span> Como os professores e outros profissionais avaliam o desenvolvimento escolar?</div>
+      <div class="q-texto"><span class="q-num">29.</span> Como os professores e outros profissionais avaliam o desenvolvimento escolar?</div>
       <textarea id="q25" class="campo-textarea" rows="3" placeholder="Informe a visão dos professores, relatórios escolares, reuniões pedagógicas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">29.</span> Já sofreu bullying?</div>
+      <div class="q-texto"><span class="q-num">30.</span> Já sofreu bullying?</div>
       <div class="sn-wrap">
         <span class="sn-label">Resposta:</span>
         <label class="sn-opt"><input type="radio" name="q29" value="sim"><span class="sn-circle"></span><span class="sn-text">Sim</span></label>
@@ -788,23 +812,23 @@ body{
   <div class="bloco">
     <div class="bloco-title">Comportamento e Emocional</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">30.</span> Como reage a mudanças e situações novas?</div>
+      <div class="q-texto"><span class="q-num">31.</span> Como reage a mudanças e situações novas?</div>
       <textarea id="q30" class="campo-textarea" rows="2" placeholder="Descreva como a criança/adolescente reage a mudanças de rotina ou situações inesperadas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">31.</span> Há comportamentos repetitivos, compulsivos ou características particulares que chamam atenção?</div>
+      <div class="q-texto"><span class="q-num">32.</span> Há comportamentos repetitivos, compulsivos ou características particulares que chamam atenção?</div>
       <textarea id="q31" class="campo-textarea" rows="2" placeholder="Descreva comportamentos repetitivos, rituais, estereotipias, manias..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">32.</span> Como lida com frustrações, perdas ou situações estressantes?</div>
+      <div class="q-texto"><span class="q-num">33.</span> Como lida com frustrações, perdas ou situações estressantes?</div>
       <textarea id="q32" class="campo-textarea" rows="2" placeholder="Descreva as reações diante de frustração, birras, choro, isolamento..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">33.</span> Já apresentou sintomas de ansiedade, tristeza excessiva, agressividade ou outros sinais de dificuldades emocionais?</div>
+      <div class="q-texto"><span class="q-num">34.</span> Já apresentou sintomas de ansiedade, tristeza excessiva, agressividade ou outros sinais de dificuldades emocionais?</div>
       <textarea id="q33" class="campo-textarea" rows="3" placeholder="Descreva sinais emocionais observados, frequência, gatilhos..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">34.</span> Existem situações em que se sente particularmente desconfortável ou inseguro(a)?</div>
+      <div class="q-texto"><span class="q-num">35.</span> Existem situações em que se sente particularmente desconfortável ou inseguro(a)?</div>
       <textarea id="q34" class="campo-textarea" rows="2" placeholder="Descreva situações que geram desconforto, medo ou insegurança..."></textarea>
     </div>
   </div>
@@ -968,11 +992,11 @@ body{
     <div class="bloco-title">Sono</div>
     <div class="grid-2">
       <div class="q-item">
-        <div class="q-texto"><span class="q-num">35.</span> Quantas horas dorme por dia, em média?</div>
+        <div class="q-texto"><span class="q-num">36.</span> Quantas horas dorme por dia, em média?</div>
         <textarea id="q35" class="campo-textarea" rows="2" placeholder="Ex.: 9 horas por noite, dorme por volta das 21h..."></textarea>
       </div>
       <div class="q-item">
-        <div class="q-texto"><span class="q-num">36.</span> Onde dorme? Com quem?</div>
+        <div class="q-texto"><span class="q-num">37.</span> Onde dorme? Com quem?</div>
         <textarea id="q36" class="campo-textarea" rows="2" placeholder="Ex.: quarto próprio, sozinho(a) / com os pais..."></textarea>
       </div>
     </div>
@@ -1008,19 +1032,19 @@ body{
   <div class="bloco">
     <div class="bloco-title">Vida Social e Relações</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">19.</span> Como se comporta em ambientes sociais — com amigos, na escola, com parentes?</div>
+      <div class="q-texto"><span class="q-num">38.</span> Como se comporta em ambientes sociais — com amigos, na escola, com parentes?</div>
       <textarea id="q19" class="campo-textarea" rows="2" placeholder="Descreva o comportamento social da criança/adolescente em diferentes contextos..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">20.</span> Tem dificuldades de socialização ou de interação com outras crianças e adolescentes?</div>
+      <div class="q-texto"><span class="q-num">39.</span> Tem dificuldades de socialização ou de interação com outras crianças e adolescentes?</div>
       <textarea id="q20" class="campo-textarea" rows="2" placeholder="Informe se há dificuldades de socialização, isolamento, conflitos com pares..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">41.</span> Como é o relacionamento com os colegas na escola e em outras atividades sociais?</div>
+      <div class="q-texto"><span class="q-num">40.</span> Como é o relacionamento com os colegas na escola e em outras atividades sociais?</div>
       <textarea id="q41" class="campo-textarea" rows="2" placeholder="Descreva a qualidade das amizades, grupos, preferências sociais..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">42.</span> Como se comporta nas interações com familiares e amigos?</div>
+      <div class="q-texto"><span class="q-num">41.</span> Como se comporta nas interações com familiares e amigos?</div>
       <textarea id="q42" class="campo-textarea" rows="2" placeholder="Informe como a criança se relaciona com adultos e crianças próximas..."></textarea>
     </div>
   </div>
@@ -1028,15 +1052,15 @@ body{
   <div class="bloco">
     <div class="bloco-title">Rotina e Interesses</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">43.</span> Pratica atividades extracurriculares? Como se comporta nessas atividades?</div>
+      <div class="q-texto"><span class="q-num">42.</span> Pratica atividades extracurriculares? Como se comporta nessas atividades?</div>
       <textarea id="q43" class="campo-textarea" rows="2" placeholder="Informe esportes, artes, aulas extras e como a criança se adapta a elas..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">44.</span> Tem interesse por atividades ou hobbies específicos?</div>
+      <div class="q-texto"><span class="q-num">43.</span> Tem interesse por atividades ou hobbies específicos?</div>
       <textarea id="q44" class="campo-textarea" rows="2" placeholder="Descreva os interesses, preferências, o que gosta de fazer no tempo livre..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">45.</span> Como é a rotina dentro de casa — horários, responsabilidades, uso de telas, lazer?</div>
+      <div class="q-texto"><span class="q-num">44.</span> Como é a rotina dentro de casa — horários, responsabilidades, uso de telas, lazer?</div>
       <textarea id="q45" class="campo-textarea" rows="3" placeholder="Descreva a rotina diária, horários de tela, organização familiar, responsabilidades da criança..."></textarea>
     </div>
   </div>
@@ -1059,11 +1083,11 @@ body{
   <div class="bloco">
     <div class="bloco-title">Objetivos e Expectativas da Família</div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">46.</span> Quais são as maiores preocupações da família em relação ao desenvolvimento da criança ou adolescente?</div>
+      <div class="q-texto"><span class="q-num">45.</span> Quais são as maiores preocupações da família em relação ao desenvolvimento da criança ou adolescente?</div>
       <textarea id="q46" class="campo-textarea" rows="4" placeholder="Descreva as preocupações centrais da família com o desenvolvimento..."></textarea>
     </div>
     <div class="q-item">
-      <div class="q-texto"><span class="q-num">47.</span> Quais são as metas da família para o acompanhamento psicopedagógico?</div>
+      <div class="q-texto"><span class="q-num">46.</span> Quais são as metas da família para o acompanhamento psicopedagógico?</div>
       <textarea id="q47" class="campo-textarea" rows="4" placeholder="Descreva o que a família espera alcançar com o acompanhamento..."></textarea>
     </div>
   </div>
@@ -1122,6 +1146,31 @@ function confirmarLimpar(){
     document.getElementById('sec-analise').style.display = 'none';
   }
 }
+
+/* ═══════════════════════════════════════════
+   IMPRESSÃO — EXPANDE TEXTAREAS COMPLETAS
+   Antes de imprimir, cada <textarea> ganha um
+   <div class="print-proxy"> irmão com todo o
+   conteúdo visível. Após a impressão, os divs
+   são removidos e o formulário volta ao normal.
+═══════════════════════════════════════════ */
+function prepararImpressao(){
+  document.querySelectorAll('textarea').forEach(function(ta){
+    // evita duplicar proxies em cliques repetidos
+    if(ta.nextElementSibling && ta.nextElementSibling.classList.contains('print-proxy')) return;
+    var proxy = document.createElement('div');
+    proxy.className = 'print-proxy';
+    proxy.style.display = 'none'; // oculto na tela; @media print o exibe
+    // copia o texto (ou texto em branco se vazio)
+    proxy.textContent = ta.value;
+    ta.insertAdjacentElement('afterend', proxy);
+  });
+}
+function restaurarImpressao(){
+  document.querySelectorAll('.print-proxy').forEach(function(d){ d.remove(); });
+}
+window.addEventListener('beforeprint', prepararImpressao);
+window.addEventListener('afterprint',  restaurarImpressao);
 
 /* ═══════════════════════════════════════════
    HELPERS DE LEITURA
