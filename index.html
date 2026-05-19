@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triagem,Altas Habilidades/Superdotação</title>
+<style>
+:root {
+  --navy: #1a3a5c;
+  --navy-light: #244f7d;
+  --gold: #c9982a;
+  --gold-light: #e8b84b;
+  --cream: #f8f5f0;
+  --white: #ffffff;
+  --green: #2a6b47;
+  --green-light: #e8f5ee;
+  --amber: #c9650a;
+  --amber-light: #fff3e0;
+  --red-dark: #7b1d1d;
+  --red-light: #fdf0f0;
+  --text-dark: #1a202c;
+  --text-mid: #3d4a5c;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 4px 24px rgba(26,58,92,0.10);
+  --shadow-sm: 0 2px 8px rgba(26,58,92,0.07);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  line-height: 1.7;
+}
+h1,h2,h3,h4 { font-family: 'Georgia', serif; line-height: 1.3; }
+.sans { font-family: 'Arial', 'Helvetica', sans-serif; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--navy);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+}
+.nav-brand { color: var(--white); font-size: 1.05rem; font-weight: bold; letter-spacing: 0.01em; }
+.nav-brand span { color: var(--gold-light); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a {
+  color: rgba(255,255,255,0.82); text-decoration: none;
+  font-family: Arial, sans-serif; font-size: 0.85rem; letter-spacing: 0.03em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #0f2540 100%);
+  padding: 120px 2rem 80px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9982a' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-content { position: relative; max-width: 820px; margin: 0 auto; }
+.hero-badge {
+  display: inline-block;
+  background: rgba(201,152,42,0.18); color: var(--gold-light);
+  border: 1px solid rgba(201,152,42,0.35);
+  padding: 0.35rem 1rem; border-radius: 20px;
+  font-family: Arial, sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+.hero h1 { color: var(--white); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1rem; }
+.hero h1 em { color: var(--gold-light); font-style: normal; }
+.hero p { color: rgba(255,255,255,0.75); font-size: 1.05rem; max-width: 640px; margin: 0 auto 2.5rem; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--gold); color: var(--navy);
+  padding: 0.9rem 2.2rem; border-radius: 8px;
+  font-family: Arial, sans-serif; font-size: 0.95rem; font-weight: bold;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(201,152,42,0.35);
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,152,42,0.45); }
+.btn-primary svg { width: 18px; height: 18px; }
+
+/* ── CONTAINER ── */
+.container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── SECTION ── */
+section { padding: 5rem 1.5rem; }
+section:nth-child(even) { background: var(--white); }
+.section-label {
+  font-family: Arial, sans-serif; font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold); font-weight: bold;
+  margin-bottom: 0.5rem; display: block;
+}
+.section-title { font-size: clamp(1.4rem, 3vw, 2rem); color: var(--navy); margin-bottom: 1rem; }
+.section-desc { color: var(--text-mid); font-size: 1rem; max-width: 720px; margin-bottom: 2.5rem; }
+
+/* ── CARDS ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+.card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 1.8rem; box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.card-icon {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem; font-size: 1.4rem;
+}
+.card h3 { font-size: 1.05rem; color: var(--navy); margin-bottom: 0.5rem; }
+.card p { font-size: 0.9rem; color: var(--text-mid); line-height: 1.6; }
+
+/* ── INFO BOX ── */
+.info-box {
+  background: var(--green-light); border-left: 4px solid var(--green);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+}
+.info-box p { font-size: 0.95rem; color: #1a3d29; }
+.warning-box {
+  background: var(--amber-light); border-left: 4px solid var(--amber);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+}
+.warning-box p { font-size: 0.95rem; color: #5c3010; }
+
+/* ── TAG LIST ── */
+.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.tag {
+  background: var(--cream); color: var(--navy);
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 0.3rem 0.9rem; font-family: Arial, sans-serif; font-size: 0.82rem;
+}
+
+/* ── COMORBIDITY TABLE ── */
+.comor-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+.comor-item {
+  display: grid; grid-template-columns: 220px 1fr;
+  gap: 1rem; background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1.2rem 1.5rem;
+  align-items: start;
+}
+.comor-item:hover { border-color: var(--navy); }
+.comor-label { font-weight: bold; color: var(--navy); font-size: 0.95rem; }
+.comor-desc { font-size: 0.9rem; color: var(--text-mid); }
+@media (max-width: 640px) {
+  .comor-item { grid-template-columns: 1fr; }
+}
+
+/* ── CTA SECTION ── */
+.cta-section {
+  background: linear-gradient(135deg, var(--navy) 0%, #0f2540 100%);
+  text-align: center; padding: 5rem 1.5rem;
+}
+.cta-section h2 { color: var(--white); margin-bottom: 1rem; }
+.cta-section p { color: rgba(255,255,255,0.75); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+/* ─────────────────────────────────────── */
+/* ── PAGE: CHECKLIST ── */
+/* ─────────────────────────────────────── */
+#page-checklist { display: none; }
+#page-report { display: none; }
+
+.checklist-wrap {
+  min-height: 100vh; padding-top: 80px;
+  background: var(--cream);
+}
+.checklist-header {
+  background: var(--navy); color: var(--white);
+  padding: 2.5rem 1.5rem 2rem; text-align: center;
+}
+.checklist-header h2 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+.checklist-header p { color: rgba(255,255,255,0.72); font-size: 0.95rem; }
+
+/* Progress */
+.progress-bar-wrap {
+  background: var(--white); padding: 1rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: sticky; top: 64px; z-index: 50;
+}
+.progress-info { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-family: Arial, sans-serif; font-size: 0.82rem; color: var(--text-muted); }
+.progress-track { height: 6px; background: var(--border); border-radius: 3px; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.4s ease; }
+
+/* ID Fields */
+.id-fields {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; margin: 2rem auto; max-width: 760px;
+  box-shadow: var(--shadow-sm);
+}
+.id-fields h3 { color: var(--navy); margin-bottom: 1.2rem; font-size: 1.1rem; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 560px) { .field-grid { grid-template-columns: 1fr; } }
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.field-group label { font-family: Arial, sans-serif; font-size: 0.82rem; color: var(--text-mid); font-weight: bold; letter-spacing: 0.02em; }
+.field-group input, .field-group select {
+  padding: 0.6rem 0.85rem; border: 1.5px solid var(--border); border-radius: 6px;
+  font-family: Arial, sans-serif; font-size: 0.9rem; color: var(--text-dark);
+  background: var(--white); transition: border-color 0.2s;
+}
+.field-group input:focus, .field-group select:focus {
+  outline: none; border-color: var(--navy);
+}
+
+/* Domain Section */
+.domain-section {
+  max-width: 760px; margin: 2rem auto; background: var(--white);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.domain-header {
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 1.2rem 1.8rem; display: flex; align-items: center; gap: 1rem;
+}
+.domain-number {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(201,152,42,0.22); color: var(--gold-light);
+  font-family: Arial, sans-serif; font-size: 0.95rem; font-weight: bold;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.domain-title { color: var(--white); font-size: 1rem; font-weight: bold; }
+.domain-subtitle { color: rgba(255,255,255,0.65); font-size: 0.82rem; font-family: Arial, sans-serif; }
+
+/* Question Row */
+.question-list { padding: 0.5rem 0; }
+.question-row {
+  padding: 1rem 1.8rem; border-bottom: 1px solid #f0f4f8;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 1rem; align-items: center;
+  transition: background 0.15s;
+}
+.question-row:hover { background: #fafbfc; }
+.question-row:last-child { border-bottom: none; }
+.question-text { font-size: 0.93rem; color: var(--text-dark); }
+.q-num { font-family: Arial, sans-serif; font-size: 0.75rem; color: var(--text-muted); margin-right: 0.4rem; font-weight: bold; }
+.options {
+  display: flex; gap: 0.4rem; flex-shrink: 0;
+}
+.opt-btn {
+  padding: 0.35rem 0.75rem; border-radius: 20px;
+  border: 1.5px solid var(--border); background: var(--white);
+  font-family: Arial, sans-serif; font-size: 0.78rem; cursor: pointer;
+  transition: all 0.15s; color: var(--text-muted); white-space: nowrap;
+}
+.opt-btn:hover { border-color: var(--navy); color: var(--navy); }
+.opt-btn.sel-2 { background: var(--green); border-color: var(--green); color: var(--white); }
+.opt-btn.sel-1 { background: #e8a424; border-color: #e8a424; color: var(--white); }
+.opt-btn.sel-0 { background: #718096; border-color: #718096; color: var(--white); }
+@media (max-width: 560px) {
+  .question-row { grid-template-columns: 1fr; }
+  .options { justify-content: flex-start; }
+}
+
+/* Submit area */
+.submit-area {
+  max-width: 760px; margin: 2rem auto 4rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center;
+}
+.submit-area p { font-family: Arial, sans-serif; font-size: 0.85rem; color: var(--text-muted); }
+.btn-submit {
+  background: var(--gold); color: var(--navy); border: none;
+  padding: 1rem 3rem; border-radius: 8px; font-family: Arial, sans-serif;
+  font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 0.02em;
+  box-shadow: 0 4px 16px rgba(201,152,42,0.35); transition: all 0.2s;
+}
+.btn-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.unanswered-msg {
+  font-family: Arial, sans-serif; font-size: 0.85rem;
+  color: var(--amber); display: none;
+}
+
+/* ─────────────────────────────────────── */
+/* ── PAGE: REPORT ── */
+/* ─────────────────────────────────────── */
+.report-wrap {
+  min-height: 100vh; padding-top: 80px; background: var(--cream);
+}
+.report-actions {
+  max-width: 900px; margin: 2rem auto 0; padding: 0 1.5rem;
+  display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+}
+.btn-action {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.65rem 1.4rem; border-radius: 7px;
+  font-family: Arial, sans-serif; font-size: 0.85rem; font-weight: bold;
+  cursor: pointer; border: none; transition: all 0.2s; text-decoration: none;
+}
+.btn-navy { background: var(--navy); color: var(--white); }
+.btn-navy:hover { background: var(--navy-light); }
+.btn-outline { background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
+.btn-outline:hover { background: var(--cream); }
+.btn-back { background: none; color: var(--text-muted); border: 1.5px solid var(--border); }
+.btn-back:hover { background: var(--white); }
+
+#report-body {
+  max-width: 900px; margin: 1.5rem auto 4rem; padding: 0 1.5rem;
+}
+.report-card {
+  background: var(--white); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem; overflow: hidden;
+}
+.report-card-header {
+  padding: 1.2rem 1.8rem; background: var(--navy);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.report-card-header h3 { color: var(--white); font-size: 1rem; }
+.report-card-header .rch-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(201,152,42,0.25); color: var(--gold-light);
+  font-family: Arial, sans-serif; font-size: 0.85rem; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+.report-card-body { padding: 1.8rem; }
+
+/* Identification table */
+.id-table { width: 100%; font-family: Arial, sans-serif; font-size: 0.9rem; border-collapse: collapse; }
+.id-table td { padding: 0.5rem 0.25rem; }
+.id-table td:first-child { color: var(--text-muted); width: 140px; font-size: 0.82rem; }
+.id-table td:last-child { color: var(--text-dark); font-weight: bold; }
+
+/* Score display */
+.score-main {
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.score-circle {
+  width: 100px; height: 100px; border-radius: 50%;
+  border: 6px solid var(--gold); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.score-circle .sc-num { font-size: 1.8rem; font-weight: bold; color: var(--navy); line-height: 1; }
+.score-circle .sc-max { font-family: Arial, sans-serif; font-size: 0.75rem; color: var(--text-muted); }
+.score-details { flex: 1; }
+.score-pct { font-size: 1.5rem; font-weight: bold; color: var(--navy); }
+.score-level-badge {
+  display: inline-block; padding: 0.3rem 0.9rem; border-radius: 20px;
+  font-family: Arial, sans-serif; font-size: 0.8rem; font-weight: bold;
+  margin-top: 0.4rem; margin-bottom: 0.5rem;
+}
+.score-level-desc { font-size: 0.88rem; color: var(--text-mid); }
+
+/* Domain bars */
+.domain-bars { display: flex; flex-direction: column; gap: 1rem; }
+.dbar-row { }
+.dbar-label { display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-family: Arial, sans-serif; font-size: 0.85rem; }
+.dbar-name { color: var(--text-dark); }
+.dbar-score { color: var(--text-muted); font-size: 0.8rem; }
+.dbar-track { height: 10px; background: var(--border); border-radius: 5px; }
+.dbar-fill { height: 100%; border-radius: 5px; transition: width 0.8s ease; background: var(--navy); }
+
+/* Parecer */
+.parecer-box {
+  border-radius: var(--radius-sm);
+  padding: 1.5rem; margin-bottom: 1.5rem;
+  border: 1.5px solid;
+}
+.parecer-title { font-size: 1rem; font-weight: bold; margin-bottom: 0.75rem; }
+.parecer-text { font-size: 0.95rem; line-height: 1.8; }
+
+/* Indicators list */
+.ind-section { margin-bottom: 1.2rem; }
+.ind-section h4 { font-family: Arial, sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.7rem; }
+.ind-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.ind-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.9rem; color: var(--text-dark); padding: 0.4rem 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+.ind-item:last-child { border-bottom: none; }
+.ind-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+}
+.dot-sim { background: var(--green); }
+.dot-as { background: #e8a424; }
+.ind-domain { font-family: Arial, sans-serif; font-size: 0.72rem; color: var(--text-muted); margin-left: auto; white-space: nowrap; padding-left: 0.5rem; }
+
+/* Recommendations */
+.rec-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.rec-item {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  font-size: 0.93rem; color: var(--text-dark);
+}
+.rec-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--navy); color: var(--white);
+  font-family: Arial, sans-serif; font-size: 0.8rem; font-weight: bold;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* References */
+.ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.ref-item { font-size: 0.85rem; color: var(--text-muted); padding-left: 1.2rem; text-indent: -1.2rem; line-height: 1.6; }
+
+/* Footer */
+.report-footer {
+  max-width: 900px; margin: 0 auto 3rem; padding: 0 1.5rem;
+  font-family: Arial, sans-serif; font-size: 0.78rem; color: var(--text-muted);
+  text-align: center; border-top: 1px solid var(--border); padding-top: 1.2rem;
+}
+
+/* ── PRINT ── */
+@media print {
+  nav, .report-actions, .report-footer { display: none !important; }
+  body { background: white; }
+  .report-wrap { padding-top: 0; }
+  #report-body { margin-top: 0; }
+  .report-card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  .btn-action { display: none; }
+  @page { margin: 2cm; }
+}
+
+/* ── MISC ── */
+.divider { height: 1px; background: var(--border); margin: 2rem 0; }
+.text-center { text-align: center; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.footnote { font-family: Arial, sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+<!-- NAV -->
+<!-- ══════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">AH/SD <span>·</span> Instrumento de Triagem</div>
+  <div class="nav-links" id="nav-links">
+    <a href="#o-que-e">O que é</a>
+    <a href="#comorbidades">Comorbidades</a>
+    <a href="#sobre-instrumento">Instrumento</a>
+    <a href="#" onclick="iniciarChecklist(); return false;" style="color:var(--gold-light); font-weight:bold;">Iniciar Avaliação</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PAGE: INFORMAÇÕES -->
+<!-- ══════════════════════════════════════ -->
+<div id="page-info">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Instrumento de Triagem Profissional</div>
+    <h1>Altas Habilidades/<em>Superdotação</em></h1>
+    <p>Manual de referência com checklist interativo para triagem profissional. Fundamentado na legislação brasileira, nos critérios do CONBRASD e na evidência científica internacional.</p>
+    <button class="btn-primary" onclick="iniciarChecklist()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Iniciar Avaliação
+    </button>
+  </div>
+</section>
+
+<!-- ── O QUE É AH/SD ── -->
+<section id="o-que-e">
+  <div class="container">
+    <span class="section-label">Fundamentos</span>
+    <h2 class="section-title">O que são Altas Habilidades/Superdotação?</h2>
+    <p class="section-desc">
+      Altas Habilidades/Superdotação (AH/SD) constituem uma das áreas da Educação Especial no Brasil, reconhecida pela <strong>Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996)</strong> e regulamentada pela Resolução CNE/CEB nº 02/2001 e pela <strong>Política Nacional de Educação Especial na Perspectiva da Educação Inclusiva (MEC, 2008)</strong>.
+    </p>
+
+    <div class="info-box">
+      <p><strong>Definição legal (MEC, 2008):</strong> "Alunos com altas habilidades/superdotação demonstram potencial elevado em qualquer uma das seguintes áreas, isoladas ou combinadas: intelectual, acadêmica, liderança, psicomotricidade e artes, além de apresentar grande criatividade, envolvimento na aprendizagem e realização de tarefas em áreas de seu interesse."</p>
+    </div>
+
+    <h3 style="color:var(--navy); margin: 2rem 0 1rem; font-size:1.15rem;">O Modelo Triádico de Renzulli</h3>
+    <p style="color:var(--text-mid); margin-bottom:1.5rem;">O modelo mais amplamente reconhecido na literatura científica mundial é o <strong>Modelo dos Três Anéis</strong> (Renzulli, 1978, 2005), que define superdotação como a interação entre três dimensões:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Capacidade Acima da Média</h3>
+        <p>Habilidade intelectual geral ou específica significativamente superior à média para a faixa etária. Pode ser geral (raciocínio, memória, abstração) ou específica (matemática, linguagem, artes, etc.).</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💡</div>
+        <h3>Criatividade</h3>
+        <p>Pensamento original, fluência de ideias, flexibilidade cognitiva, abertura a novas experiências e capacidade de gerar soluções incomuns para problemas convencionais ou complexos.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Comprometimento com a Tarefa</h3>
+        <p>Motivação intrínseca, persistência, dedicação intensa a áreas de interesse, perfeccionismo e alta autocrítica,independente de recompensas externas.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--navy); margin-bottom:1rem; font-size:1.15rem;">Tipos de Superdotação</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🔬</div>
+        <h3>Intelectual/Acadêmica</h3>
+        <p>Alto desempenho em raciocínio lógico, linguagem, ciências ou matemática. Pode ou não coincidir com excelência escolar.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>Criativa/Produtivo-Criativa</h3>
+        <p>Geração de produtos, ideias ou obras originais. Inclui artes visuais, música, escrita criativa, invenção tecnológica, etc.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <h3>Liderança</h3>
+        <p>Habilidade excepcional de influenciar, organizar e engajar pessoas. Forte senso de responsabilidade e capacidade de resolução de conflitos.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏃</div>
+        <h3>Psicomotora</h3>
+        <p>Desempenho motor muito superior: coordenação, equilíbrio, percepção espacial e cinestésica acima da média para a faixa etária.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--navy); margin-bottom:1rem; font-size:1.15rem;">Características Frequentemente Observadas</h3>
+    <div class="tag-list">
+      <span class="tag">Vocabulário avançado para a idade</span>
+      <span class="tag">Aprende com poucos exemplos</span>
+      <span class="tag">Memória excepcional</span>
+      <span class="tag">Pensamento abstrato precoce</span>
+      <span class="tag">Questionamentos filosóficos precoces</span>
+      <span class="tag">Humor sofisticado e irônico</span>
+      <span class="tag">Perfeccionismo elevado</span>
+      <span class="tag">Alta sensibilidade emocional</span>
+      <span class="tag">Preferência por crianças mais velhas ou adultos</span>
+      <span class="tag">Senso de justiça muito aguçado</span>
+      <span class="tag">Tédio crônico em sala de aula</span>
+      <span class="tag">Pensamento divergente</span>
+      <span class="tag">Imaginação rica e elaborada</span>
+      <span class="tag">Curisoidade intelectual intensa</span>
+      <span class="tag">Facilidade em reconhecer padrões</span>
+      <span class="tag">Motivação intrínseca elevada</span>
+    </div>
+
+    <div class="warning-box mt-2">
+      <p><strong>⚠️ Importante:</strong> Nem toda criança com AH/SD apresenta alto rendimento escolar. A superdotação pode ser "mascarada" por ansiedade, TDAH, comportamentos desafiadores, contexto de baixa estimulação ou dupla excepcionalidade. A ausência de excelência acadêmica <strong>não exclui</strong> AH/SD.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMORBIDADES ── -->
+<section id="comorbidades">
+  <div class="container">
+    <span class="section-label">Dupla Excepcionalidade</span>
+    <h2 class="section-title">Transtornos que Podem Coexistir com AH/SD</h2>
+    <p class="section-desc">
+      A <strong>Dupla Excepcionalidade</strong> (Twice-Exceptionality,2e) ocorre quando uma pessoa apresenta AH/SD simultaneamente a outro transtorno do neurodesenvolvimento, de aprendizagem ou de saúde mental. Esta coexistência é mais comum do que se imagina e frequentemente resulta em subidentificação de ambos os quadros, pois os pontos fortes mascaram as dificuldades e vice-versa (Baum et al., 2017; Nielsen, 2002).
+    </p>
+
+    <div class="comor-list">
+      <div class="comor-item">
+        <div class="comor-label">TDAH<br><span style="font-weight:normal; font-size:0.82rem; color:var(--text-muted)">Transtorno do Déficit de Atenção/Hiperatividade</span></div>
+        <div class="comor-desc">É a comorbidade mais frequentemente descrita na literatura. Estima-se que 20 a 30% das pessoas com TDAH apresentam algum nível de superdotação, e vice-versa. A impulsividade, desatenção e hiperatividade podem coexistir com raciocínio excepcionalmente rápido, criatividade elevada e hiperfoco em áreas de interesse (Webb et al., 2016).</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">TEA<br><span style="font-weight:normal; font-size:0.82rem; color:var(--text-muted)">Transtorno do Espectro Autista</span></div>
+        <div class="comor-desc">Habilidades excepcionais em domínios específicos (matemática, memória, música, programação) são frequentes no TEA. O perfil assimétrico,genialidade em certas áreas contrastando com dificuldades sociais e sensoriais,é característico da dupla excepcionalidade AH/SD + TEA (Antshel et al., 2013).</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">Dislexia e Transtornos de Aprendizagem</div>
+        <div class="comor-desc">Alunos com dislexia e AH/SD frequentemente apresentam "aprendizagem assimétrica": vocabulário oral sofisticado e raciocínio avançado, contrastando com dificuldade severa na leitura e escrita. Esse perfil contradiz o estereótipo do superdotado "excelente em tudo" e retarda o diagnóstico de ambas as condições (Lovett & Lewandowski, 2006).</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">Transtornos de Ansiedade</div>
+        <div class="comor-desc">Crianças superdotadas, pela hipersensibilidade emocional e perfeccionismo, apresentam maior prevalência de ansiedade generalizada e fobia social. O excesso de autocrítica e a consciência prematura de ameaças existenciais podem amplificar sintomas ansiosos (Neihart et al., 2002; Dabrowski, 1972,conceito de "sobre-excitabilidade emocional").</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">Depressão e Disforia Existencial</div>
+        <div class="comor-desc">O reconhecimento precoce das injustiças do mundo, a dificuldade de encontrar pares com interesses semelhantes e a sensação crônica de ser "diferente" contribuem para vulnerabilidade depressiva. Adolescentes superdotados não identificados apresentam risco aumentado de depressão e ideação suicida (Webb, 2014).</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">TOC<br><span style="font-weight:normal; font-size:0.82rem; color:var(--text-muted)">Transtorno Obsessivo-Compulsivo</span></div>
+        <div class="comor-desc">O perfeccionismo característico das AH/SD pode confundir-se com ou coexistir com TOC. Rituais ligados a desempenho, ruminação sobre erros e exigência extrema com resultados podem estar presentes. A diferenciação requer avaliação clínica cuidadosa.</div>
+      </div>
+      <div class="comor-item">
+        <div class="comor-label">Altas Habilidades Mascaradas</div>
+        <div class="comor-desc">Comportamentos desafiadores, recusa escolar, desmotivação e baixo rendimento podem ser manifestações de AH/SD não identificadas,e não transtornos primários. O subdesafio crônico, quando não tratado, pode levar ao desenvolvimento de comportamentos disruptivos como mecanismo de enfrentamento (Reis & McCoach, 2000).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOBRE O INSTRUMENTO ── -->
+<section id="sobre-instrumento" style="background:var(--white);">
+  <div class="container">
+    <span class="section-label">Orientações de Uso</span>
+    <h2 class="section-title">Sobre Este Instrumento</h2>
+    <p class="section-desc">Este checklist constitui um <strong>instrumento de triagem profissional</strong>,e não de diagnóstico,para sinalização de indicadores de Altas Habilidades/Superdotação em crianças e adolescentes.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Para quem se destina</h3>
+        <p>Psicólogos, psicopedagogos, professores, coordenadores pedagógicos, neurologistas pediátricos e demais profissionais que trabalham com crianças e adolescentes em contexto educacional ou clínico.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Como preencher</h3>
+        <p>Responda com base em observações sistemáticas da criança/estudante. As opções são: <strong>Sim</strong> (característica presente e frequente), <strong>Às vezes</strong> (parcialmente ou em contextos específicos) e <strong>Não</strong> (ausente ou raramente observada).</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>O que gera</h3>
+        <p>Ao concluir, o instrumento gera automaticamente um <strong>Relatório de Triagem</strong> com pontuação por domínio, análise narrativa fundamentada e parecer profissional sobre a presença de sinais de AH/SD.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Limitações</h3>
+        <p>Este instrumento é uma ferramenta de triagem,não substitui a avaliação psicológica formal. Um resultado positivo indica a necessidade de investigação aprofundada; um resultado negativo não exclui definitivamente AH/SD.</p>
+      </div>
+    </div>
+
+    <div class="info-box mt-2">
+      <p><strong>Base científica:</strong> Os itens deste instrumento foram elaborados com base no Modelo Triádico de Renzulli (1978, 2005), nos critérios da Política Nacional de Educação Especial (MEC, 2008), nas diretrizes do CONBRASD, nas Escalas de Características Comportamentais de Renzulli (RBCSS) e na literatura de Silverman (2002), Pérez &amp; Freitas (2011) e Almeida et al. (2013).</p>
+    </div>
+
+    <div class="text-center mt-2" style="padding-top:1rem;">
+      <button class="btn-primary" onclick="iniciarChecklist()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Iniciar Preenchimento do Checklist
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER INFO -->
+<footer style="background:var(--navy); color:rgba(255,255,255,0.55); text-align:center; padding:2rem 1.5rem; font-family:Arial,sans-serif; font-size:0.8rem;">
+  Instrumento de Triagem,Altas Habilidades/Superdotação &nbsp;·&nbsp; Baseado na legislação brasileira e evidência científica internacional
+</footer>
+
+</div><!-- /page-info -->
+
+
+<!-- ══════════════════════════════════════ -->
+<!-- PAGE: CHECKLIST -->
+<!-- ══════════════════════════════════════ -->
+<div id="page-checklist">
+<div class="checklist-wrap">
+
+  <div class="checklist-header">
+    <h2>Checklist de Triagem,AH/SD</h2>
+    <p>Preencha todos os campos de identificação e responda cada indicador com base na sua observação da criança/estudante.</p>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 de 34 questões respondidas</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div style="max-width:760px; margin:0 auto; padding:0 1rem;">
+
+    <!-- IDENTIFICAÇÃO -->
+    <div class="id-fields">
+      <h3>Identificação</h3>
+      <div class="field-grid">
+        <div class="field-group">
+          <label>Nome da Criança/Estudante</label>
+          <input type="text" id="f-nome" placeholder="Nome completo">
+        </div>
+        <div class="field-group">
+          <label>Idade</label>
+          <input type="text" id="f-idade" placeholder="Ex: 9 anos">
+        </div>
+        <div class="field-group">
+          <label>Ano / Série Escolar</label>
+          <input type="text" id="f-serie" placeholder="Ex: 4º ano EF">
+        </div>
+        <div class="field-group">
+          <label>Nome do Profissional Avaliador</label>
+          <input type="text" id="f-profissional" placeholder="Nome completo">
+        </div>
+        <div class="field-group">
+          <label>Função / Formação</label>
+          <input type="text" id="f-funcao" placeholder="Ex: Psicóloga Educacional">
+        </div>
+        <div class="field-group">
+          <label>Relação com a Criança</label>
+          <select id="f-relacao">
+            <option value="">Selecione...</option>
+            <option>Psicólogo(a)</option>
+            <option>Psicopedagogo(a)</option>
+            <option>Professor(a)</option>
+            <option>Coordenador(a) Pedagógico(a)</option>
+            <option>Neurologista / Pediatra</option>
+            <option>Familiar</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Data da Avaliação</label>
+          <input type="date" id="f-data">
+        </div>
+      </div>
+    </div>
+
+    <div id="checklist-form"></div>
+
+    <div class="submit-area">
+      <p id="unanswered-msg" class="unanswered-msg">⚠️ Ainda há questões sem resposta. Todas as 34 questões devem ser respondidas.</p>
+      <button class="btn-submit" id="btn-submit" onclick="gerarRelatorio()">Gerar Relatório de Triagem</button>
+      <p>O relatório será gerado automaticamente com análise narrativa e parecer profissional.</p>
+    </div>
+
+  </div>
+</div>
+</div><!-- /page-checklist -->
+
+
+<!-- ══════════════════════════════════════ -->
+<!-- PAGE: REPORT -->
+<!-- ══════════════════════════════════════ -->
+<div id="page-report">
+<div class="report-wrap">
+
+  <div class="report-actions">
+    <button class="btn-action btn-back" onclick="voltarChecklist()">← Voltar</button>
+    <button class="btn-action btn-navy" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Imprimir / Salvar PDF
+    </button>
+    <button class="btn-action btn-outline" onclick="copiarRelatorio()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copiar Texto
+    </button>
+  </div>
+
+  <div id="report-body"></div>
+
+  <div class="report-footer">
+    Este relatório foi gerado pelo Instrumento de Triagem de AH/SD e constitui documento de caráter preliminar. Não substitui avaliação psicológica formal. Data de geração: <span id="report-date-footer"></span>
+  </div>
+
+</div>
+</div><!-- /page-report -->
+
+
+<script>
+// ══════════════════════════════════════════
+// DADOS DO CHECKLIST
+// ══════════════════════════════════════════
+const dominios = [
+  {
+    id: 'D1',
+    titulo: 'Capacidade Cognitiva e Intelectual',
+    subtitulo: 'Indicadores de potencial intelectual acima da média',
+    cor: '#1a3a5c',
+    max: 18,
+    questoes: [
+      'Apresenta vocabulário extenso e sofisticado em relação à faixa etária.',
+      'Aprende novas informações com rapidez e facilidade, frequentemente precisando de poucos exemplos.',
+      'Demonstra memória de longo prazo notável,recorda detalhes de eventos, conversas ou leituras com precisão.',
+      'É capaz de pensar de forma abstrata antes do esperado para a idade.',
+      'Estabelece conexões entre informações de áreas diferentes do conhecimento de forma espontânea.',
+      'Realiza raciocínio lógico ou matemático de forma avançada.',
+      'Formula perguntas profundas, filosóficas ou incomuns para a faixa etária.',
+      'Compreende conceitos complexos sem necessidade de muita repetição ou instrução.',
+      'Demonstra interesse intenso e sustentado por temas específicos, acumulando conhecimento aprofundado sobre eles.'
+    ]
+  },
+  {
+    id: 'D2',
+    titulo: 'Criatividade',
+    subtitulo: 'Indicadores de pensamento divergente e originalidade',
+    cor: '#2a4f7c',
+    max: 14,
+    questoes: [
+      'Propõe soluções originais e inusitadas para problemas,pensa "fora da caixa".',
+      'Demonstra pensamento divergente: encontra múltiplas respostas ou perspectivas para uma mesma situação.',
+      'Possui imaginação rica, elaborada e detalhada,cria mundos, histórias ou jogos complexos.',
+      'Questiona convenções, regras ou explicações aceitas, buscando seus próprios fundamentos.',
+      'Apresenta senso estético diferenciado (na arte, música, organização espacial, escrita etc.).',
+      'Demonstra humor inteligente, irônico ou sofisticado para a faixa etária.',
+      'Cria histórias, obras ou projetos com alto nível de detalhamento e originalidade.'
+    ]
+  },
+  {
+    id: 'D3',
+    titulo: 'Engajamento e Comprometimento com Tarefas',
+    subtitulo: 'Motivação intrínseca, persistência e perfeccionismo',
+    cor: '#1b5e3f',
+    max: 12,
+    questoes: [
+      'Demonstra alta persistência e determinação em atividades de interesse,não desiste facilmente.',
+      'Apresenta perfeccionismo marcante: busca constantemente melhorar seu próprio desempenho.',
+      'Tem autocrítica muito elevada,exige muito de si mesmo(a), mesmo quando os outros consideram o resultado satisfatório.',
+      'Consegue manter concentração intensa por longos períodos em temas de interesse.',
+      'Assume projetos por iniciativa própria e os conduz com dedicação.',
+      'Demonstra motivação intrínseca: engaja-se pelo interesse genuíno, não por aprovação ou nota.'
+    ]
+  },
+  {
+    id: 'D4',
+    titulo: 'Características Socioemocionais',
+    subtitulo: 'Perfil emocional, relacional e ético',
+    cor: '#5c3d1e',
+    max: 14,
+    questoes: [
+      'Prefere interagir com crianças mais velhas ou adultos em vez de pares da mesma idade.',
+      'Apresenta senso de justiça muito desenvolvido e reage com intensidade diante de situações injustas.',
+      'Tem sensibilidade emocional intensa,pode se emocionar facilmente com situações, histórias ou injustiças.',
+      'Formula questionamentos éticos, morais ou existenciais de forma precoce.',
+      'Pode apresentar dificuldade nas relações com pares da mesma faixa etária por diferença de interesses.',
+      'Demonstra liderança natural em contextos que lhe interessam.',
+      'Reage com frustração, tédio visível ou comportamentos disruptivos quando subestimado(a) ou entediado(a).'
+    ]
+  },
+  {
+    id: 'D5',
+    titulo: 'Desempenho e Comportamento Acadêmico',
+    subtitulo: 'Indicadores no contexto escolar e de aprendizagem formal',
+    cor: '#3b2c6e',
+    max: 10,
+    questoes: [
+      'Apresenta desempenho acadêmico destacado em uma ou mais áreas do conhecimento.',
+      'Aprende conteúdos escolares de forma autônoma, sem instrução formal ou com instrução mínima.',
+      'Demonstra tédio frequente na sala de aula, especialmente em conteúdos que já domina.',
+      'Apresenta perfil de desempenho inconsistente: excelente nas áreas de interesse, médio ou baixo nas demais.',
+      'Expressa insatisfação ou recusa em realizar tarefas repetitivas, mecânicas ou que considera sem sentido.'
+    ]
+  }
+];
+
+const respostas = {};
+let totalQuestoes = 0;
+dominios.forEach(d => totalQuestoes += d.questoes.length);
+
+// ══════════════════════════════════════════
+// RENDERIZAR CHECKLIST
+// ══════════════════════════════════════════
+function renderChecklist() {
+  const container = document.getElementById('checklist-form');
+  let qGlobal = 0;
+  let html = '';
+
+  dominios.forEach((dom, di) => {
+    html += `
+    <div class="domain-section">
+      <div class="domain-header">
+        <div class="domain-number">${di + 1}</div>
+        <div>
+          <div class="domain-title">${dom.titulo}</div>
+          <div class="domain-subtitle">${dom.subtitulo}</div>
+        </div>
+      </div>
+      <div class="question-list">`;
+
+    dom.questoes.forEach((q, qi) => {
+      qGlobal++;
+      const qid = `${dom.id}_${qi}`;
+      html += `
+        <div class="question-row" id="qrow-${qid}">
+          <div class="question-text"><span class="q-num">${qGlobal}.</span>${q}</div>
+          <div class="options">
+            <button class="opt-btn" data-qid="${qid}" data-val="2" onclick="selResp('${qid}', 2, this)">Sim</button>
+            <button class="opt-btn" data-qid="${qid}" data-val="1" onclick="selResp('${qid}', 1, this)">Às vezes</button>
+            <button class="opt-btn" data-qid="${qid}" data-val="0" onclick="selResp('${qid}', 0, this)">Não</button>
+          </div>
+        </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function selResp(qid, val, btn) {
+  respostas[qid] = val;
+  // clear siblings
+  const row = document.getElementById('qrow-' + qid);
+  row.querySelectorAll('.opt-btn').forEach(b => {
+    b.classList.remove('sel-2', 'sel-1', 'sel-0');
+  });
+  btn.classList.add('sel-' + val);
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(respostas).length;
+  const pct = Math.round((answered / totalQuestoes) * 100);
+  document.getElementById('progress-text').textContent = `${answered} de ${totalQuestoes} questões respondidas`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════════
+function iniciarChecklist() {
+  document.getElementById('page-info').style.display = 'none';
+  document.getElementById('page-checklist').style.display = 'block';
+  document.getElementById('page-report').style.display = 'none';
+  window.scrollTo(0, 0);
+  renderChecklist();
+  // set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-data').value = today;
+}
+
+function voltarChecklist() {
+  document.getElementById('page-info').style.display = 'none';
+  document.getElementById('page-checklist').style.display = 'block';
+  document.getElementById('page-report').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════════════════
+// GERAR RELATÓRIO
+// ══════════════════════════════════════════
+function gerarRelatorio() {
+  const answered = Object.keys(respostas).length;
+  if (answered < totalQuestoes) {
+    document.getElementById('unanswered-msg').style.display = 'block';
+    // scroll to first unanswered
+    let found = false;
+    dominios.forEach(dom => {
+      dom.questoes.forEach((q, qi) => {
+        const qid = `${dom.id}_${qi}`;
+        if (!found && respostas[qid] === undefined) {
+          document.getElementById('qrow-' + qid).scrollIntoView({behavior:'smooth', block:'center'});
+          found = true;
+        }
+      });
+    });
+    return;
+  }
+  document.getElementById('unanswered-msg').style.display = 'none';
+
+  // ── Compute scores ──
+  const domScores = {};
+  let totalScore = 0;
+  let totalMax = 0;
+
+  dominios.forEach(dom => {
+    let ds = 0;
+    dom.questoes.forEach((q, qi) => {
+      const v = respostas[`${dom.id}_${qi}`] || 0;
+      ds += v;
+    });
+    domScores[dom.id] = { score: ds, max: dom.max, pct: Math.round((ds / dom.max) * 100) };
+    totalScore += ds;
+    totalMax += dom.max;
+  });
+
+  const totalPct = Math.round((totalScore / totalMax) * 100);
+
+  // ── Level ──
+  let level, levelColor, levelBg, levelBadgeStyle, parecerTitle;
+  if (totalPct <= 25) {
+    level = 'Sinais Ausentes ou Insuficientes';
+    levelColor = '#4b5563';
+    levelBg = '#f3f4f6';
+    parecerTitle = 'Ausência de Indicadores Significativos';
+  } else if (totalPct <= 40) {
+    level = 'Sinais Inconclusivos';
+    levelColor = '#92400e';
+    levelBg = '#fffbeb';
+    parecerTitle = 'Perfil Inconclusivo,Monitoramento Recomendado';
+  } else if (totalPct <= 59) {
+    level = 'Sinais Moderados';
+    levelColor = '#1e40af';
+    levelBg = '#eff6ff';
+    parecerTitle = 'Sinais Moderados,Avaliação Psicoeducacional Indicada';
+  } else if (totalPct <= 79) {
+    level = 'Sinais Expressivos';
+    levelColor = '#065f46';
+    levelBg = '#ecfdf5';
+    parecerTitle = 'Sinais Expressivos,Forte Indicação de AH/SD';
+  } else {
+    level = 'Sinais Muito Expressivos';
+    levelColor = '#7c3aed';
+    levelBg = '#f5f3ff';
+    parecerTitle = 'Sinais Muito Expressivos,Encaminhamento Prioritário Recomendado';
+  }
+
+  // ── Identification ──
+  const nome = document.getElementById('f-nome').value || '';
+  const idade = document.getElementById('f-idade').value || '';
+  const serie = document.getElementById('f-serie').value || '';
+  const profissional = document.getElementById('f-profissional').value || '';
+  const funcao = document.getElementById('f-funcao').value || '';
+  const relacao = document.getElementById('f-relacao').value || '';
+  const dataVal = document.getElementById('f-data').value;
+  const dataFmt = dataVal ? new Date(dataVal + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'}) : new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  // ── Highest domain ──
+  let maxDomPct = 0, maxDomNome = '';
+  dominios.forEach(dom => {
+    if (domScores[dom.id].pct > maxDomPct) { maxDomPct = domScores[dom.id].pct; maxDomNome = dom.titulo; }
+  });
+
+  // ── Collect indicators ──
+  const simItems = [], asVezesItems = [], naoItems = [];
+  dominios.forEach(dom => {
+    dom.questoes.forEach((q, qi) => {
+      const v = respostas[`${dom.id}_${qi}`];
+      if (v === 2) simItems.push({ q, dom: dom.titulo });
+      else if (v === 1) asVezesItems.push({ q, dom: dom.titulo });
+      else naoItems.push({ q, dom: dom.titulo });
+    });
+  });
+
+  // ── Domain analysis text ──
+  function domAnalysis() {
+    const high = dominios.filter(d => domScores[d.id].pct >= 60);
+    const mid = dominios.filter(d => domScores[d.id].pct >= 40 && domScores[d.id].pct < 60);
+    let txt = '';
+    if (high.length > 0) {
+      txt += `Os domínios com indicadores mais expressivos são: <strong>${high.map(d => d.titulo).join(', ')}</strong>. `;
+    }
+    if (mid.length > 0) {
+      txt += `Com presença moderada de indicadores: <strong>${mid.map(d => d.titulo).join(', ')}</strong>. `;
+    }
+    return txt;
+  }
+
+  // ── Parecer narrative ──
+  function gerarParecer() {
+    const nomeTxt = nome !== '' ? `<strong>${nome}</strong>` : 'o(a) estudante avaliado(a)';
+
+    if (totalPct <= 25) {
+      return `Os dados coletados neste instrumento de triagem não apontam, neste momento, para indicadores expressivos de Altas Habilidades/Superdotação. A pontuação total obtida foi de <strong>${totalScore} pontos de ${totalMax} possíveis (${totalPct}%)</strong>, situando-se abaixo do limiar de sinalização estabelecido para este instrumento.
+
+Isso não exclui definitivamente a possibilidade de características pontuais em desenvolvimento, especialmente em contextos específicos de interesse da criança. Recomenda-se manter observação continuada em diferentes ambientes (escolar, familiar, extraescolar) e, caso novos indicadores comportamentais surjam ao longo do desenvolvimento, retomar a triagem.
+
+É importante ressaltar que crianças em contextos de baixa estimulação ou que desenvolveram estratégias de mascaramento podem não expressar plenamente seu potencial em avaliações pontuais.`;
+    }
+
+    if (totalPct <= 40) {
+      return `O perfil obtido apresenta alguns indicadores que merecem atenção, embora ainda em frequência e intensidade insuficientes para configurar um padrão expressivo de Altas Habilidades/Superdotação. A pontuação total foi de <strong>${totalScore} pontos de ${totalMax} possíveis (${totalPct}%)</strong>, situando este caso em faixa inconclusiva.
+
+${domAnalysis()}
+
+Este resultado inconclusivo pode indicar: (a) características em desenvolvimento ainda não plenamente manifestadas; (b) possível mascaramento do potencial por fatores como ansiedade, tédio crônico, dupla excepcionalidade ou contexto de baixa estimulação; ou (c) ausência de AH/SD neste momento.
+
+Recomenda-se ampliar a observação em diferentes contextos e considerar retestagem em 6 meses. A realização de entrevista aprofundada com pais/responsáveis e professores pode revelar indicadores não observáveis no contexto de avaliação formal.`;
+    }
+
+    if (totalPct <= 59) {
+      return `O instrumento identificou número moderado de indicadores compatíveis com Altas Habilidades/Superdotação. A pontuação obtida foi de <strong>${totalScore} pontos de ${totalMax} possíveis (${totalPct}%)</strong>, configurando perfil que justifica investigação aprofundada.
+
+${domAnalysis()}
+
+O perfil apresentado sugere que ${nomeTxt} demonstra características consistentes com as dimensões do Modelo Triádico de Renzulli,capacidade acima da média, comprometimento com tarefas e criatividade, embora não de forma plena em todos os domínios. Essa distribuição parcial de indicadores é frequente na literatura, especialmente em casos de dupla excepcionalidade ou de estudantes em contextos de subestimulação crônica.
+
+Este resultado é suficientemente expressivo para justificar a realização de avaliação psicoeducacional formal por psicólogo(a) especializado(a) em AH/SD e, preferencialmente, a submissão ao processo de identificação junto à equipe de Atendimento Educacional Especializado (AEE) da escola.`;
+    }
+
+    if (totalPct <= 79) {
+      return `O instrumento evidencia indicadores expressivos e consistentes com o quadro de Altas Habilidades/Superdotação. A pontuação obtida foi de <strong>${totalScore} pontos de ${totalMax} possíveis (${totalPct}%)</strong>, configurando padrão de resposta robusto e clinicamente relevante.
+
+${domAnalysis()}
+
+Em consonância com os critérios da Política Nacional de Educação Especial na Perspectiva da Educação Inclusiva (MEC, 2008) e com o Modelo Triádico de Renzulli (2005), o conjunto de indicadores identificados aponta para um perfil de AH/SD com elevada consistência. O padrão observado é especialmente relevante porque os indicadores se distribuem por múltiplos domínios, reduzindo a possibilidade de viés pontual na avaliação.
+
+Ressalta-se que a identificação de AH/SD não invalida a presença simultânea de outros transtornos (dupla excepcionalidade), o que deve ser considerado e investigado na avaliação formal subsequente.
+
+Recomenda-se encaminhamento prioritário para avaliação psicológica formal, com aplicação de instrumentos padronizados (escalas de inteligência, testes de criatividade e instrumentos comportamentais específicos para AH/SD).`;
+    }
+
+    // 80-100%
+    return `O instrumento aponta indicadores muito expressivos e altamente consistentes com Altas Habilidades/Superdotação. A pontuação obtida foi de <strong>${totalScore} pontos de ${totalMax} possíveis (${totalPct}%)</strong>, representando um dos perfis mais robustos que este instrumento pode identificar.
+
+${domAnalysis()}
+
+O padrão de respostas é amplo, cobrindo múltiplos domínios de forma intensa, o que, segundo os critérios do CONBRASD e da legislação educacional brasileira, configura forte sinalização para AH/SD. De acordo com a Resolução CNE/CEB nº 02/2001 e a Política Nacional de Educação Especial (MEC, 2008), ${nomeTxt} apresenta o perfil que justifica, com prioridade, a abertura de processo formal de identificação.
+
+É fundamental ressaltar que crianças com AH/SD não identificadas e não atendidas adequadamente apresentam risco elevado de: (a) problemas comportamentais decorrentes de subdesafio crônico; (b) desenvolvimento de quadros ansiosos ou depressivos pela sensação persistente de ser diferente e incompreendido(a); e (c) rendimento escolar abaixo do potencial real.
+
+Encaminhamento para avaliação psicológica formal é <strong>fortemente recomendado sem demora</strong>.`;
+  }
+
+  // ── Recomendações ──
+  function gerarRecomendacoes() {
+    const recs = [];
+    if (totalPct >= 41) {
+      recs.push('Encaminhar para avaliação psicológica formal com psicólogo(a) especializado(a) em Altas Habilidades/Superdotação, para aplicação de instrumentos padronizados (WISC, escalas de criatividade, RBCSS).');
+      recs.push('Comunicar a equipe pedagógica e a família sobre os indicadores identificados, orientando sobre as características específicas de AH/SD e suas implicações para o desenvolvimento.');
+      recs.push('Solicitar abertura de processo de identificação junto ao Atendimento Educacional Especializado (AEE) da escola, conforme previsto na Política Nacional de Educação Especial (MEC, 2008).');
+    }
+    if (totalPct >= 60) {
+      recs.push('Enquanto aguarda avaliação formal, providenciar enriquecimento curricular,oferecer atividades de maior complexidade, projetos por interesse e conexão com pares com perfil semelhante.');
+      recs.push('Investigar a possível presença de dupla excepcionalidade (TDAH, TEA, ansiedade, dislexia), pois a coexistência é frequente e pode estar mascarando ou amplificando características.');
+    }
+    if (totalPct <= 40 && totalPct >= 26) {
+      recs.push('Ampliar observação sistemática em diferentes contextos (escolar, familiar, extracurricular) por período de 3 a 6 meses antes de conclusão.');
+      recs.push('Realizar entrevista estruturada com pais/responsáveis utilizando instrumentos específicos para AH/SD (ex.: questionário de Pérez & Freitas, 2011).');
+      recs.push('Retomar a aplicação deste instrumento em 6 meses, incorporando novas observações.');
+    }
+    if (totalPct <= 25) {
+      recs.push('Manter observação continuada ao longo do desenvolvimento, especialmente em contextos de alta estimulação.');
+      recs.push('Retomar a avaliação caso novos indicadores comportamentais sejam observados pelos professores ou pela família.');
+    }
+    recs.push('Registrar este instrumento no prontuário do estudante como documento de triagem preliminar, compondo o histórico de avaliações.');
+    return recs;
+  }
+
+  // ══════════════════════════════════════════
+  // BUILD REPORT HTML
+  // ══════════════════════════════════════════
+  const recs = gerarRecomendacoes();
+  const parecer = gerarParecer();
+
+  const domBarRows = dominios.map(dom => {
+    const ds = domScores[dom.id];
+    const fillPct = ds.pct;
+    let fillColor = '#1a3a5c';
+    if (fillPct >= 60) fillColor = '#2a6b47';
+    else if (fillPct >= 40) fillColor = '#1e40af';
+    else if (fillPct >= 25) fillColor = '#92400e';
+    return `
+    <div class="dbar-row">
+      <div class="dbar-label">
+        <span class="dbar-name">${dom.titulo}</span>
+        <span class="dbar-score">${ds.score}/${ds.max} (${ds.pct}%)</span>
+      </div>
+      <div class="dbar-track">
+        <div class="dbar-fill" style="width:${fillPct}%; background:${fillColor}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const simListHTML = simItems.length > 0 ? simItems.map(i =>
+    `<div class="ind-item"><div class="ind-dot dot-sim"></div><div>${i.q}<span class="ind-domain">${i.dom}</span></div></div>`
+  ).join('') : '<div class="ind-item" style="color:var(--text-muted)">Nenhum indicador marcado como "Sim".</div>';
+
+  const asVezesListHTML = asVezesItems.length > 0 ? asVezesItems.map(i =>
+    `<div class="ind-item"><div class="ind-dot dot-as"></div><div>${i.q}<span class="ind-domain">${i.dom}</span></div></div>`
+  ).join('') : '<div class="ind-item" style="color:var(--text-muted)">Nenhum indicador marcado como "Às vezes".</div>';
+
+  const recsHTML = recs.map((r, i) =>
+    `<div class="rec-item"><div class="rec-num">${i+1}</div><div>${r}</div></div>`
+  ).join('');
+
+  const reportHTML = `
+  <!-- CARD 1: ID -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">1</div>
+      <h3>Identificação</h3>
+    </div>
+    <div class="report-card-body">
+      <table class="id-table">
+        <tr><td>Estudante</td><td>${nome}</td></tr>
+        <tr><td>Idade</td><td>${idade} &nbsp;|&nbsp; ${serie}</td></tr>
+        <tr><td>Avaliador(a)</td><td>${profissional},${funcao}</td></tr>
+        <tr><td>Relação</td><td>${relacao}</td></tr>
+        <tr><td>Data</td><td>${dataFmt}</td></tr>
+        <tr><td>Instrumento</td><td>Checklist de Triagem,Altas Habilidades/Superdotação (34 itens, 5 domínios)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- CARD 2: PONTUAÇÃO GERAL -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">2</div>
+      <h3>Pontuação Geral</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="score-main">
+        <div class="score-circle">
+          <div class="sc-num">${totalScore}</div>
+          <div class="sc-max">de ${totalMax} pts</div>
+        </div>
+        <div class="score-details">
+          <div class="score-pct">${totalPct}%</div>
+          <div>
+            <span class="score-level-badge" style="background:${levelBg}; color:${levelColor};">${level}</span>
+          </div>
+          <div class="score-level-desc sans">
+            <strong>Indicadores confirmados (Sim):</strong> ${simItems.length} de 34 &nbsp;·&nbsp;
+            <strong>Parciais (Às vezes):</strong> ${asVezesItems.length} de 34
+          </div>
+        </div>
+      </div>
+      <p class="sans" style="font-size:0.83rem; color:var(--text-muted); margin-top:0.5rem;">
+        <strong>Escala:</strong> Não respondido = 0 pt &nbsp;|&nbsp; Às vezes = 1 pt &nbsp;|&nbsp; Sim = 2 pts &nbsp;|&nbsp; Total máximo = ${totalMax} pts
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 3: DOMÍNIOS -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">3</div>
+      <h3>Pontuação por Domínio</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="domain-bars">${domBarRows}</div>
+      <p class="footnote">Barras verdes: ≥60% | Barras azuis: 40–59% | Barras âmbar: 25–39% | Barras escuras: &lt;25%</p>
+    </div>
+  </div>
+
+  <!-- CARD 4: PARECER -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">4</div>
+      <h3>Parecer Profissional</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="parecer-box" style="border-color:${levelColor}; background:${levelBg};">
+        <div class="parecer-title sans" style="color:${levelColor};">${parecerTitle}</div>
+        <div class="parecer-text">${parecer}</div>
+      </div>
+      <div class="warning-box">
+        <p class="sans" style="font-size:0.88rem;"><strong>⚖️ Caráter deste documento:</strong> Este relatório é resultado de instrumento de <em>triagem</em>,não constitui diagnóstico clínico. A confirmação ou exclusão de Altas Habilidades/Superdotação requer avaliação psicológica formal com instrumentos padronizados, conduzida por profissional habilitado, em conformidade com a Resolução CFP nº 09/2018.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5: INDICADORES -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">5</div>
+      <h3>Indicadores Identificados</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="ind-section">
+        <h4>● Presentes com frequência,"Sim" (${simItems.length} indicadores)</h4>
+        <div class="ind-list">${simListHTML}</div>
+      </div>
+      <div class="ind-section" style="margin-top:1.5rem;">
+        <h4>◐ Presentes parcialmente,"Às vezes" (${asVezesItems.length} indicadores)</h4>
+        <div class="ind-list">${asVezesListHTML}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 6: RECOMENDAÇÕES -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">6</div>
+      <h3>Recomendações</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="rec-list">${recsHTML}</div>
+    </div>
+  </div>
+
+  <!-- CARD 7: REFERÊNCIAS -->
+  <div class="report-card">
+    <div class="report-card-header">
+      <div class="rch-num">7</div>
+      <h3>Referências Científicas e Legais</h3>
+    </div>
+    <div class="report-card-body">
+      <div class="ref-list">
+        <div class="ref-item">ALMEIDA, L. S.; FLEITH, D. S.; OLIVEIRA, E. P. (2013). <em>Sobredotação: Respostas Educativas</em>. Braga: ADIPSIEDUC.</div>
+        <div class="ref-item">ANTSHEL, K. M. et al. (2013). Autism spectrum disorders and ADHD: Overlapping phenomenology, diagnostic issues, and treatment considerations. <em>Current Psychiatry Reports</em>, 15(6), 1–11.</div>
+        <div class="ref-item">BAUM, S. M.; SCHADER, R. M.; OWEN, S. V. (2017). <em>To Be Gifted and Learning Disabled: Strength-Based Strategies for Helping Twice-Exceptional Students</em>. Waco: Prufrock Press.</div>
+        <div class="ref-item">BRASIL. Lei nº 9.394, de 20 de dezembro de 1996. <em>Lei de Diretrizes e Bases da Educação Nacional</em>. Brasília: MEC.</div>
+        <div class="ref-item">BRASIL. Resolução CNE/CEB nº 02, de 11 de setembro de 2001. <em>Diretrizes Nacionais para a Educação Especial na Educação Básica</em>. Brasília: MEC.</div>
+        <div class="ref-item">BRASIL. Ministério da Educação. <em>Política Nacional de Educação Especial na Perspectiva da Educação Inclusiva</em>. Brasília: MEC/SEESP, 2008.</div>
+        <div class="ref-item">DABROWSKI, K. (1972). <em>Psychoneurosis Is Not an Illness</em>. London: Gryf.</div>
+        <div class="ref-item">LOVETT, B. J.; LEWANDOWSKI, L. J. (2006). Gifted students with learning disabilities: Who are they? <em>Journal of Learning Disabilities</em>, 39(6), 515–527.</div>
+        <div class="ref-item">NEIHART, M. et al. (2002). <em>The Social and Emotional Development of Gifted Children: What Do We Know?</em> Waco: Prufrock Press.</div>
+        <div class="ref-item">PÉREZ, S. G. P. B.; FREITAS, S. N. (2011). Manual de Identificação de Altas Habilidades/Superdotação. <em>Guarapuava: Apprehendere</em>.</div>
+        <div class="ref-item">RENZULLI, J. S. (2005). The three-ring conception of giftedness: A developmental model for creative productivity. In R. J. Sternberg & J. E. Davidson (Eds.), <em>Conceptions of Giftedness</em> (2nd ed., pp. 246–279). Cambridge University Press.</div>
+        <div class="ref-item">SILVERMAN, L. K. (2002). <em>Upside-Down Brilliance: The Visual-Spatial Learner</em>. Denver: DeLeon.</div>
+        <div class="ref-item">WEBB, J. T. (2014). <em>Misdiagnosis and Dual Diagnoses of Gifted Children and Adults</em>. Scottsdale: Great Potential Press.</div>
+        <div class="ref-item">WEBB, J. T. et al. (2016). <em>Misdiagnosis and Dual Diagnoses of Gifted Children and Adults: ADHD, Bipolar, OCD, Asperger's, Depression, and Other Disorders</em> (2nd ed.). Scottsdale: Great Potential Press.</div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  document.getElementById('report-body').innerHTML = reportHTML;
+  document.getElementById('report-date-footer').textContent = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  document.getElementById('page-info').style.display = 'none';
+  document.getElementById('page-checklist').style.display = 'none';
+  document.getElementById('page-report').style.display = 'block';
+  window.scrollTo(0, 0);
+
+  // animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('.dbar-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0';
+      setTimeout(() => { el.style.width = w; }, 50);
+    });
+  }, 100);
+}
+
+function copiarRelatorio() {
+  const body = document.getElementById('report-body');
+  const text = body ? body.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Relatório copiado para a área de transferência!');
+  }).catch(() => {
+    alert('Não foi possível copiar automaticamente. Use Ctrl+A e Ctrl+C na área do relatório.');
+  });
+}
+</script>
+</body>
+</html>
