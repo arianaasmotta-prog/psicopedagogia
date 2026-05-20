@@ -453,7 +453,7 @@ function filterGames(){
 function openGame(arquivo, titulo, cat){
   document.getElementById('modalTitle').textContent = titulo;
   document.getElementById('modalCat').textContent   = cat;
-  document.getElementById('modalFrame').src         = 'jogos/' + arquivo;
+  document.getElementById('modalFrame').src         = arquivo;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }

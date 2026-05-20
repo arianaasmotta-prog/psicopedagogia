@@ -4,13 +4,9 @@
  * ═══════════════════════════════════════════════════════════════
  *
  *  COMO ADICIONAR UM NOVO JOGO:
- *  1. Suba o arquivo HTML do jogo no repositório GitHub
+ *  1. Suba o arquivo HTML do jogo na raiz do repositório GitHub
  *  2. Copie um bloco abaixo e preencha os campos
  *  3. Salve e faça commit
- *
- *  CATEGORIAS DISPONÍVEIS:
- *  "Matemática" | "Leitura e Escrita" | "Atenção e Memória"
- *  "Funções Executivas" | "Linguagem"
  *
  * ═══════════════════════════════════════════════════════════════
  */
