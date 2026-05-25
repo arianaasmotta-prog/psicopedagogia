@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ditado Visual — Copa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1a6b3c;
+    --verde-claro: #27a85e;
+    --dourado: #e8b84b;
+    --vermelho: #c0392b;
+    --bg: #0d1f14;
+    --card: #132a1c;
+    --texto: #f0f0e8;
+    --cinza: #8a9e8f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--verde) 0%, #0d4a25 100%);
+    border-bottom: 3px solid var(--dourado);
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 4px;
+    color: var(--dourado);
+  }
+  header p { font-size: 0.85rem; color: rgba(240,240,232,0.7); letter-spacing: 1px; }
+  .placar-bar {
+    display: flex;
+    gap: 20px;
+    padding: 12px 24px;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid rgba(232,184,75,0.25);
+    border-radius: 10px;
+    padding: 8px 20px;
+    text-align: center;
+    min-width: 90px;
+  }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--dourado); line-height: 1; }
+  .stat-label { font-size: 0.65rem; color: var(--cinza); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .progresso-wrap { width: 100%; max-width: 700px; padding: 0 24px; margin-top: 8px; }
+  .progresso-track { height: 6px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .progresso-fill { height: 100%; background: linear-gradient(90deg, var(--verde-claro), var(--dourado)); border-radius: 99px; transition: width 0.5s ease; }
+  .progresso-texto { font-size: 0.7rem; color: var(--cinza); margin-top: 4px; text-align: right; }
+  #arena {
+    width: 100%;
+    max-width: 700px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .bandeira-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border: 2px solid rgba(232,184,75,0.2);
+    border-radius: 16px;
+    padding: 32px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  #bandeira { font-size: 7rem; line-height: 1; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5)); }
+  .linhas-escrita { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .linha-letra { width: 26px; height: 36px; border-bottom: 2px solid rgba(232,184,75,0.5); }
+  .linha-espaco { width: 16px; }
+  .input-area {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #resposta {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(232,184,75,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto);
+    outline: none;
+    transition: border-color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #resposta:focus { border-color: var(--dourado); }
+  #resposta.erro { border-color: var(--vermelho); animation: shake 0.3s; }
+  #resposta.acerto { border-color: var(--verde-claro); }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .btn-verificar { background: linear-gradient(135deg, var(--verde-claro), var(--verde)); color: #fff; border: 2px solid var(--verde-claro); }
+  .btn-verificar:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .btn-pular { background: transparent; color: var(--cinza); border: 2px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+  .btn-pular:hover { background: rgba(255,255,255,0.05); }
+  #feedback { font-size: 1rem; font-weight: 700; min-height: 24px; text-align: center; letter-spacing: 0.5px; }
+  #feedback.acerto { color: var(--verde-claro); }
+  #feedback.erro { color: #e74c3c; }
+  .teclado { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; max-width: 420px; }
+  .teclado-linha { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
+  .tecla {
+    width: 38px; height: 44px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--texto);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tecla:hover { background: rgba(232,184,75,0.2); border-color: var(--dourado); }
+  .tecla:active { transform: scale(0.93); }
+  .tecla-larga { width: 56px; font-size: 0.7rem; }
+  #tela-final { display: none; width: 100%; max-width: 700px; padding: 24px; text-align: center; animation: fadeIn 0.5s ease; }
+  .tela-final-card {
+    background: var(--card);
+    border: 2px solid var(--dourado);
+    border-radius: 20px;
+    padding: 36px 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .resultado-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 3px; color: var(--dourado); }
+  .resultado-nota { font-size: 3.5rem; font-weight: 800; color: var(--verde-claro); }
+  .resultado-sub { color: var(--cinza); font-size: 0.9rem; }
+  .historico-lista { display: flex; flex-direction: column; gap: 6px; width: 100%; max-height: 220px; overflow-y: auto; }
+  .historico-item { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; }
+  .historico-item.ok { background: rgba(39,168,94,0.15); }
+  .historico-item.fail { background: rgba(192,57,43,0.15); }
+  .historico-item .flag { font-size: 1.3rem; }
+  .historico-item .nome { flex: 1; font-weight: 700; }
+  .historico-item .tent { color: var(--cinza); font-size: 0.75rem; }
+  .btn-reiniciar {
+    background: linear-gradient(135deg, var(--dourado), #c49a2a);
+    color: #0d1f14;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    padding: 14px 36px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reiniciar:hover { transform: translateY(-2px); filter: brightness(1.1); }
+  footer { margin-top: auto; padding: 16px; font-size: 0.7rem; color: rgba(255,255,255,0.2); text-align: center; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ Ditado Visual — Copa 2026</h1>
+  <p>Observe a bandeira e escreva o nome do país</p>
+</header>
+
+<div class="placar-bar">
+  <div class="stat"><div class="stat-val" id="v-acertos">0</div><div class="stat-label">Acertos</div></div>
+  <div class="stat"><div class="stat-val" id="v-erros">0</div><div class="stat-label">Erros</div></div>
+  <div class="stat"><div class="stat-val" id="v-pontos">0</div><div class="stat-label">Pontos</div></div>
+</div>
+
+<div class="progresso-wrap">
+  <div class="progresso-track"><div class="progresso-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="progresso-texto" id="prog-txt">0 / 32 países</div>
+</div>
+
+<div id="arena">
+  <div class="bandeira-card">
+    <div id="bandeira">🏳️</div>
+    <div class="linhas-escrita" id="linhas"></div>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="resposta" placeholder="Digite o nome do país..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="characters"/>
+    <button class="btn btn-verificar" onclick="verificar()">✓ Verificar</button>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:center;">
+    <button class="btn btn-pular" onclick="pular()">⏭ Pular</button>
+  </div>
+
+  <div id="feedback"></div>
+
+  <div class="teclado">
+    <div class="teclado-linha" id="t1"></div>
+    <div class="teclado-linha" id="t2"></div>
+    <div class="teclado-linha" id="t3"></div>
+  </div>
+</div>
+
+<div id="tela-final">
+  <div class="tela-final-card">
+    <div style="font-size:5rem">🏆</div>
+    <div class="resultado-titulo">Jogo Concluído!</div>
+    <div class="resultado-nota" id="nota-final">—</div>
+    <div class="resultado-sub" id="sub-final">—</div>
+    <div class="historico-lista" id="historico"></div>
+    <button class="btn-reiniciar" onclick="reiniciar()">JOGAR NOVAMENTE</button>
+  </div>
+</div>
+
+<footer>COPA DO MUNDO 2026 • EUA · MÉXICO · CANADÁ — Material educativo</footer>
+
+<script>
+const PAISES = [
+  { nome: "ARGENTINA",      flag: "🇦🇷" },
+  { nome: "AUSTRÁLIA",      flag: "🇦🇺" },
+  { nome: "BÉLGICA",        flag: "🇧🇪" },
+  { nome: "BRASIL",         flag: "🇧🇷" },
+  { nome: "CANADÁ",         flag: "🇨🇦" },
+  { nome: "CAMARÕES",       flag: "🇨🇲" },
+  { nome: "CHILE",          flag: "🇨🇱" },
+  { nome: "COREIA DO SUL",  flag: "🇰🇷" },
+  { nome: "CROÁCIA",        flag: "🇭🇷" },
+  { nome: "DINAMARCA",      flag: "🇩🇰" },
+  { nome: "EGITO",          flag: "🇪🇬" },
+  { nome: "EQUADOR",        flag: "🇪🇨" },
+  { nome: "ESPANHA",        flag: "🇪🇸" },
+  { nome: "ESTADOS UNIDOS", flag: "🇺🇸" },
+  { nome: "FRANÇA",         flag: "🇫🇷" },
+  { nome: "HOLANDA",        flag: "🇳🇱" },
+  { nome: "HUNGRIA",        flag: "🇭🇺" },
+  { nome: "INGLATERRA",     flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+  { nome: "IRAQUE",         flag: "🇮🇶" },
+  { nome: "IRÃ",            flag: "🇮🇷" },
+  { nome: "ITÁLIA",         flag: "🇮🇹" },
+  { nome: "JAPÃO",          flag: "🇯🇵" },
+  { nome: "MARROCOS",       flag: "🇲🇦" },
+  { nome: "MÉXICO",         flag: "🇲🇽" },
+  { nome: "NIGÉRIA",        flag: "🇳🇬" },
+  { nome: "NOVA ZELÂNDIA",  flag: "🇳🇿" },
+  { nome: "PERU",           flag: "🇵🇪" },
+  { nome: "POLÔNIA",        flag: "🇵🇱" },
+  { nome: "PORTUGAL",       flag: "🇵🇹" },
+  { nome: "SENEGAL",        flag: "🇸🇳" },
+  { nome: "SUÍÇA",          flag: "🇨🇭" },
+  { nome: "URUGUAI",        flag: "🇺🇾" },
+];
+
+const TECLADO = [
+  ['Q','W','E','R','T','Y','U','I','O','P'],
+  ['A','S','D','F','G','H','J','K','L','Ç'],
+  ['Z','X','C','V','B','N','M','⌫','ESP']
+];
+
+let lista=[], idx=0, acertos=0, erros=0, pontos=0, tent=0, hist=[];
+
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+function norm(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
+
+function buildTeclado(){
+  ['t1','t2','t3'].forEach((id,i)=>{
+    const el=document.getElementById(id); el.innerHTML='';
+    TECLADO[i].forEach(l=>{
+      const b=document.createElement('button');
+      b.className='tecla'+(l.length>1?' tecla-larga':'');
+      b.textContent=l;
+      b.addEventListener('click',()=>{
+        const inp=document.getElementById('resposta');
+        if(l==='⌫') inp.value=inp.value.slice(0,-1);
+        else if(l==='ESP') inp.value+=' ';
+        else inp.value+=l;
+        inp.focus();
+      });
+      el.appendChild(b);
+    });
+  });
+}
+
+function desenharLinhas(nome){
+  const c=document.getElementById('linhas'); c.innerHTML='';
+  nome.split('').forEach(ch=>{
+    const d=document.createElement('div');
+    d.className=ch===' '?'linha-espaco':'linha-letra';
+    c.appendChild(d);
+  });
+}
+
+function carregar(){
+  if(idx>=lista.length){finalizar();return;}
+  const p=lista[idx]; tent=0;
+  document.getElementById('bandeira').textContent=p.flag;
+  document.getElementById('resposta').value='';
+  document.getElementById('resposta').className='';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='';
+  desenharLinhas(p.nome);
+  document.getElementById('prog-fill').style.width=(idx/lista.length*100)+'%';
+  document.getElementById('prog-txt').textContent=idx+' / '+lista.length+' países';
+  document.getElementById('resposta').focus();
+}
+
+function atualizarPlacar(){
+  document.getElementById('v-acertos').textContent=acertos;
+  document.getElementById('v-erros').textContent=erros;
+  document.getElementById('v-pontos').textContent=pontos;
+}
+
+function verificar(){
+  const p=lista[idx];
+  const inp=document.getElementById('resposta');
+  const val=inp.value.trim().toUpperCase();
+  const fb=document.getElementById('feedback');
+  if(!val) return;
+  tent++;
+  if(norm(val)===norm(p.nome)){
+    acertos++;
+    const pts=Math.max(10-tent*2,1);
+    pontos+=pts;
+    hist.push({p,ok:true,tent});
+    inp.className='acerto';
+    fb.textContent='✅ Correto! +'+pts+' pontos';
+    fb.className='acerto';
+    atualizarPlacar();
+    setTimeout(()=>{idx++;carregar();},1200);
+  } else {
+    erros++;
+    inp.className='erro';
+    fb.textContent='❌ Tente novamente!';
+    fb.className='erro';
+    setTimeout(()=>{inp.className='';},600);
+    atualizarPlacar();
+  }
+}
+
+function pular(){
+  const p=lista[idx];
+  hist.push({p,ok:false,tent});
+  erros++;
+  const fb=document.getElementById('feedback');
+  fb.textContent='⏭ Era: '+p.nome;
+  fb.className='erro';
+  atualizarPlacar();
+  setTimeout(()=>{idx++;carregar();},1400);
+}
+
+function finalizar(){
+  document.getElementById('arena').style.display='none';
+  document.getElementById('tela-final').style.display='block';
+  const total=lista.length;
+  const pct=Math.round(acertos/total*100);
+  document.getElementById('nota-final').textContent=acertos+' / '+total+' ('+pct+'%)';
+  const msgs=['💪 Continue praticando!','📚 Bom esforço!','👏 Muito bom!','🌟 Excelente!'];
+  document.getElementById('sub-final').textContent=msgs[pct>=90?3:pct>=70?2:pct>=50?1:0];
+  const lh=document.getElementById('historico'); lh.innerHTML='';
+  hist.forEach(h=>{
+    const d=document.createElement('div');
+    d.className='historico-item '+(h.ok?'ok':'fail');
+    d.innerHTML='<span class="flag">'+h.p.flag+'</span><span class="nome">'+h.p.nome+'</span><span class="tent">'+h.tent+' tent.</span><span>'+(h.ok?'✅':'❌')+'</span>';
+    lh.appendChild(d);
+  });
+}
+
+function iniciar(){
+  lista=shuffle(PAISES); idx=0; acertos=0; erros=0; pontos=0; hist=[];
+  document.getElementById('arena').style.display='flex';
+  document.getElementById('tela-final').style.display='none';
+  carregar(); atualizarPlacar();
+}
+
+function reiniciar(){ iniciar(); }
+
+document.getElementById('resposta').addEventListener('keydown',e=>{if(e.key==='Enter')verificar();});
+buildTeclado();
+iniciar();
+</script>
+</body>
+</html>
