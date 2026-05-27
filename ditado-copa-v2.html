@@ -86,14 +86,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 28px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     animation: fadeIn 0.4s ease;
   }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-  #bandeira { font-size: 7rem; line-height: 1; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5)); }
+  #bandeira-img {
+    width: 240px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+    border: 2px solid rgba(255,255,255,0.12);
+    transition: opacity 0.3s;
+  }
   .linhas-escrita { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-  .linha-letra { width: 26px; height: 36px; border-bottom: 2px solid rgba(232,184,75,0.5); }
+  .linha-letra { width: 26px; height: 36px; border-bottom: 2px solid rgba(232,184,75,0.55); }
   .linha-espaco { width: 16px; }
   .input-area {
     width: 100%;
@@ -168,12 +176,12 @@
   }
   .resultado-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 3px; color: var(--dourado); }
   .resultado-nota { font-size: 3.5rem; font-weight: 800; color: var(--verde-claro); }
-  .resultado-sub { color: var(--cinza); font-size: 0.9rem; }
-  .historico-lista { display: flex; flex-direction: column; gap: 6px; width: 100%; max-height: 220px; overflow-y: auto; }
+  .resultado-sub { color: var(--cinza); font-size: 0.9rem; text-align: center; }
+  .historico-lista { display: flex; flex-direction: column; gap: 6px; width: 100%; max-height: 260px; overflow-y: auto; }
   .historico-item { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; }
   .historico-item.ok { background: rgba(39,168,94,0.15); }
   .historico-item.fail { background: rgba(192,57,43,0.15); }
-  .historico-item .flag { font-size: 1.3rem; }
+  .historico-item img { width: 40px; height: 27px; object-fit: cover; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
   .historico-item .nome { flex: 1; font-weight: 700; }
   .historico-item .tent { color: var(--cinza); font-size: 0.75rem; }
   .btn-reiniciar {
@@ -212,7 +220,7 @@
 
 <div id="arena">
   <div class="bandeira-card">
-    <div id="bandeira">🏳️</div>
+    <img id="bandeira-img" src="" alt="Bandeira" />
     <div class="linhas-escrita" id="linhas"></div>
   </div>
 
@@ -236,7 +244,7 @@
 
 <div id="tela-final">
   <div class="tela-final-card">
-    <div style="font-size:5rem">🏆</div>
+    <div style="font-size:4rem">🏆</div>
     <div class="resultado-titulo">Jogo Concluído!</div>
     <div class="resultado-nota" id="nota-final">—</div>
     <div class="resultado-sub" id="sub-final">—</div>
@@ -248,40 +256,43 @@
 <footer>COPA DO MUNDO 2026 • EUA · MÉXICO · CANADÁ — Material educativo</footer>
 
 <script>
+// Imagens reais via flagcdn.com — sem emojis
 const PAISES = [
-  { nome: "ARGENTINA",      flag: "🇦🇷" },
-  { nome: "AUSTRÁLIA",      flag: "🇦🇺" },
-  { nome: "BÉLGICA",        flag: "🇧🇪" },
-  { nome: "BRASIL",         flag: "🇧🇷" },
-  { nome: "CANADÁ",         flag: "🇨🇦" },
-  { nome: "CAMARÕES",       flag: "🇨🇲" },
-  { nome: "CHILE",          flag: "🇨🇱" },
-  { nome: "COREIA DO SUL",  flag: "🇰🇷" },
-  { nome: "CROÁCIA",        flag: "🇭🇷" },
-  { nome: "DINAMARCA",      flag: "🇩🇰" },
-  { nome: "EGITO",          flag: "🇪🇬" },
-  { nome: "EQUADOR",        flag: "🇪🇨" },
-  { nome: "ESPANHA",        flag: "🇪🇸" },
-  { nome: "ESTADOS UNIDOS", flag: "🇺🇸" },
-  { nome: "FRANÇA",         flag: "🇫🇷" },
-  { nome: "HOLANDA",        flag: "🇳🇱" },
-  { nome: "HUNGRIA",        flag: "🇭🇺" },
-  { nome: "INGLATERRA",     flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  { nome: "IRAQUE",         flag: "🇮🇶" },
-  { nome: "IRÃ",            flag: "🇮🇷" },
-  { nome: "ITÁLIA",         flag: "🇮🇹" },
-  { nome: "JAPÃO",          flag: "🇯🇵" },
-  { nome: "MARROCOS",       flag: "🇲🇦" },
-  { nome: "MÉXICO",         flag: "🇲🇽" },
-  { nome: "NIGÉRIA",        flag: "🇳🇬" },
-  { nome: "NOVA ZELÂNDIA",  flag: "🇳🇿" },
-  { nome: "PERU",           flag: "🇵🇪" },
-  { nome: "POLÔNIA",        flag: "🇵🇱" },
-  { nome: "PORTUGAL",       flag: "🇵🇹" },
-  { nome: "SENEGAL",        flag: "🇸🇳" },
-  { nome: "SUÍÇA",          flag: "🇨🇭" },
-  { nome: "URUGUAI",        flag: "🇺🇾" },
+  { nome: "ARGENTINA",      cod: "ar" },
+  { nome: "AUSTRÁLIA",      cod: "au" },
+  { nome: "BÉLGICA",        cod: "be" },
+  { nome: "BRASIL",         cod: "br" },
+  { nome: "CANADÁ",         cod: "ca" },
+  { nome: "CAMARÕES",       cod: "cm" },
+  { nome: "CHILE",          cod: "cl" },
+  { nome: "COREIA DO SUL",  cod: "kr" },
+  { nome: "CROÁCIA",        cod: "hr" },
+  { nome: "DINAMARCA",      cod: "dk" },
+  { nome: "EGITO",          cod: "eg" },
+  { nome: "EQUADOR",        cod: "ec" },
+  { nome: "ESPANHA",        cod: "es" },
+  { nome: "ESTADOS UNIDOS", cod: "us" },
+  { nome: "FRANÇA",         cod: "fr" },
+  { nome: "HOLANDA",        cod: "nl" },
+  { nome: "HUNGRIA",        cod: "hu" },
+  { nome: "INGLATERRA",     cod: "gb-eng" },
+  { nome: "IRAQUE",         cod: "iq" },
+  { nome: "IRÃ",            cod: "ir" },
+  { nome: "ITÁLIA",         cod: "it" },
+  { nome: "JAPÃO",          cod: "jp" },
+  { nome: "MARROCOS",       cod: "ma" },
+  { nome: "MÉXICO",         cod: "mx" },
+  { nome: "NIGÉRIA",        cod: "ng" },
+  { nome: "NOVA ZELÂNDIA",  cod: "nz" },
+  { nome: "PERU",           cod: "pe" },
+  { nome: "POLÔNIA",        cod: "pl" },
+  { nome: "PORTUGAL",       cod: "pt" },
+  { nome: "SENEGAL",        cod: "sn" },
+  { nome: "SUÍÇA",          cod: "ch" },
+  { nome: "URUGUAI",        cod: "uy" },
 ];
+
+function flagUrl(cod){ return "https://flagcdn.com/w320/" + cod + ".png"; }
 
 const TECLADO = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
@@ -325,7 +336,11 @@ function desenharLinhas(nome){
 function carregar(){
   if(idx>=lista.length){finalizar();return;}
   const p=lista[idx]; tent=0;
-  document.getElementById('bandeira').textContent=p.flag;
+  const img=document.getElementById('bandeira-img');
+  img.style.opacity='0';
+  img.src=flagUrl(p.cod);
+  img.onload=()=>{ img.style.opacity='1'; };
+  img.alt='Bandeira de '+p.nome;
   document.getElementById('resposta').value='';
   document.getElementById('resposta').className='';
   document.getElementById('feedback').textContent='';
@@ -386,13 +401,18 @@ function finalizar(){
   const total=lista.length;
   const pct=Math.round(acertos/total*100);
   document.getElementById('nota-final').textContent=acertos+' / '+total+' ('+pct+'%)';
-  const msgs=['💪 Continue praticando!','📚 Bom esforço!','👏 Muito bom!','🌟 Excelente!'];
+  const msgs=[
+    '💪 Continue praticando! Cada tentativa é aprendizado.',
+    '📚 Bom esforço! Com mais treino você chega lá!',
+    '👏 Muito bom! Continue treinando sua escrita!',
+    '🌟 Excelente! Você conhece muito bem os países da Copa!'
+  ];
   document.getElementById('sub-final').textContent=msgs[pct>=90?3:pct>=70?2:pct>=50?1:0];
   const lh=document.getElementById('historico'); lh.innerHTML='';
   hist.forEach(h=>{
     const d=document.createElement('div');
     d.className='historico-item '+(h.ok?'ok':'fail');
-    d.innerHTML='<span class="flag">'+h.p.flag+'</span><span class="nome">'+h.p.nome+'</span><span class="tent">'+h.tent+' tent.</span><span>'+(h.ok?'✅':'❌')+'</span>';
+    d.innerHTML='<img src="'+flagUrl(h.p.cod)+'" alt="'+h.p.nome+'"><span class="nome">'+h.p.nome+'</span><span class="tent">'+h.tent+' tent.</span><span>'+(h.ok?'✅':'❌')+'</span>';
     lh.appendChild(d);
   });
 }
@@ -406,7 +426,7 @@ function iniciar(){
 
 function reiniciar(){ iniciar(); }
 
-document.getElementById('resposta').addEventListener('keydown',e=>{if(e.key==='Enter')verificar();});
+document.getElementById('resposta').addEventListener('keydown',e=>{ if(e.key==='Enter') verificar(); });
 buildTeclado();
 iniciar();
 </script>
