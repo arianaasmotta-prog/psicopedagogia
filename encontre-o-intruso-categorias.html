@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encontre o Intruso — Categorias</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --bg:      #FDF8F2;
+  --bg2:     #F0E8D8;
+  --green:   #1e5c39;
+  --green-m: #2d8653;
+  --green-l: #a8d5b5;
+  --brown:   #6B3F1E;
+  --gold:    #C9870A;
+  --gold-l:  #F5D68A;
+  --red:     #C0392B;
+  --red-l:   #FADBD8;
+  --text:    #2c1a0e;
+  --text-m:  #6b4a2a;
+  --text-l:  #9e7a5a;
+  --card:    #ffffff;
+  --sh:      0 4px 20px rgba(44,26,14,.10);
+  --sh-h:    0 12px 36px rgba(44,26,14,.18);
+  --r:       22px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(107,63,30,.06) 1.5px,transparent 1.5px);
+  background-size:32px 32px;pointer-events:none;z-index:0;
+}
+
+/* ── OVERLAY BASE ─── */
+.overlay{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:28px 20px;text-align:center;
+}
+
+/* ── INTRO ─── */
+#intro{ background:linear-gradient(155deg,#FDF8F2 55%,#F0E6D0); }
+
+.i-cat{font-size:5rem;animation:sway 2.8s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(10deg) scale(1.06)}}
+
+.i-title{
+  font-family:'Fredoka One',sans-serif;
+  font-size:clamp(2rem,6vw,3.4rem);
+  color:var(--green);line-height:1.1;
+  text-shadow:3px 3px 0 rgba(30,92,57,.13);
+}
+.i-title em{color:var(--brown);font-style:normal}
+
+.i-desc{font-size:.97rem;font-weight:600;color:var(--text-m);max-width:400px;line-height:1.75}
+.i-desc strong{color:var(--green)}
+
+.sec-lbl{font-size:.72rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+
+.diff-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.d-btn{
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;
+  padding:11px 18px;border-radius:50px;cursor:pointer;
+  border:2.5px solid transparent;background:var(--card);
+  transition:all .2s;
+}
+.d-btn:hover,.d-btn.on{transform:scale(1.07);box-shadow:0 6px 18px rgba(0,0,0,.10)}
+.d-btn.easy{color:var(--green);border-color:var(--green-m)}
+.d-btn.easy.on{background:#e8f5ee}
+.d-btn.med{color:var(--gold);border-color:var(--gold)}
+.d-btn.med.on{background:#fef9e7}
+.d-btn.hard{color:var(--red);border-color:var(--red)}
+.d-btn.hard.on{background:var(--red-l)}
+
+/* ── PHASE COMPLETE ─── */
+#phase-end{
+  background:rgba(30,92,57,.92);
+  backdrop-filter:blur(4px);
+}
+.pe-box{
+  background:var(--card);border-radius:28px;
+  padding:36px 44px;max-width:420px;width:90vw;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  animation:su .45s cubic-bezier(.4,2,.6,1);
+}
+.pe-ico{font-size:3.8rem;margin-bottom:10px}
+.pe-title{font-family:'Fredoka One',sans-serif;font-size:1.9rem;color:var(--green);margin-bottom:6px}
+.pe-sub{font-size:.9rem;font-weight:700;color:var(--text-m);margin-bottom:20px;line-height:1.6}
+.pe-stats{display:flex;gap:12px;justify-content:center;margin-bottom:22px}
+.pe-stat{background:var(--bg);border-radius:14px;padding:12px 20px}
+.pe-stat .n{font-family:'Fredoka One',sans-serif;font-size:1.7rem;color:var(--green);line-height:1}
+.pe-stat .l{font-size:.67rem;font-weight:900;color:var(--text-l);text-transform:uppercase;margin-top:3px}
+
+/* ── END SCREEN ─── */
+#end{ background:rgba(44,26,14,.58); }
+.end-card{
+  background:var(--card);border-radius:28px;
+  padding:36px 44px;max-width:400px;width:90vw;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);
+  animation:su .4s cubic-bezier(.4,2,.6,1);
+}
+.e-ico{font-size:3.8rem;margin-bottom:8px}
+.e-tit{font-family:'Fredoka One',sans-serif;font-size:1.85rem;color:var(--green);margin-bottom:4px}
+.e-stars{font-size:2rem;letter-spacing:5px;margin:5px 0 18px}
+.e-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.e-stat{background:var(--bg);border-radius:14px;padding:12px}
+.e-stat .n{font-family:'Fredoka One',sans-serif;font-size:1.75rem;color:var(--green);line-height:1}
+.e-stat .l{font-size:.67rem;font-weight:900;color:var(--text-l);text-transform:uppercase;margin-top:3px}
+
+/* ── SHARED BUTTONS ─── */
+.btn{
+  font-family:'Fredoka One',sans-serif;font-size:1rem;
+  padding:12px 30px;border:none;border-radius:50px;
+  cursor:pointer;transition:all .15s;letter-spacing:.3px;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 4px 16px rgba(30,92,57,.3)}
+.btn-brown{background:var(--brown);color:#fff;box-shadow:0 4px 16px rgba(107,63,30,.3)}
+.btn-ghost{background:var(--card);color:var(--text-l);border:2px solid var(--bg2)}
+
+.btn-lg{font-size:1.25rem;padding:15px 52px;margin-top:6px}
+.btn-lg:hover{transform:translateY(-3px) scale(1.04)}
+
+@keyframes su{from{transform:translateY(55px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* ── HEADER ─── */
+header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
+.h-title{font-family:'Fredoka One',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--green)}
+.h-title em{color:var(--brown);font-style:normal}
+
+/* ── PHASE PILL ─── */
+.phase-pill{
+  position:relative;z-index:1;
+  display:flex;gap:8px;align-items:center;
+  background:var(--card);border-radius:30px;
+  padding:5px 16px;box-shadow:var(--sh);
+  font-size:.75rem;font-weight:900;color:var(--text-l);
+  text-transform:uppercase;letter-spacing:.8px;
+  margin-top:4px;
+}
+.phase-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--bg2);border:2px solid var(--bg2);
+  transition:all .3s;
+}
+.phase-dot.done{background:var(--green-l);border-color:var(--green-m)}
+.phase-dot.active{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(30,92,57,.2)}
+
+/* ── HUD ─── */
+.hud{position:relative;z-index:1;display:flex;gap:9px;flex-wrap:wrap;justify-content:center;padding:8px 12px}
+.hb{background:var(--card);border-radius:14px;padding:7px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;min-width:64px}
+.hb-l{font-size:.63rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:.6px}
+.hb-v{font-family:'Fredoka One',sans-serif;font-size:1.3rem;color:var(--text);line-height:1.1}
+#tv.urg{color:var(--red);animation:pulse .5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+
+/* ── BARS ─── */
+.bars{position:relative;z-index:1;width:min(580px,94vw);display:flex;flex-direction:column;gap:5px;margin-bottom:2px}
+.bar-wrap{width:100%;background:var(--bg2);border-radius:30px;overflow:hidden}
+.bar-prog{height:8px;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:30px;transition:width .5s ease}
+.bar-time{height:6px;background:linear-gradient(90deg,var(--green-m),var(--gold),var(--red));border-radius:30px;transition:width .95s linear}
+
+/* ── GAME ─── */
+.game{position:relative;z-index:1;width:min(580px,96vw);padding:0 8px 28px}
+.q-wrap{text-align:center}
+.q-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--card);border-radius:30px;
+  padding:7px 18px;box-shadow:var(--sh);
+  font-size:.81rem;font-weight:800;color:var(--text-m);
+  margin:10px auto 14px;
+}
+
+/* ── GRID ─── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+
+.cell{
+  background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  aspect-ratio:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;border:3px solid transparent;
+  transition:transform .18s,box-shadow .18s,border-color .2s,background .2s,opacity .25s;
+  user-select:none;padding:10px 6px 9px;
+  position:relative;gap:7px;
+}
+.cell:hover:not(.off){transform:scale(1.06) translateY(-3px);box-shadow:var(--sh-h);border-color:var(--gold-l)}
+.cell-e{font-size:clamp(2.2rem,6.5vw,3rem);line-height:1;transition:transform .18s}
+.cell:hover:not(.off) .cell-e{transform:scale(1.1)}
+.cell-w{font-size:clamp(.67rem,2vw,.82rem);font-weight:800;color:var(--text);text-align:center;letter-spacing:.15px;line-height:1.2}
+.cell-ico{position:absolute;top:7px;right:8px;font-size:.95rem;opacity:0;transition:opacity .2s}
+
+.cell.ok{background:#e8f5ee;border-color:var(--green-m);animation:pop .4s cubic-bezier(.4,2,.6,1)}
+.cell.ok .cell-ico{opacity:1}
+.cell.ng{background:var(--red-l);border-color:var(--red);animation:shk .4s ease}
+.cell.ng .cell-ico{opacity:1}
+.cell.hi{background:#fef9e7;border-color:var(--gold)}
+.cell.hi .cell-ico{opacity:1}
+.cell.off{cursor:default;pointer-events:none}
+.cell.dim{opacity:.35}
+
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.17)}100%{transform:scale(1)}}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* ── FEEDBACK ─── */
+.fb{
+  margin:13px 0 6px;min-height:56px;
+  background:var(--card);border-radius:18px;
+  padding:12px 18px;box-shadow:var(--sh);
+  text-align:center;opacity:0;transition:opacity .3s;
+}
+.fb.show{opacity:1}
+.fb-main{font-family:'Fredoka One',sans-serif;font-size:1.15rem;margin-bottom:4px}
+.fb-sub{font-size:.78rem;font-weight:700;color:var(--text-l);line-height:1.5}
+
+/* ── NAV ─── */
+.nav{display:flex;gap:12px;justify-content:center;margin-top:10px}
+
+/* ── CONFETTI ─── */
+.cp{position:fixed;top:-20px;border-radius:3px;animation:cf linear forwards;z-index:999;pointer-events:none}
+@keyframes cf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="intro" class="overlay">
+  <div class="i-cat">🐱🔍</div>
+  <h1 class="i-title">Encontre o <em>Intruso!</em></h1>
+  <p class="i-desc">Cada grupo tem 6 elementos. A maioria pertence à mesma categoria — mas <strong>um não pertence</strong>. Descubra qual é o intruso antes que o tempo acabe!</p>
+  <p class="i-desc" style="font-size:.85rem;color:var(--text-l)">🗂️ <strong>2 Fases · 10 rodadas cada</strong></p>
+  <div>
+    <div class="sec-lbl" style="margin-bottom:10px">Tempo por rodada</div>
+    <div class="diff-row">
+      <button class="d-btn easy on" onclick="setDiff(this,20)">😊 Fácil · 20s</button>
+      <button class="d-btn med"     onclick="setDiff(this,12)">😤 Médio · 12s</button>
+      <button class="d-btn hard"    onclick="setDiff(this,7)">🔥 Difícil · 7s</button>
+    </div>
+  </div>
+  <button class="btn btn-green btn-lg" onclick="startGame()">▶ Começar!</button>
+</div>
+
+<!-- ── PHASE COMPLETE ── -->
+<div id="phase-end" class="overlay" style="display:none">
+  <div class="pe-box">
+    <div class="pe-ico" id="pe-ico">🌟</div>
+    <div class="pe-title" id="pe-title">Fase 1 concluída!</div>
+    <div class="pe-sub" id="pe-sub">Ótimo trabalho! Prepare-se para a próxima fase.</div>
+    <div class="pe-stats">
+      <div class="pe-stat"><div class="n" id="pe-ok">0</div><div class="l">Acertos</div></div>
+      <div class="pe-stat"><div class="n" id="pe-sc">0</div><div class="l">Pontos</div></div>
+    </div>
+    <button class="btn btn-green" style="font-size:1.1rem;padding:14px 40px" onclick="startNextPhase()">Próxima Fase →</button>
+  </div>
+</div>
+
+<!-- ── END SCREEN ── -->
+<div id="end" class="overlay" style="display:none">
+  <div class="end-card">
+    <div class="e-ico" id="e-ico">🏆</div>
+    <div class="e-tit" id="e-tit">Parabéns!</div>
+    <div class="e-stars" id="e-stars">⭐⭐⭐</div>
+    <div class="e-stats">
+      <div class="e-stat"><div class="n" id="es-pts">0</div><div class="l">Pontos</div></div>
+      <div class="e-stat"><div class="n" id="es-ok">0</div><div class="l">Acertos</div></div>
+      <div class="e-stat"><div class="n" id="es-ng">0</div><div class="l">Erros</div></div>
+      <div class="e-stat"><div class="n" id="es-t">0s</div><div class="l">Tempo</div></div>
+    </div>
+    <button class="btn btn-brown" style="font-size:1.05rem;padding:13px 34px" onclick="restart()">🔄 Jogar Novamente</button>
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="h-title">🐾 Encontre o <em>Intruso!</em></div>
+</header>
+
+<!-- ── PHASE INDICATOR ── -->
+<div class="phase-pill" id="phase-pill">
+  <span id="ph-lbl">Fase 1 de 2</span>
+  <div style="display:flex;gap:5px;margin-left:4px" id="phase-dots"></div>
+</div>
+
+<!-- ── HUD ── -->
+<div class="hud">
+  <div class="hb"><span class="hb-l">Rodada</span><span class="hb-v" id="hv-rd">1/10</span></div>
+  <div class="hb"><span class="hb-l">Tempo</span><span class="hb-v" id="tv">20s</span></div>
+  <div class="hb"><span class="hb-l">Pontos</span><span class="hb-v" id="hv-sc">0</span></div>
+  <div class="hb"><span class="hb-l">Vidas</span><span class="hb-v" id="hv-lv">❤️❤️❤️</span></div>
+</div>
+
+<!-- ── BARS ── -->
+<div class="bars">
+  <div class="bar-wrap"><div class="bar-prog" id="bp" style="width:0%"></div></div>
+  <div class="bar-wrap"><div class="bar-time" id="bt" style="width:100%"></div></div>
+</div>
+
+<!-- ── GAME ── -->
+<div class="game">
+  <div class="q-wrap"><span class="q-badge" id="q-badge">🔍 Qual não pertence ao grupo?</span></div>
+  <div class="grid" id="grid"></div>
+  <div class="fb" id="fb">
+    <div class="fb-main" id="fb-main"></div>
+    <div class="fb-sub"  id="fb-sub"></div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-ghost" id="btn-sk" onclick="skip()">⏭ Pular</button>
+    <button class="btn btn-green" id="btn-nx" style="display:none" onclick="next()">Próxima →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  FASES — 2 fases, 10 rodadas cada
+// ═══════════════════════════════════════════════════
+const PHASES = [
+  // ─── FASE 1 — Categorias Semânticas ───────────────
+  {
+    name: 'Fase 1 · Categorias',
+    rounds: [
+      { q:'🐾 Qual não é do mesmo grupo?',
+        h:'Todos são ANIMAIS — mas a pizza é comida!',
+        d:[{e:'🐶',w:'Cachorro'},{e:'🐱',w:'Gato'},{e:'🦊',w:'Raposa'},
+           {e:'🐸',w:'Sapo'},{e:'🐰',w:'Coelho'},{e:'🍕',w:'Pizza',i:1}] },
+
+      { q:'🍎 Qual não é do mesmo grupo?',
+        h:'Todas são FRUTAS — mas o brócolis é vegetal!',
+        d:[{e:'🍎',w:'Maçã'},{e:'🍊',w:'Laranja'},{e:'🍋',w:'Limão'},
+           {e:'🍇',w:'Uva'},{e:'🍓',w:'Morango'},{e:'🥦',w:'Brócolis',i:1}] },
+
+      { q:'🚗 Qual não é do mesmo grupo?',
+        h:'Todos são VEÍCULOS — mas o elefante é um animal!',
+        d:[{e:'🚗',w:'Carro'},{e:'🚌',w:'Ônibus'},{e:'🚂',w:'Trem'},
+           {e:'🚲',w:'Bicicleta'},{e:'🛵',w:'Moto'},{e:'🐘',w:'Elefante',i:1}] },
+
+      { q:'👗 Qual não é do mesmo grupo?',
+        h:'Todos são ROUPAS — mas o hambúrguer é comida!',
+        d:[{e:'👗',w:'Vestido'},{e:'👒',w:'Chapéu'},{e:'👟',w:'Tênis'},
+           {e:'👠',w:'Sapato'},{e:'🧦',w:'Meia'},{e:'🍔',w:'Hambúrguer',i:1}] },
+
+      { q:'✏️ Qual não é do mesmo grupo?',
+        h:'Todos são MATERIAIS ESCOLARES — mas a frigideira é da cozinha!',
+        d:[{e:'✏️',w:'Lápis'},{e:'📏',w:'Régua'},{e:'📚',w:'Livro'},
+           {e:'🖊️',w:'Caneta'},{e:'🎒',w:'Mochila'},{e:'🍳',w:'Frigideira',i:1}] },
+
+      { q:'🌊 Qual não é do mesmo grupo?',
+        h:'Todos são ANIMAIS DO MAR — mas o leão vive na savana!',
+        d:[{e:'🐠',w:'Peixe'},{e:'🦈',w:'Tubarão'},{e:'🐙',w:'Polvo'},
+           {e:'🐋',w:'Baleia'},{e:'🦑',w:'Lula'},{e:'🦁',w:'Leão',i:1}] },
+
+      { q:'🌿 Qual não é do mesmo grupo?',
+        h:'Todos são ANIMAIS SELVAGENS — mas o cachorro é doméstico!',
+        d:[{e:'🦁',w:'Leão'},{e:'🐯',w:'Tigre'},{e:'🐻',w:'Urso'},
+           {e:'🐊',w:'Crocodilo'},{e:'🐺',w:'Lobo'},{e:'🐶',w:'Cachorro',i:1}] },
+
+      { q:'✈️ Qual não é do mesmo grupo?',
+        h:'Todos VOAM — mas o crocodilo não tem asas!',
+        d:[{e:'🦅',w:'Águia'},{e:'🦋',w:'Borboleta'},{e:'🦜',w:'Arara'},
+           {e:'🐝',w:'Abelha'},{e:'✈️',w:'Avião'},{e:'🐊',w:'Crocodilo',i:1}] },
+
+      { q:'🍰 Qual não é do mesmo grupo?',
+        h:'Todos são DOCES — mas a pizza é salgada!',
+        d:[{e:'🍰',w:'Bolo'},{e:'🍫',w:'Chocolate'},{e:'🍭',w:'Pirulito'},
+           {e:'🍦',w:'Sorvete'},{e:'🍮',w:'Pudim'},{e:'🍕',w:'Pizza',i:1}] },
+
+      { q:'🎵 Qual não é do mesmo grupo?',
+        h:'Todos são INSTRUMENTOS MUSICAIS — mas a bola é esporte!',
+        d:[{e:'🎸',w:'Violão'},{e:'🎹',w:'Piano'},{e:'🎺',w:'Trompete'},
+           {e:'🥁',w:'Bateria'},{e:'🎻',w:'Violino'},{e:'⚽',w:'Bola',i:1}] },
+    ]
+  },
+
+  // ─── FASE 2 — Fonológica + Conceitual ─────────────
+  {
+    name: 'Fase 2 · Letra Inicial & Conceitos',
+    rounds: [
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com B — mas LEÃO começa com L!',
+        d:[{e:'🐄',w:'Boi'},{e:'🍌',w:'Banana'},{e:'🎈',w:'Bexiga'},
+           {e:'🏀',w:'Bola'},{e:'🦋',w:'Borboleta'},{e:'🦁',w:'Leão',i:1}] },
+
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com G — mas RATO começa com R!',
+        d:[{e:'🐱',w:'Gato'},{e:'🐓',w:'Galinha'},{e:'🦒',w:'Girafa'},
+           {e:'🦍',w:'Gorila'},{e:'🐬',w:'Golfinho'},{e:'🐭',w:'Rato',i:1}] },
+
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com P — mas BANANA começa com B!',
+        d:[{e:'🦆',w:'Pato'},{e:'🐟',w:'Peixe'},{e:'🐷',w:'Porco'},
+           {e:'🍐',w:'Pera'},{e:'🕊️',w:'Pomba'},{e:'🍌',w:'Banana',i:1}] },
+
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com M — mas CACHORRO começa com C!',
+        d:[{e:'🐒',w:'Macaco'},{e:'🥭',w:'Manga'},{e:'🍯',w:'Mel'},
+           {e:'🛵',w:'Moto'},{e:'🦇',w:'Morcego'},{e:'🐶',w:'Cachorro',i:1}] },
+
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com C — mas BANANA começa com B!',
+        d:[{e:'🐍',w:'Cobra'},{e:'🏠',w:'Casa'},{e:'🚗',w:'Carro'},
+           {e:'🧅',w:'Cebola'},{e:'🎸',w:'Cavaquinho'},{e:'🍌',w:'Banana',i:1}] },
+
+      { q:'🔤 Qual não começa com a mesma letra?',
+        h:'Todos começam com F — mas GATO começa com G!',
+        d:[{e:'🦭',w:'Foca'},{e:'🌸',w:'Flor'},{e:'🔥',w:'Fogo'},
+           {e:'🍗',w:'Frango'},{e:'🧚',w:'Fada'},{e:'🐱',w:'Gato',i:1}] },
+
+      { q:'🧍 Qual não é do mesmo grupo?',
+        h:'Todos são PARTES DO CORPO — mas a chave é um objeto!',
+        d:[{e:'👁️',w:'Olho'},{e:'👂',w:'Orelha'},{e:'👃',w:'Nariz'},
+           {e:'👄',w:'Boca'},{e:'💪',w:'Braço'},{e:'🔑',w:'Chave',i:1}] },
+
+      { q:'🌸 Qual não é do mesmo grupo?',
+        h:'Todas são FLORES — mas a maçã é uma fruta!',
+        d:[{e:'🌹',w:'Rosa'},{e:'🌻',w:'Girassol'},{e:'🌸',w:'Cerejeira'},
+           {e:'🌺',w:'Hibisco'},{e:'🌼',w:'Margarida'},{e:'🍎',w:'Maçã',i:1}] },
+
+      { q:'🎮 Qual não é do mesmo grupo?',
+        h:'Todos são BRINQUEDOS — mas a chave inglesa é ferramenta!',
+        d:[{e:'🪆',w:'Boneca'},{e:'🎮',w:'Videogame'},{e:'🪀',w:'Ioiô'},
+           {e:'🎯',w:'Alvo'},{e:'🧸',w:'Ursinho'},{e:'🔧',w:'Chave',i:1}] },
+
+      { q:'🚀 Qual não é do mesmo grupo?',
+        h:'Todos são do ESPAÇO — mas a pizza é comida!',
+        d:[{e:'🌍',w:'Terra'},{e:'🌕',w:'Lua'},{e:'⭐',w:'Estrela'},
+           {e:'🚀',w:'Foguete'},{e:'🪐',w:'Saturno'},{e:'🍕',w:'Pizza',i:1}] },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let pi=0, ri=0;             // phase index, round index within phase
+let sc=0, lv=3;             // total score, lives (persist across phases)
+let phOk=0, phSc=0;         // phase-level acertos & score delta
+let totalOk=0, totalEr=0, totalTime=0;
+let sec=20, tid=null, tl=0, ts=0, done=false, items=[];
+
+// ═══════════════════════════════════════════════════
+//  DIFFICULTY
+// ═══════════════════════════════════════════════════
+function setDiff(btn,s){
+  document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); sec=s;
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT / START
+// ═══════════════════════════════════════════════════
+function startGame(){
+  hide('intro');
+  pi=0; ri=0; sc=0; lv=3;
+  phOk=0; phSc=0;
+  totalOk=0; totalEr=0; totalTime=0;
+  hud(); buildPhaseDots(); load();
+}
+
+function startNextPhase(){
+  hide('phase-end');
+  pi++; ri=0;
+  phOk=0; phSc=0;
+  hud(); buildPhaseDots(); load();
+}
+
+function restart(){
+  hide('end');
+  pi=0; ri=0; sc=0; lv=3;
+  phOk=0; phSc=0;
+  totalOk=0; totalEr=0; totalTime=0;
+  document.getElementById('bp').style.width='0%';
+  hud(); buildPhaseDots(); load();
+}
+
+// ═══════════════════════════════════════════════════
+//  PHASE DOTS
+// ═══════════════════════════════════════════════════
+function buildPhaseDots(){
+  const wrap=document.getElementById('phase-dots');
+  wrap.innerHTML='';
+  PHASES.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='phase-dot'+(i<pi?' done':i===pi?' active':'');
+    wrap.appendChild(d);
+  });
+  const total=PHASES.reduce((s,p)=>s+p.rounds.length,0);
+  const done_r=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri;
+  document.getElementById('bp').style.width=(done_r/total*100)+'%';
+  document.getElementById('ph-lbl').textContent=`Fase ${pi+1} de ${PHASES.length}`;
+}
+
+// ═══════════════════════════════════════════════════
+//  LOAD ROUND
+// ═══════════════════════════════════════════════════
+function sfl(a){
+  const c=[...a];
+  for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}
+  return c;
+}
+
+function load(){
+  done=false;
+  const rnd=PHASES[pi].rounds[ri];
+  items=sfl(rnd.d);
+
+  const phLen=PHASES[pi].rounds.length;
+  document.getElementById('hv-rd').textContent=`${ri+1}/${phLen}`;
+  document.getElementById('q-badge').textContent=rnd.q;
+  document.getElementById('fb').classList.remove('show');
+  document.getElementById('btn-nx').style.display='none';
+  document.getElementById('btn-sk').style.display='';
+  document.getElementById('tv').classList.remove('urg');
+
+  const g=document.getElementById('grid');
+  g.innerHTML='';
+  items.forEach((it,idx)=>{
+    const c=document.createElement('div');
+    c.className='cell';
+    c.innerHTML=`<span class="cell-e">${it.e}</span><span class="cell-w">${it.w}</span><span class="cell-ico" id="ic${idx}"></span>`;
+    c.id=`c${idx}`;
+    c.onclick=()=>click(idx);
+    g.appendChild(c);
+  });
+
+  clearInterval(tid);
+  tl=sec; ts=Date.now();
+  timerDraw(); barT(1);
+  tid=setInterval(tick,80);
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════
+function tick(){
+  const el=(Date.now()-ts)/1000;
+  tl=Math.max(0,sec-el);
+  timerDraw(); barT(tl/sec);
+  tl<=3?document.getElementById('tv').classList.add('urg'):document.getElementById('tv').classList.remove('urg');
+  if(tl<=0&&!done){clearInterval(tid);expired();}
+}
+function timerDraw(){document.getElementById('tv').textContent=Math.ceil(tl)+'s'}
+function barT(r){document.getElementById('bt').style.width=(r*100)+'%'}
+
+// ═══════════════════════════════════════════════════
+//  CLICK
+// ═══════════════════════════════════════════════════
+function click(idx){
+  if(done)return;
+  clearInterval(tid);done=true;
+  const el=(Date.now()-ts)/1000;
+  totalTime+=el;
+
+  const it=items[idx];
+  const cells=document.querySelectorAll('.cell');
+
+  if(it.i){
+    cel(idx).classList.add('ok','off');
+    ico(idx,'✅');
+    const bon=Math.round(tl*4);
+    sc+=10+bon; phOk++; totalOk++; phSc+=10+bon;
+    feedback('✅ Correto!',PHASES[pi].rounds[ri].h,'#1e5c39');
+    cells.forEach((c,i)=>{if(i!==idx)c.classList.add('dim','off')});
+  } else {
+    cel(idx).classList.add('ng','off');
+    ico(idx,'❌');
+    totalEr++; lv--;
+    items.forEach((t,i)=>{
+      if(t.i){cel(i).classList.add('hi','off');ico(i,'👈')}
+      else if(i!==idx){cel(i).classList.add('dim','off')}
+    });
+    feedback('❌ Não era esse!',PHASES[pi].rounds[ri].h,'#C0392B');
+  }
+
+  hud(); prog();
+  if(lv<=0){setTimeout(()=>endGame(),1200);return;}
+  document.getElementById('btn-nx').style.display='';
+  document.getElementById('btn-sk').style.display='none';
+}
+
+function expired(){
+  done=true; totalEr++; lv--;
+  items.forEach((t,i)=>{
+    if(t.i){cel(i).classList.add('hi','off');ico(i,'👆')}
+    else{cel(i).classList.add('dim','off')}
+  });
+  feedback('⏰ Tempo esgotado!',PHASES[pi].rounds[ri].h,'#C9870A');
+  hud(); prog();
+  if(lv<=0){setTimeout(()=>endGame(),1200);return;}
+  document.getElementById('btn-nx').style.display='';
+  document.getElementById('btn-sk').style.display='none';
+}
+
+function skip(){
+  clearInterval(tid);done=true;totalEr++;lv--;
+  if(lv<=0){hud();endGame();return;}
+  items.forEach((t,i)=>{
+    if(t.i){cel(i).classList.add('hi','off');ico(i,'👆')}
+    else{cel(i).classList.add('dim','off')}
+  });
+  feedback('⏭ Pulou!',PHASES[pi].rounds[ri].h,'#6B3F1E');
+  hud();
+  document.getElementById('btn-nx').style.display='';
+  document.getElementById('btn-sk').style.display='none';
+}
+
+// ═══════════════════════════════════════════════════
+//  NEXT
+// ═══════════════════════════════════════════════════
+function next(){
+  ri++;
+  const phLen=PHASES[pi].rounds.length;
+
+  if(ri>=phLen){
+    // Fase concluída
+    const isLast=(pi>=PHASES.length-1);
+    if(isLast){
+      endGame();
+    } else {
+      showPhaseEnd();
+    }
+  } else {
+    buildPhaseDots();
+    load();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  PHASE END MODAL
+// ═══════════════════════════════════════════════════
+function showPhaseEnd(){
+  const phaseNum=pi+1;
+  document.getElementById('pe-ico').textContent=phOk>=8?'🌟':phOk>=6?'⭐':'👏';
+  document.getElementById('pe-title').textContent=`Fase ${phaseNum} concluída!`;
+  document.getElementById('pe-sub').textContent=
+    phOk>=8?'Excelente! Você dominou esta fase! Preparado para o próximo desafio?':
+    phOk>=6?'Muito bem! Vamos para a próxima fase!':
+    'Boa tentativa! Continue praticando na próxima fase.';
+  document.getElementById('pe-ok').textContent=phOk;
+  document.getElementById('pe-sc').textContent=phSc;
+  show('phase-end');
+  if(phOk>=8) confetti();
+}
+
+// ═══════════════════════════════════════════════════
+//  END GAME
+// ═══════════════════════════════════════════════════
+function endGame(){
+  clearInterval(tid);
+  const total=PHASES.reduce((s,p)=>s+p.rounds.length,0);
+  const p=totalOk/total;
+  let ico='🏆',tit='Incrível!',st='⭐⭐⭐';
+  if(lv<=0){ico='💔';tit='Não desista!';st=p>=.5?'⭐⭐':'⭐';}
+  else if(p>=.9){ico='🏆';tit='Perfeito!';st='⭐⭐⭐';confetti();}
+  else if(p>=.7){ico='🥇';tit='Muito bem!';st='⭐⭐⭐';}
+  else if(p>=.5){ico='🥈';tit='Bom trabalho!';st='⭐⭐';}
+  else{ico='😅';tit='Continue praticando!';st='⭐';}
+
+  document.getElementById('e-ico').textContent=ico;
+  document.getElementById('e-tit').textContent=tit;
+  document.getElementById('e-stars').textContent=st;
+  document.getElementById('es-pts').textContent=sc;
+  document.getElementById('es-ok').textContent=totalOk;
+  document.getElementById('es-ng').textContent=totalEr;
+  document.getElementById('es-t').textContent=Math.round(totalTime)+'s';
+  show('end');
+}
+
+// ═══════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════
+function feedback(m,s,c){
+  document.getElementById('fb-main').textContent=m;
+  document.getElementById('fb-main').style.color=c;
+  document.getElementById('fb-sub').textContent=s;
+  document.getElementById('fb').classList.add('show');
+}
+function hud(){
+  document.getElementById('hv-sc').textContent=sc;
+  document.getElementById('hv-lv').textContent='❤️'.repeat(Math.max(0,lv))+'🖤'.repeat(Math.max(0,3-lv));
+}
+function prog(){
+  const total=PHASES.reduce((s,p)=>s+p.rounds.length,0);
+  const done_r=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri+1;
+  document.getElementById('bp').style.width=(done_r/total*100)+'%';
+}
+function cel(i){return document.getElementById('c'+i)}
+function ico(i,v){document.getElementById('ic'+i).textContent=v}
+function show(id){const el=document.getElementById(id);el.style.display='flex';el.style.animation='fi .3s ease'}
+function hide(id){document.getElementById(id).style.display='none'}
+
+function confetti(){
+  const cols=['#1e5c39','#C9870A','#C0392B','#a8d5b5','#6B3F1E','#F5D68A'];
+  for(let i=0;i<55;i++){
+    const el=document.createElement('div');
+    el.className='cp';
+    const w=7+Math.random()*9,c=cols[Math.floor(Math.random()*cols.length)];
+    el.style.cssText=`left:${Math.random()*100}vw;width:${w}px;height:${w}px;background:${c};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.9}s;border-radius:${Math.random()>.5?'50%':'3px'}`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),4200);
+  }
+}
+
+hud();
+</script>
+</body>
+</html>
