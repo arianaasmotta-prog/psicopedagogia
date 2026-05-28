@@ -42,49 +42,43 @@ body::before{
   background-size:32px 32px;pointer-events:none;z-index:0;
 }
 
-/* ── OVERLAY BASE ─── */
 .overlay{
   position:fixed;inset:0;z-index:200;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:18px;padding:28px 20px;text-align:center;
+  gap:16px;padding:28px 20px;text-align:center;
 }
 
-/* ── INTRO ─── */
 #intro{ background:linear-gradient(155deg,#FDF8F2 55%,#F0E6D0); }
 
-.i-cat{font-size:5rem;animation:sway 2.8s ease-in-out infinite}
+.i-cat{font-size:4.5rem;animation:sway 2.8s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(10deg) scale(1.06)}}
 
 .i-title{
   font-family:'Fredoka One',sans-serif;
-  font-size:clamp(2rem,6vw,3.4rem);
+  font-size:clamp(2rem,6vw,3.2rem);
   color:var(--green);line-height:1.1;
   text-shadow:3px 3px 0 rgba(30,92,57,.13);
 }
 .i-title em{color:var(--brown);font-style:normal}
 
-.i-desc{font-size:.97rem;font-weight:600;color:var(--text-m);max-width:400px;line-height:1.75}
+.i-desc{font-size:.95rem;font-weight:600;color:var(--text-m);max-width:420px;line-height:1.75}
 .i-desc strong{color:var(--green)}
 
-.sec-lbl{font-size:.72rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
-
-.diff-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-
-.d-btn{
-  font-family:'Fredoka One',sans-serif;font-size:.9rem;
-  padding:11px 18px;border-radius:50px;cursor:pointer;
-  border:2.5px solid transparent;background:var(--card);
-  transition:all .2s;
+.phases-preview{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px;
 }
-.d-btn:hover,.d-btn.on{transform:scale(1.07);box-shadow:0 6px 18px rgba(0,0,0,.10)}
-.d-btn.easy{color:var(--green);border-color:var(--green-m)}
-.d-btn.easy.on{background:#e8f5ee}
-.d-btn.med{color:var(--gold);border-color:var(--gold)}
-.d-btn.med.on{background:#fef9e7}
-.d-btn.hard{color:var(--red);border-color:var(--red)}
-.d-btn.hard.on{background:var(--red-l)}
+.pp-card{
+  background:var(--card);border-radius:16px;padding:12px 16px;
+  box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:4px;
+  min-width:90px;
+}
+.pp-ico{font-size:1.7rem}
+.pp-name{font-family:'Fredoka One',sans-serif;font-size:.85rem;color:var(--text)}
+.pp-time{font-size:.68rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:.6px}
+.pp-card.easy{border:2.5px solid var(--green-m)}
+.pp-card.med {border:2.5px solid var(--gold)}
+.pp-card.hard{border:2.5px solid var(--red)}
 
-/* ── PHASE COMPLETE ─── */
 #phase-end{
   background:rgba(30,92,57,.92);
   backdrop-filter:blur(4px);
@@ -96,15 +90,19 @@ body::before{
   box-shadow:0 20px 60px rgba(0,0,0,.3);
   animation:su .45s cubic-bezier(.4,2,.6,1);
 }
-.pe-ico{font-size:3.8rem;margin-bottom:10px}
-.pe-title{font-family:'Fredoka One',sans-serif;font-size:1.9rem;color:var(--green);margin-bottom:6px}
-.pe-sub{font-size:.9rem;font-weight:700;color:var(--text-m);margin-bottom:20px;line-height:1.6}
-.pe-stats{display:flex;gap:12px;justify-content:center;margin-bottom:22px}
+.pe-ico{font-size:3.6rem;margin-bottom:10px}
+.pe-title{font-family:'Fredoka One',sans-serif;font-size:1.85rem;color:var(--green);margin-bottom:6px}
+.pe-sub{font-size:.88rem;font-weight:700;color:var(--text-m);margin-bottom:20px;line-height:1.6}
+.pe-stats{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
 .pe-stat{background:var(--bg);border-radius:14px;padding:12px 20px}
 .pe-stat .n{font-family:'Fredoka One',sans-serif;font-size:1.7rem;color:var(--green);line-height:1}
 .pe-stat .l{font-size:.67rem;font-weight:900;color:var(--text-l);text-transform:uppercase;margin-top:3px}
+.pe-next-badge{
+  display:inline-block;background:var(--bg2);border-radius:12px;
+  padding:8px 16px;font-size:.78rem;font-weight:800;color:var(--text-m);
+  margin-bottom:18px;
+}
 
-/* ── END SCREEN ─── */
 #end{ background:rgba(44,26,14,.58); }
 .end-card{
   background:var(--card);border-radius:28px;
@@ -120,7 +118,6 @@ body::before{
 .e-stat .n{font-family:'Fredoka One',sans-serif;font-size:1.75rem;color:var(--green);line-height:1}
 .e-stat .l{font-size:.67rem;font-weight:900;color:var(--text-l);text-transform:uppercase;margin-top:3px}
 
-/* ── SHARED BUTTONS ─── */
 .btn{
   font-family:'Fredoka One',sans-serif;font-size:1rem;
   padding:12px 30px;border:none;border-radius:50px;
@@ -131,18 +128,16 @@ body::before{
 .btn-brown{background:var(--brown);color:#fff;box-shadow:0 4px 16px rgba(107,63,30,.3)}
 .btn-ghost{background:var(--card);color:var(--text-l);border:2px solid var(--bg2)}
 
-.btn-lg{font-size:1.25rem;padding:15px 52px;margin-top:6px}
+.btn-lg{font-size:1.25rem;padding:15px 52px;margin-top:4px}
 .btn-lg:hover{transform:translateY(-3px) scale(1.04)}
 
 @keyframes su{from{transform:translateY(55px) scale(.9);opacity:0}to{transform:none;opacity:1}}
 @keyframes fi{from{opacity:0}to{opacity:1}}
 
-/* ── HEADER ─── */
 header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 .h-title{font-family:'Fredoka One',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--green)}
 .h-title em{color:var(--brown);font-style:normal}
 
-/* ── PHASE PILL ─── */
 .phase-pill{
   position:relative;z-index:1;
   display:flex;gap:8px;align-items:center;
@@ -150,7 +145,7 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
   padding:5px 16px;box-shadow:var(--sh);
   font-size:.75rem;font-weight:900;color:var(--text-l);
   text-transform:uppercase;letter-spacing:.8px;
-  margin-top:4px;
+  margin-top:4px;flex-wrap:wrap;justify-content:center;
 }
 .phase-dot{
   width:10px;height:10px;border-radius:50%;
@@ -160,7 +155,14 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 .phase-dot.done{background:var(--green-l);border-color:var(--green-m)}
 .phase-dot.active{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(30,92,57,.2)}
 
-/* ── HUD ─── */
+.phase-badge{
+  border-radius:20px;padding:3px 10px;
+  font-size:.68rem;font-weight:900;letter-spacing:.6px;
+}
+.badge-easy{background:#e8f5ee;color:var(--green)}
+.badge-med {background:#fef9e7;color:var(--gold)}
+.badge-hard{background:var(--red-l);color:var(--red)}
+
 .hud{position:relative;z-index:1;display:flex;gap:9px;flex-wrap:wrap;justify-content:center;padding:8px 12px}
 .hb{background:var(--card);border-radius:14px;padding:7px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;min-width:64px}
 .hb-l{font-size:.63rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:.6px}
@@ -168,13 +170,11 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 #tv.urg{color:var(--red);animation:pulse .5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
 
-/* ── BARS ─── */
 .bars{position:relative;z-index:1;width:min(580px,94vw);display:flex;flex-direction:column;gap:5px;margin-bottom:2px}
 .bar-wrap{width:100%;background:var(--bg2);border-radius:30px;overflow:hidden}
 .bar-prog{height:8px;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:30px;transition:width .5s ease}
 .bar-time{height:6px;background:linear-gradient(90deg,var(--green-m),var(--gold),var(--red));border-radius:30px;transition:width .95s linear}
 
-/* ── GAME ─── */
 .game{position:relative;z-index:1;width:min(580px,96vw);padding:0 8px 28px}
 .q-wrap{text-align:center}
 .q-badge{
@@ -185,7 +185,6 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
   margin:10px auto 14px;
 }
 
-/* ── GRID ─── */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
 
 .cell{
@@ -215,7 +214,6 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.17)}100%{transform:scale(1)}}
 @keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
-/* ── FEEDBACK ─── */
 .fb{
   margin:13px 0 6px;min-height:56px;
   background:var(--card);border-radius:18px;
@@ -226,10 +224,8 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 .fb-main{font-family:'Fredoka One',sans-serif;font-size:1.15rem;margin-bottom:4px}
 .fb-sub{font-size:.78rem;font-weight:700;color:var(--text-l);line-height:1.5}
 
-/* ── NAV ─── */
 .nav{display:flex;gap:12px;justify-content:center;margin-top:10px}
 
-/* ── CONFETTI ─── */
 .cp{position:fixed;top:-20px;border-radius:3px;animation:cf linear forwards;z-index:999;pointer-events:none}
 @keyframes cf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 </style>
@@ -238,16 +234,15 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 
 <!-- ── INTRO ── -->
 <div id="intro" class="overlay">
-  <div class="i-cat">🐱🔍</div>
+  <div class="i-cat">🐾🔍</div>
   <h1 class="i-title">Encontre o <em>Intruso!</em></h1>
   <p class="i-desc">Cada grupo tem 6 elementos. A maioria pertence à mesma categoria — mas <strong>um não pertence</strong>. Descubra qual é o intruso antes que o tempo acabe!</p>
-  <p class="i-desc" style="font-size:.85rem;color:var(--text-l)">🗂️ <strong>2 Fases · 10 rodadas cada</strong></p>
   <div>
-    <div class="sec-lbl" style="margin-bottom:10px">Tempo por rodada</div>
-    <div class="diff-row">
-      <button class="d-btn easy on" onclick="setDiff(this,20)">😊 Fácil · 20s</button>
-      <button class="d-btn med"     onclick="setDiff(this,12)">😤 Médio · 12s</button>
-      <button class="d-btn hard"    onclick="setDiff(this,7)">🔥 Difícil · 7s</button>
+    <div style="font-size:.72rem;font-weight:900;color:var(--text-l);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px">3 Fases · 8 rodadas cada</div>
+    <div class="phases-preview">
+      <div class="pp-card easy"><div class="pp-ico">😊</div><div class="pp-name">Fase 1 · Fácil</div><div class="pp-time">⏱ 25s / rodada</div></div>
+      <div class="pp-card med"> <div class="pp-ico">😤</div><div class="pp-name">Fase 2 · Média</div><div class="pp-time">⏱ 15s / rodada</div></div>
+      <div class="pp-card hard"><div class="pp-ico">🔥</div><div class="pp-name">Fase 3 · Difícil</div><div class="pp-time">⏱ 10s / rodada</div></div>
     </div>
   </div>
   <button class="btn btn-green btn-lg" onclick="startGame()">▶ Começar!</button>
@@ -263,6 +258,7 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
       <div class="pe-stat"><div class="n" id="pe-ok">0</div><div class="l">Acertos</div></div>
       <div class="pe-stat"><div class="n" id="pe-sc">0</div><div class="l">Pontos</div></div>
     </div>
+    <div class="pe-next-badge" id="pe-next-badge">Próxima fase →</div>
     <button class="btn btn-green" style="font-size:1.1rem;padding:14px 40px" onclick="startNextPhase()">Próxima Fase →</button>
   </div>
 </div>
@@ -290,14 +286,15 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 
 <!-- ── PHASE INDICATOR ── -->
 <div class="phase-pill" id="phase-pill">
-  <span id="ph-lbl">Fase 1 de 2</span>
+  <span id="ph-lbl">Fase 1 de 3</span>
+  <span class="phase-badge badge-easy" id="ph-badge">😊 Fácil</span>
   <div style="display:flex;gap:5px;margin-left:4px" id="phase-dots"></div>
 </div>
 
 <!-- ── HUD ── -->
 <div class="hud">
-  <div class="hb"><span class="hb-l">Rodada</span><span class="hb-v" id="hv-rd">1/10</span></div>
-  <div class="hb"><span class="hb-l">Tempo</span><span class="hb-v" id="tv">20s</span></div>
+  <div class="hb"><span class="hb-l">Rodada</span><span class="hb-v" id="hv-rd">1/8</span></div>
+  <div class="hb"><span class="hb-l">Tempo</span><span class="hb-v" id="tv">25s</span></div>
   <div class="hb"><span class="hb-l">Pontos</span><span class="hb-v" id="hv-sc">0</span></div>
   <div class="hb"><span class="hb-l">Vidas</span><span class="hb-v" id="hv-lv">❤️❤️❤️</span></div>
 </div>
@@ -324,118 +321,148 @@ header{position:relative;z-index:1;text-align:center;padding:20px 16px 4px}
 
 <script>
 // ═══════════════════════════════════════════════════
-//  FASES — 2 fases, 10 rodadas cada
+//  FASES — 3 fases, 8 rodadas cada
 // ═══════════════════════════════════════════════════
 const PHASES = [
-  // ─── FASE 1 — Categorias Semânticas ───────────────
+
+  // ─── FASE 1 — FÁCIL (25s) ────────────────────────
+  // Categorias muito distintas — o intruso é de uma área completamente diferente
   {
-    name: 'Fase 1 · Categorias',
-    rounds: [
-      { q:'🐾 Qual não é do mesmo grupo?',
+    name:'Fase 1 · Fácil', badge:'😊 Fácil', badgeClass:'badge-easy', sec:25,
+    rounds:[
+      { q:'🐾 Qual não é um animal?',
         h:'Todos são ANIMAIS — mas a pizza é comida!',
         d:[{e:'🐶',w:'Cachorro'},{e:'🐱',w:'Gato'},{e:'🦊',w:'Raposa'},
            {e:'🐸',w:'Sapo'},{e:'🐰',w:'Coelho'},{e:'🍕',w:'Pizza',i:1}] },
 
-      { q:'🍎 Qual não é do mesmo grupo?',
+      { q:'🍎 Qual não é uma fruta?',
         h:'Todas são FRUTAS — mas o brócolis é vegetal!',
         d:[{e:'🍎',w:'Maçã'},{e:'🍊',w:'Laranja'},{e:'🍋',w:'Limão'},
            {e:'🍇',w:'Uva'},{e:'🍓',w:'Morango'},{e:'🥦',w:'Brócolis',i:1}] },
 
-      { q:'🚗 Qual não é do mesmo grupo?',
-        h:'Todos são VEÍCULOS — mas o elefante é um animal!',
+      { q:'🚗 Qual não é um veículo?',
+        h:'Todos são VEÍCULOS — mas o elefante é animal!',
         d:[{e:'🚗',w:'Carro'},{e:'🚌',w:'Ônibus'},{e:'🚂',w:'Trem'},
            {e:'🚲',w:'Bicicleta'},{e:'🛵',w:'Moto'},{e:'🐘',w:'Elefante',i:1}] },
 
-      { q:'👗 Qual não é do mesmo grupo?',
+      { q:'👗 Qual não é uma roupa?',
         h:'Todos são ROUPAS — mas o hambúrguer é comida!',
         d:[{e:'👗',w:'Vestido'},{e:'👒',w:'Chapéu'},{e:'👟',w:'Tênis'},
            {e:'👠',w:'Sapato'},{e:'🧦',w:'Meia'},{e:'🍔',w:'Hambúrguer',i:1}] },
 
-      { q:'✏️ Qual não é do mesmo grupo?',
+      { q:'✏️ Qual não é material escolar?',
         h:'Todos são MATERIAIS ESCOLARES — mas a frigideira é da cozinha!',
         d:[{e:'✏️',w:'Lápis'},{e:'📏',w:'Régua'},{e:'📚',w:'Livro'},
            {e:'🖊️',w:'Caneta'},{e:'🎒',w:'Mochila'},{e:'🍳',w:'Frigideira',i:1}] },
 
-      { q:'🌊 Qual não é do mesmo grupo?',
-        h:'Todos são ANIMAIS DO MAR — mas o leão vive na savana!',
-        d:[{e:'🐠',w:'Peixe'},{e:'🦈',w:'Tubarão'},{e:'🐙',w:'Polvo'},
-           {e:'🐋',w:'Baleia'},{e:'🦑',w:'Lula'},{e:'🦁',w:'Leão',i:1}] },
+      { q:'❤️ Qual não é uma cor?',
+        h:'Todos representam CORES — mas o cachorro é um animal!',
+        d:[{e:'❤️',w:'Vermelho'},{e:'🧡',w:'Laranja'},{e:'💛',w:'Amarelo'},
+           {e:'💚',w:'Verde'},{e:'💙',w:'Azul'},{e:'🐶',w:'Cachorro',i:1}] },
 
-      { q:'🌿 Qual não é do mesmo grupo?',
+      { q:'🍳 Qual não é da cozinha?',
+        h:'Todos são UTENSÍLIOS DE COZINHA — mas a bola é brinquedo!',
+        d:[{e:'🍳',w:'Frigideira'},{e:'🥄',w:'Colher'},{e:'🔪',w:'Faca'},
+           {e:'🥘',w:'Panela'},{e:'🍽️',w:'Prato'},{e:'🏀',w:'Bola',i:1}] },
+
+      { q:'⚽ Qual não é um esporte?',
+        h:'Todos são ESPORTES — mas o piano é instrumento musical!',
+        d:[{e:'⚽',w:'Futebol'},{e:'🏀',w:'Basquete'},{e:'🎾',w:'Tênis'},
+           {e:'🏊',w:'Natação'},{e:'🚴',w:'Ciclismo'},{e:'🎹',w:'Piano',i:1}] },
+    ]
+  },
+
+  // ─── FASE 2 — MÉDIA (15s) ────────────────────────
+  // Subcategorias — o intruso pertence à mesma grande área, mas à subcategoria errada
+  {
+    name:'Fase 2 · Média', badge:'😤 Média', badgeClass:'badge-med', sec:15,
+    rounds:[
+      { q:'🐄 Qual não é animal de fazenda?',
+        h:'Todos são ANIMAIS DE FAZENDA — mas o leão é selvagem!',
+        d:[{e:'🐄',w:'Vaca'},{e:'🐷',w:'Porco'},{e:'🐔',w:'Galinha'},
+           {e:'🐑',w:'Ovelha'},{e:'🐴',w:'Cavalo'},{e:'🦁',w:'Leão',i:1}] },
+
+      { q:'✈️ Qual não consegue voar?',
+        h:'Todos VOAM — mas o navio se move pela água!',
+        d:[{e:'✈️',w:'Avião'},{e:'🚁',w:'Helicóptero'},{e:'🦅',w:'Águia'},
+           {e:'🦋',w:'Borboleta'},{e:'🐝',w:'Abelha'},{e:'🚢',w:'Navio',i:1}] },
+
+      { q:'🌹 Qual não é uma flor?',
+        h:'Todas são FLORES — mas o tomate é vegetal!',
+        d:[{e:'🌹',w:'Rosa'},{e:'🌻',w:'Girassol'},{e:'🌸',w:'Cerejeira'},
+           {e:'🌺',w:'Hibisco'},{e:'🌼',w:'Margarida'},{e:'🍅',w:'Tomate',i:1}] },
+
+      { q:'🍰 Qual não é um doce?',
+        h:'Todos são DOCES — mas a cebola é vegetal!',
+        d:[{e:'🍰',w:'Bolo'},{e:'🍫',w:'Chocolate'},{e:'🍭',w:'Pirulito'},
+           {e:'🍦',w:'Sorvete'},{e:'🍮',w:'Pudim'},{e:'🧅',w:'Cebola',i:1}] },
+
+      { q:'👁️ Qual não é parte do rosto?',
+        h:'Todos são PARTES DO ROSTO — mas a chave é um objeto!',
+        d:[{e:'👁️',w:'Olho'},{e:'👂',w:'Orelha'},{e:'👃',w:'Nariz'},
+           {e:'👄',w:'Boca'},{e:'🦷',w:'Dente'},{e:'🔑',w:'Chave',i:1}] },
+
+      { q:'🎸 Qual não é instrumento musical?',
+        h:'Todos são INSTRUMENTOS MUSICAIS — mas a régua é material escolar!',
+        d:[{e:'🎸',w:'Violão'},{e:'🎹',w:'Piano'},{e:'🎺',w:'Trompete'},
+           {e:'🥁',w:'Bateria'},{e:'🎻',w:'Violino'},{e:'📏',w:'Régua',i:1}] },
+
+      { q:'🐬 Qual não vive na água?',
+        h:'Todos VIVEM NA ÁGUA — mas o urso vive na terra!',
+        d:[{e:'🐬',w:'Golfinho'},{e:'🐠',w:'Peixe'},{e:'🦈',w:'Tubarão'},
+           {e:'🐙',w:'Polvo'},{e:'🦭',w:'Foca'},{e:'🐻',w:'Urso',i:1}] },
+
+      { q:'👩‍⚕️ Qual não é uma profissão?',
+        h:'Todas são PROFISSÕES — mas a pizza é comida!',
+        d:[{e:'👩‍⚕️',w:'Médica'},{e:'👮',w:'Policial'},{e:'👩‍🍳',w:'Cozinheira'},
+           {e:'👩‍🏫',w:'Professora'},{e:'👷',w:'Engenheiro'},{e:'🍕',w:'Pizza',i:1}] },
+    ]
+  },
+
+  // ─── FASE 3 — DIFÍCIL (10s) ──────────────────────
+  // Distinções sutis: selvagem vs doméstico, letra inicial, conceitos abstratos
+  {
+    name:'Fase 3 · Difícil', badge:'🔥 Difícil', badgeClass:'badge-hard', sec:10,
+    rounds:[
+      { q:'🌿 Qual não é animal selvagem?',
         h:'Todos são ANIMAIS SELVAGENS — mas o cachorro é doméstico!',
         d:[{e:'🦁',w:'Leão'},{e:'🐯',w:'Tigre'},{e:'🐻',w:'Urso'},
            {e:'🐊',w:'Crocodilo'},{e:'🐺',w:'Lobo'},{e:'🐶',w:'Cachorro',i:1}] },
 
-      { q:'✈️ Qual não é do mesmo grupo?',
-        h:'Todos VOAM — mas o crocodilo não tem asas!',
-        d:[{e:'🦅',w:'Águia'},{e:'🦋',w:'Borboleta'},{e:'🦜',w:'Arara'},
-           {e:'🐝',w:'Abelha'},{e:'✈️',w:'Avião'},{e:'🐊',w:'Crocodilo',i:1}] },
-
-      { q:'🍰 Qual não é do mesmo grupo?',
-        h:'Todos são DOCES — mas a pizza é salgada!',
-        d:[{e:'🍰',w:'Bolo'},{e:'🍫',w:'Chocolate'},{e:'🍭',w:'Pirulito'},
-           {e:'🍦',w:'Sorvete'},{e:'🍮',w:'Pudim'},{e:'🍕',w:'Pizza',i:1}] },
-
-      { q:'🎵 Qual não é do mesmo grupo?',
-        h:'Todos são INSTRUMENTOS MUSICAIS — mas a bola é esporte!',
-        d:[{e:'🎸',w:'Violão'},{e:'🎹',w:'Piano'},{e:'🎺',w:'Trompete'},
-           {e:'🥁',w:'Bateria'},{e:'🎻',w:'Violino'},{e:'⚽',w:'Bola',i:1}] },
-    ]
-  },
-
-  // ─── FASE 2 — Fonológica + Conceitual ─────────────
-  {
-    name: 'Fase 2 · Letra Inicial & Conceitos',
-    rounds: [
-      { q:'🔤 Qual não começa com a mesma letra?',
+      { q:'🔤 Qual não começa com B?',
         h:'Todos começam com B — mas LEÃO começa com L!',
         d:[{e:'🐄',w:'Boi'},{e:'🍌',w:'Banana'},{e:'🎈',w:'Bexiga'},
            {e:'🏀',w:'Bola'},{e:'🦋',w:'Borboleta'},{e:'🦁',w:'Leão',i:1}] },
 
-      { q:'🔤 Qual não começa com a mesma letra?',
+      { q:'🔤 Qual não começa com G?',
         h:'Todos começam com G — mas RATO começa com R!',
         d:[{e:'🐱',w:'Gato'},{e:'🐓',w:'Galinha'},{e:'🦒',w:'Girafa'},
            {e:'🦍',w:'Gorila'},{e:'🐬',w:'Golfinho'},{e:'🐭',w:'Rato',i:1}] },
 
-      { q:'🔤 Qual não começa com a mesma letra?',
+      { q:'🔤 Qual não começa com P?',
         h:'Todos começam com P — mas BANANA começa com B!',
         d:[{e:'🦆',w:'Pato'},{e:'🐟',w:'Peixe'},{e:'🐷',w:'Porco'},
            {e:'🍐',w:'Pera'},{e:'🕊️',w:'Pomba'},{e:'🍌',w:'Banana',i:1}] },
 
-      { q:'🔤 Qual não começa com a mesma letra?',
+      { q:'🔤 Qual não começa com M?',
         h:'Todos começam com M — mas CACHORRO começa com C!',
         d:[{e:'🐒',w:'Macaco'},{e:'🥭',w:'Manga'},{e:'🍯',w:'Mel'},
            {e:'🛵',w:'Moto'},{e:'🦇',w:'Morcego'},{e:'🐶',w:'Cachorro',i:1}] },
 
-      { q:'🔤 Qual não começa com a mesma letra?',
-        h:'Todos começam com C — mas BANANA começa com B!',
-        d:[{e:'🐍',w:'Cobra'},{e:'🏠',w:'Casa'},{e:'🚗',w:'Carro'},
-           {e:'🧅',w:'Cebola'},{e:'🎸',w:'Cavaquinho'},{e:'🍌',w:'Banana',i:1}] },
+      { q:'🦇 Qual não é animal noturno?',
+        h:'Todos são ANIMAIS NOTURNOS — mas o galo é diurno!',
+        d:[{e:'🦇',w:'Morcego'},{e:'🦉',w:'Coruja'},{e:'🐺',w:'Lobo'},
+           {e:'🦝',w:'Guaxinim'},{e:'🦟',w:'Mosquito'},{e:'🐓',w:'Galo',i:1}] },
 
-      { q:'🔤 Qual não começa com a mesma letra?',
-        h:'Todos começam com F — mas GATO começa com G!',
-        d:[{e:'🦭',w:'Foca'},{e:'🌸',w:'Flor'},{e:'🔥',w:'Fogo'},
-           {e:'🍗',w:'Frango'},{e:'🧚',w:'Fada'},{e:'🐱',w:'Gato',i:1}] },
+      { q:'🥦 Qual não é um vegetal?',
+        h:'Todos são VEGETAIS — mas a banana é fruta!',
+        d:[{e:'🥦',w:'Brócolis'},{e:'🥕',w:'Cenoura'},{e:'🧅',w:'Cebola'},
+           {e:'🌽',w:'Milho'},{e:'🥬',w:'Couve'},{e:'🍌',w:'Banana',i:1}] },
 
-      { q:'🧍 Qual não é do mesmo grupo?',
-        h:'Todos são PARTES DO CORPO — mas a chave é um objeto!',
-        d:[{e:'👁️',w:'Olho'},{e:'👂',w:'Orelha'},{e:'👃',w:'Nariz'},
-           {e:'👄',w:'Boca'},{e:'💪',w:'Braço'},{e:'🔑',w:'Chave',i:1}] },
-
-      { q:'🌸 Qual não é do mesmo grupo?',
-        h:'Todas são FLORES — mas a maçã é uma fruta!',
-        d:[{e:'🌹',w:'Rosa'},{e:'🌻',w:'Girassol'},{e:'🌸',w:'Cerejeira'},
-           {e:'🌺',w:'Hibisco'},{e:'🌼',w:'Margarida'},{e:'🍎',w:'Maçã',i:1}] },
-
-      { q:'🎮 Qual não é do mesmo grupo?',
-        h:'Todos são BRINQUEDOS — mas a chave inglesa é ferramenta!',
-        d:[{e:'🪆',w:'Boneca'},{e:'🎮',w:'Videogame'},{e:'🪀',w:'Ioiô'},
-           {e:'🎯',w:'Alvo'},{e:'🧸',w:'Ursinho'},{e:'🔧',w:'Chave',i:1}] },
-
-      { q:'🚀 Qual não é do mesmo grupo?',
-        h:'Todos são do ESPAÇO — mas a pizza é comida!',
+      { q:'🚀 Qual não é do espaço?',
+        h:'Todos são do ESPAÇO — mas a rosa é uma flor terrestre!',
         d:[{e:'🌍',w:'Terra'},{e:'🌕',w:'Lua'},{e:'⭐',w:'Estrela'},
-           {e:'🚀',w:'Foguete'},{e:'🪐',w:'Saturno'},{e:'🍕',w:'Pizza',i:1}] },
+           {e:'🚀',w:'Foguete'},{e:'🪐',w:'Saturno'},{e:'🌹',w:'Rosa',i:1}] },
     ]
   }
 ];
@@ -443,19 +470,11 @@ const PHASES = [
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let pi=0, ri=0;             // phase index, round index within phase
-let sc=0, lv=3;             // total score, lives (persist across phases)
-let phOk=0, phSc=0;         // phase-level acertos & score delta
+let pi=0, ri=0;
+let sc=0, lv=3;
+let phOk=0, phSc=0;
 let totalOk=0, totalEr=0, totalTime=0;
-let sec=20, tid=null, tl=0, ts=0, done=false, items=[];
-
-// ═══════════════════════════════════════════════════
-//  DIFFICULTY
-// ═══════════════════════════════════════════════════
-function setDiff(btn,s){
-  document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on'); sec=s;
-}
+let sec=25, tid=null, tl=0, ts=0, done=false, items=[];
 
 // ═══════════════════════════════════════════════════
 //  INIT / START
@@ -485,7 +504,7 @@ function restart(){
 }
 
 // ═══════════════════════════════════════════════════
-//  PHASE DOTS
+//  PHASE DOTS + BADGE
 // ═══════════════════════════════════════════════════
 function buildPhaseDots(){
   const wrap=document.getElementById('phase-dots');
@@ -495,9 +514,15 @@ function buildPhaseDots(){
     d.className='phase-dot'+(i<pi?' done':i===pi?' active':'');
     wrap.appendChild(d);
   });
+
+  const ph=PHASES[pi];
+  const badge=document.getElementById('ph-badge');
+  badge.textContent=ph.badge;
+  badge.className='phase-badge '+ph.badgeClass;
+
   const total=PHASES.reduce((s,p)=>s+p.rounds.length,0);
-  const done_r=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri;
-  document.getElementById('bp').style.width=(done_r/total*100)+'%';
+  const doneR=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri;
+  document.getElementById('bp').style.width=(doneR/total*100)+'%';
   document.getElementById('ph-lbl').textContent=`Fase ${pi+1} de ${PHASES.length}`;
 }
 
@@ -512,11 +537,12 @@ function sfl(a){
 
 function load(){
   done=false;
-  const rnd=PHASES[pi].rounds[ri];
+  const ph=PHASES[pi];
+  sec=ph.sec;
+  const rnd=ph.rounds[ri];
   items=sfl(rnd.d);
 
-  const phLen=PHASES[pi].rounds.length;
-  document.getElementById('hv-rd').textContent=`${ri+1}/${phLen}`;
+  document.getElementById('hv-rd').textContent=`${ri+1}/${ph.rounds.length}`;
   document.getElementById('q-badge').textContent=rnd.q;
   document.getElementById('fb').classList.remove('show');
   document.getElementById('btn-nx').style.display='none';
@@ -621,18 +647,11 @@ function skip(){
 function next(){
   ri++;
   const phLen=PHASES[pi].rounds.length;
-
   if(ri>=phLen){
-    // Fase concluída
     const isLast=(pi>=PHASES.length-1);
-    if(isLast){
-      endGame();
-    } else {
-      showPhaseEnd();
-    }
+    if(isLast){ endGame(); } else { showPhaseEnd(); }
   } else {
-    buildPhaseDots();
-    load();
+    buildPhaseDots(); load();
   }
 }
 
@@ -641,16 +660,19 @@ function next(){
 // ═══════════════════════════════════════════════════
 function showPhaseEnd(){
   const phaseNum=pi+1;
-  document.getElementById('pe-ico').textContent=phOk>=8?'🌟':phOk>=6?'⭐':'👏';
+  const nextPh=PHASES[pi+1];
+  document.getElementById('pe-ico').textContent=phOk>=7?'🌟':phOk>=5?'⭐':'👏';
   document.getElementById('pe-title').textContent=`Fase ${phaseNum} concluída!`;
   document.getElementById('pe-sub').textContent=
-    phOk>=8?'Excelente! Você dominou esta fase! Preparado para o próximo desafio?':
-    phOk>=6?'Muito bem! Vamos para a próxima fase!':
-    'Boa tentativa! Continue praticando na próxima fase.';
+    phOk>=7?'Excelente! Você dominou esta fase!':
+    phOk>=5?'Muito bem! Continue assim!':
+    'Boa tentativa! Continue praticando.';
   document.getElementById('pe-ok').textContent=phOk;
   document.getElementById('pe-sc').textContent=phSc;
+  document.getElementById('pe-next-badge').textContent=
+    `${nextPh.badge} · ${nextPh.name} · ${nextPh.sec}s por rodada`;
   show('phase-end');
-  if(phOk>=8) confetti();
+  if(phOk>=7) confetti();
 }
 
 // ═══════════════════════════════════════════════════
@@ -692,8 +714,8 @@ function hud(){
 }
 function prog(){
   const total=PHASES.reduce((s,p)=>s+p.rounds.length,0);
-  const done_r=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri+1;
-  document.getElementById('bp').style.width=(done_r/total*100)+'%';
+  const doneR=PHASES.slice(0,pi).reduce((s,p)=>s+p.rounds.length,0)+ri+1;
+  document.getElementById('bp').style.width=(doneR/total*100)+'%';
 }
 function cel(i){return document.getElementById('c'+i)}
 function ico(i,v){document.getElementById('ic'+i).textContent=v}
