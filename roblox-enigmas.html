@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 Roblox Enigmas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    :root{
+      --red:#E62429; --dred:#9E1A1E;
+      --bg:#0e0e1c; --card:#181828; --card2:#12122000;
+      --txt:#fff; --yellow:#FFD700; --green:#22C55E;
+      --blue:#3B82F6; --purple:#A855F7; --gray:#888;
+      --px:'Press Start 2P','Courier New',monospace;
+    }
+
+    body{
+      background:var(--bg);
+      background-image:
+        radial-gradient(ellipse at 10% 10%,rgba(230,36,41,.12) 0%,transparent 50%),
+        radial-gradient(ellipse at 90% 90%,rgba(59,130,246,.10) 0%,transparent 50%);
+      min-height:100vh;
+      font-family:Arial,'Segoe UI',sans-serif;
+      color:var(--txt);
+      display:flex; align-items:flex-start; justify-content:center;
+      padding:20px 14px;
+    }
+
+    .wrap{width:100%;max-width:700px}
+
+    /* ── SCREENS ── */
+    .scr{display:none}
+    .scr.on{display:block;animation:fadeUp .22s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    /* ── CARD ── */
+    .card{
+      background:var(--card);
+      border:3px solid var(--red);
+      border-radius:14px; padding:28px;
+      box-shadow:6px 6px 0 var(--dred);
+    }
+
+    /* ── BUTTONS ── */
+    .btn{
+      display:inline-block; padding:13px 26px;
+      border:3px solid transparent; border-radius:9px;
+      font-family:var(--px); font-size:11px;
+      cursor:pointer; transition:transform .08s,box-shadow .08s;
+    }
+    .btn:active{transform:translate(3px,3px)!important;box-shadow:none!important}
+
+    .btn-red{background:var(--red);border-color:var(--dred);color:#fff;box-shadow:4px 4px 0 var(--dred)}
+    .btn-red:hover{background:#f03036}
+    .btn-ol{background:transparent;border-color:var(--red);color:var(--red);box-shadow:4px 4px 0 var(--dred)}
+    .btn-ol:hover{background:rgba(230,36,41,.1)}
+    .btn-sm{font-size:10px;padding:10px 20px}
+
+    /* ── LOGO ── */
+    .logo-box{text-align:center;margin-bottom:22px}
+    .logo-pill{
+      display:inline-block; background:var(--red); color:#fff;
+      font-family:var(--px); font-size:20px; padding:10px 22px;
+      border-radius:7px; border:3px solid var(--dred);
+      box-shadow:4px 4px 0 var(--dred); margin-bottom:8px;
+    }
+    .logo-sub{font-family:var(--px);font-size:9px;color:var(--yellow);margin-top:8px;letter-spacing:1px}
+    .logo-desc{font-size:13px;color:var(--gray);margin-top:8px}
+    .welcome-char{text-align:center;font-size:80px;line-height:1;margin:10px 0 22px}
+
+    /* ── TYPE CHIPS (welcome) ── */
+    .chip-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+    .chip{padding:5px 13px;border-radius:20px;font-size:12px;border:2px solid}
+    .chip-b{background:rgba(59,130,246,.12);border-color:#3b82f6;color:#60a5fa}
+    .chip-p{background:rgba(168,85,247,.12);border-color:#a855f7;color:#c084fc}
+    .chip-g{background:rgba(34,197,94,.12);border-color:#22c55e;color:#4ade80}
+
+    /* ── SECTION HEAD ── */
+    .stag{font-family:var(--px);font-size:10px;color:#555;margin-bottom:4px}
+    .stit{font-size:20px;font-weight:700;margin-bottom:4px}
+    .sdesc{font-size:13px;color:#999;margin-bottom:18px}
+
+    /* ── THEME GRID ── */
+    .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+    .theme-card{
+      background:#111122; border:2px solid #2a2a40;
+      border-radius:13px; padding:20px 16px;
+      cursor:pointer; text-align:center;
+      transition:border-color .15s,transform .15s,box-shadow .15s;
+    }
+    .theme-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+    .theme-card:active{transform:translateY(0)}
+    .theme-card.sel{box-shadow:0 0 0 3px #fff3}
+
+    .tc-green:hover,.tc-green.sel{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.25)}
+    .tc-teal:hover,.tc-teal.sel{border-color:#0891b2;box-shadow:0 0 0 3px rgba(8,145,178,.25)}
+    .tc-orange:hover,.tc-orange.sel{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.25)}
+    .tc-violet:hover,.tc-violet.sel{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.25)}
+
+    .theme-icon{font-size:44px;display:block;margin-bottom:10px}
+    .theme-name{font-family:var(--px);font-size:10px;margin-bottom:6px}
+    .tc-green .theme-name{color:#4ade80}
+    .tc-teal .theme-name{color:#38bdf8}
+    .tc-orange .theme-name{color:#fb923c}
+    .tc-violet .theme-name{color:#c084fc}
+    .theme-desc{font-size:12px;color:#aaa;line-height:1.4}
+
+    /* ── AGE + DIFF SCREEN ── */
+    .sel-section{margin-bottom:22px}
+    .sel-label{font-family:var(--px);font-size:9px;color:#888;margin-bottom:10px;display:block}
+    .sel-row{display:flex;gap:10px;flex-wrap:wrap}
+
+    .sel-btn{
+      flex:1; min-width:80px; padding:14px 10px;
+      background:#111122; border:2px solid #333;
+      border-radius:10px; cursor:pointer; text-align:center;
+      transition:all .15s;
+    }
+    .sel-btn .sb-icon{font-size:26px;display:block;margin-bottom:6px}
+    .sel-btn .sb-name{font-family:var(--px);font-size:9px;color:#aaa}
+    .sel-btn .sb-desc{font-size:11px;color:#666;margin-top:4px}
+    .sel-btn:hover{border-color:#555;background:#1a1a2e}
+
+    .sel-btn.active-age{border-color:var(--yellow);background:rgba(255,215,0,.08)}
+    .sel-btn.active-age .sb-name{color:var(--yellow)}
+    .sel-btn.active-diff{border-color:var(--red);background:rgba(230,36,41,.08)}
+    .sel-btn.active-diff .sb-name{color:#ff8080}
+
+    .diff-easy .sel-btn.active-diff{border-color:var(--green);background:rgba(34,197,94,.08)}
+    .diff-easy .sel-btn.active-diff .sb-name{color:var(--green)}
+
+    /* selected theme display in screen 3 */
+    .theme-preview{
+      display:flex;align-items:center;gap:12px;
+      background:#111122;border:2px solid #2a2a40;
+      border-radius:10px;padding:14px 16px;margin-bottom:22px;
+    }
+    .tp-icon{font-size:32px}
+    .tp-name{font-family:var(--px);font-size:10px}
+    .tp-change{margin-left:auto;font-size:11px;color:var(--red);cursor:pointer;text-decoration:underline}
+
+    /* start btn state */
+    #btn-start{opacity:.4;pointer-events:none}
+    #btn-start.ready{opacity:1;pointer-events:auto}
+
+    /* ── GAME HEADER ── */
+    .ghdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .back-btn{
+      background:none;border:2px solid #444;border-radius:8px;
+      color:#aaa;padding:7px 13px;cursor:pointer;font-size:16px;
+      transition:border-color .15s,color .15s;flex-shrink:0;
+    }
+    .back-btn:hover{border-color:var(--red);color:var(--red)}
+    .meta-chips{display:flex;gap:6px;flex-wrap:wrap}
+    .gchip{
+      font-family:var(--px);font-size:8px;padding:5px 10px;
+      border-radius:20px;border:2px solid;
+    }
+    .gchip-theme{color:#fb923c;border-color:#ea580c;background:rgba(234,88,12,.1)}
+    .gchip-age{color:var(--yellow);border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.08)}
+    .gchip-diff{color:#4ade80;border-color:#22c55e;background:rgba(34,197,94,.08)}
+    .gchip-diff.medium{color:#fbbf24;border-color:#f59e0b;background:rgba(245,158,11,.08)}
+    .gchip-diff.hard{color:#f87171;border-color:#ef4444;background:rgba(239,68,68,.08)}
+    .score-chip{margin-left:auto;font-family:var(--px);font-size:11px;color:var(--yellow);flex-shrink:0}
+
+    /* ── PROGRESS ── */
+    .prow{display:flex;justify-content:space-between;margin-bottom:7px}
+    .plabel{font-family:var(--px);font-size:9px;color:#555}
+    .ptrack{background:#222;border-radius:10px;height:10px;border:2px solid #2a2a40;overflow:hidden;margin-bottom:20px}
+    .pfill{background:linear-gradient(90deg,var(--red),#ff5a5f);height:100%;border-radius:8px;transition:width .4s ease}
+
+    /* ── TYPE BADGE ── */
+    .tbadge{display:inline-block;padding:5px 13px;border-radius:20px;font-family:var(--px);font-size:8px;margin-bottom:14px;border:2px solid}
+    .tb-charada{background:#07182e;color:#60a5fa;border-color:#3b82f6}
+    .tb-pegadinha{background:#1a0726;color:#c084fc;border-color:#a855f7}
+    .tb-rebus{background:#061a06;color:#4ade80;border-color:#22c55e}
+
+    /* ── QUESTION ── */
+    .qtxt{font-size:16px;line-height:1.65;font-weight:600;margin-bottom:6px}
+
+    /* ── REBUS (no label!) ── */
+    .rebus-box{
+      display:flex;align-items:center;justify-content:center;
+      gap:14px;flex-wrap:wrap;
+      background:rgba(255,255,255,.04);
+      border:2px solid #2a2a40;border-radius:13px;
+      padding:20px;margin-bottom:16px;
+    }
+    .rb-emoji{font-size:64px;line-height:1}
+    .rb-op{font-family:var(--px);font-size:20px;color:#444}
+    .rb-q{font-family:var(--px);font-size:20px;color:#fff}
+    .rb-hint{font-size:12px;color:#555;margin-top:6px;text-align:center;font-style:italic}
+
+    /* ── OPTIONS ── */
+    .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .opt{
+      background:rgba(255,255,255,.04);border:2px solid #333;
+      border-radius:11px;padding:15px 12px;
+      font-size:14px;font-weight:bold;color:#fff;
+      cursor:pointer;text-align:center;
+      transition:border-color .12s,background .12s,transform .12s;
+    }
+    .opt:hover:not(:disabled){border-color:var(--red);background:rgba(230,36,41,.1);transform:scale(1.03)}
+    .opt:disabled{cursor:default}
+    .opt.correct{border-color:var(--green);background:rgba(34,197,94,.12);animation:pop .35s ease}
+    .opt.wrong{border-color:#ef4444;background:rgba(239,68,68,.12);animation:shake .35s ease}
+
+    @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+    /* ── FEEDBACK ── */
+    .fb{display:none;margin-top:14px;padding:14px 16px;border-radius:10px;border:2px solid;font-size:13px;line-height:1.55}
+    .fb.ok{background:rgba(34,197,94,.10);border-color:var(--green);color:#4ade80}
+    .fb.no{background:rgba(239,68,68,.10);border-color:#ef4444;color:#f87171}
+    .fb-t{font-family:var(--px);font-size:11px;margin-bottom:6px}
+    .nxt{text-align:center;margin-top:16px;display:none}
+
+    /* ── RESULT ── */
+    .rbox{text-align:center}
+    .r-trophy{font-size:72px;display:block;margin:8px 0}
+    .r-num{font-family:var(--px);font-size:52px;color:var(--yellow);text-shadow:4px 4px 0 #7a5800;display:block;margin-top:8px}
+    .r-den{font-family:var(--px);font-size:13px;color:#666}
+    .r-msg{font-size:17px;margin:16px 0 4px}
+    .r-stars{font-size:38px;margin:4px 0 20px}
+    .r-acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:480px){
+      .card{padding:18px}
+      .opts{grid-template-columns:1fr}
+      .theme-grid{grid-template-columns:1fr 1fr}
+      .theme-card{padding:16px 12px}
+      .theme-icon{font-size:36px}
+      .rb-emoji{font-size:50px}
+      .logo-pill{font-size:16px}
+    }
+    @media(max-width:360px){
+      .theme-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ════════════ TELA 1: BOAS-VINDAS ════════════ -->
+<div class="scr on" id="s1">
+  <div class="card">
+    <div class="logo-box">
+      <div class="logo-pill">ROBLOX</div>
+      <div class="logo-sub">⚡ ENIGMAS &amp; CHARADAS ⚡</div>
+      <div class="logo-desc">Você é esperto o suficiente para escapar?</div>
+    </div>
+    <div class="welcome-char">🤖</div>
+    <div class="chip-row">
+      <span class="chip chip-b">🧩 Charadas</span>
+      <span class="chip chip-p">😂 Pegadinhas</span>
+      <span class="chip chip-g">🖼️ Rebus</span>
+    </div>
+    <button class="btn btn-red" style="width:100%;font-size:13px;padding:18px" onclick="go('s2')">
+      ▶ COMEÇAR O JOGO
+    </button>
+  </div>
+</div>
+
+<!-- ════════════ TELA 2: ESCOLHA O TEMA ════════════ -->
+<div class="scr" id="s2">
+  <div class="card">
+    <div class="stag">PASSO 1 DE 2</div>
+    <div class="stit">Escolha o Tema</div>
+    <div class="sdesc">Sobre o que você quer ser desafiado hoje?</div>
+
+    <div class="theme-grid">
+      <div class="theme-card tc-green" onclick="pickTheme('animais',this)">
+        <span class="theme-icon">🐾</span>
+        <div class="theme-name">ANIMAIS</div>
+        <div class="theme-desc">Bichos, natureza selvagem e curiosidades do reino animal</div>
+      </div>
+      <div class="theme-card tc-teal" onclick="pickTheme('natureza',this)">
+        <span class="theme-icon">🌿</span>
+        <div class="theme-name">NATUREZA</div>
+        <div class="theme-desc">Clima, plantas, rios, florestas e fenômenos naturais</div>
+      </div>
+      <div class="theme-card tc-orange" onclick="pickTheme('comida',this)">
+        <span class="theme-icon">🍕</span>
+        <div class="theme-name">COMIDA</div>
+        <div class="theme-desc">Frutas, receitas, cozinha e tudo que vai pra barriga</div>
+      </div>
+      <div class="theme-card tc-violet" onclick="pickTheme('cotidiano',this)">
+        <span class="theme-icon">🏠</span>
+        <div class="theme-name">COTIDIANO</div>
+        <div class="theme-desc">Objetos do dia a dia, casa, escola e curiosidades</div>
+      </div>
+    </div>
+
+    <button class="btn btn-ol btn-sm" onclick="go('s1')">← VOLTAR</button>
+  </div>
+</div>
+
+<!-- ════════════ TELA 3: IDADE + DIFICULDADE ════════════ -->
+<div class="scr" id="s3">
+  <div class="card">
+    <div class="stag">PASSO 2 DE 2</div>
+    <div class="stit">Suas preferências</div>
+    <div class="sdesc">Escolha sua idade e o nível de dificuldade!</div>
+
+    <!-- tema selecionado -->
+    <div class="theme-preview">
+      <span class="tp-icon" id="tp-icon">🐾</span>
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:2px">Tema escolhido</div>
+        <div class="tp-name" id="tp-name">ANIMAIS</div>
+      </div>
+      <span class="tp-change" onclick="go('s2')">trocar</span>
+    </div>
+
+    <!-- IDADE -->
+    <div class="sel-section">
+      <span class="sel-label">🎂 QUAL É A SUA IDADE?</span>
+      <div class="sel-row" id="age-row">
+        <div class="sel-btn" onclick="pickAge('6-7',this)">
+          <span class="sb-icon">🌟</span>
+          <div class="sb-name">6 – 7 anos</div>
+        </div>
+        <div class="sel-btn" onclick="pickAge('8-10',this)">
+          <span class="sb-icon">🔥</span>
+          <div class="sb-name">8 – 10 anos</div>
+        </div>
+        <div class="sel-btn" onclick="pickAge('11-14',this)">
+          <span class="sb-icon">💀</span>
+          <div class="sb-name">11 – 14 anos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFICULDADE -->
+    <div class="sel-section">
+      <span class="sel-label">⚡ QUAL NÍVEL VOCÊ QUER?</span>
+      <div class="sel-row" id="diff-row">
+        <div class="sel-btn" onclick="pickDiff('facil',this)">
+          <span class="sb-icon">😊</span>
+          <div class="sb-name">FÁCIL</div>
+          <div class="sb-desc">Perguntas tranquilas</div>
+        </div>
+        <div class="sel-btn" onclick="pickDiff('medio',this)">
+          <span class="sb-icon">🤔</span>
+          <div class="sb-name">MÉDIO</div>
+          <div class="sb-desc">Já vai pensar mais!</div>
+        </div>
+        <div class="sel-btn" onclick="pickDiff('dificil',this)">
+          <span class="sb-icon">🤯</span>
+          <div class="sb-name">DIFÍCIL</div>
+          <div class="sb-desc">Só para os corajosos</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-ol btn-sm" onclick="go('s2')">← VOLTAR</button>
+      <button class="btn btn-red" id="btn-start" onclick="startGame()" style="flex:1;font-size:12px;padding:16px">
+        ▶ JOGAR!
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TELA 4: JOGO ════════════ -->
+<div class="scr" id="s4">
+  <div class="card">
+    <div class="ghdr">
+      <button class="back-btn" onclick="go('s3')">←</button>
+      <div class="meta-chips">
+        <span class="gchip gchip-theme" id="g-theme">🐾 ANIMAIS</span>
+        <span class="gchip gchip-age" id="g-age">6-7</span>
+        <span class="gchip gchip-diff" id="g-diff">FÁCIL</span>
+      </div>
+      <span class="score-chip">⭐ <span id="g-score">0</span></span>
+    </div>
+
+    <div class="prow">
+      <span class="plabel">Pergunta <span id="g-cur">1</span> de <span id="g-tot">5</span></span>
+    </div>
+    <div class="ptrack"><div class="pfill" id="g-pfill" style="width:20%"></div></div>
+
+    <div id="q-area"></div>
+  </div>
+</div>
+
+<!-- ════════════ TELA 5: RESULTADO ════════════ -->
+<div class="scr" id="s5">
+  <div class="card rbox">
+    <div class="stag" style="text-align:center">FIM DE JOGO</div>
+    <div class="stit" style="text-align:center">Resultado Final</div>
+    <span class="r-trophy" id="r-trophy">🏆</span>
+    <span class="r-num" id="r-num">0</span>
+    <span class="r-den">/ <span id="r-den">5</span> acertos</span>
+    <div class="r-msg" id="r-msg"></div>
+    <div class="r-stars" id="r-stars"></div>
+    <div class="r-acts">
+      <button class="btn btn-red" onclick="restart()" style="font-size:10px">🔄 JOGAR DE NOVO</button>
+      <button class="btn btn-ol" onclick="go('s2')" style="font-size:10px">🎯 TROCAR TEMA</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  BANCO DE QUESTÕES
+//  type: 'charada' | 'pegadinha' | 'rebus'
+//  rebus: emoji (sem eWord — player descobre sozinho)
+//         suffix: o que vem depois do emoji
+//         a: índice da opção correta
+//         exp: revelação após responder
+// ═══════════════════════════════════════════════════════
+
+const DB = {
+
+  /* ══════════ ANIMAIS ══════════ */
+  animais:{
+    facil:[
+      {type:'charada',
+       q:'Que animal tem bolso no barrigão e carrega o filhote nele?',
+       opts:['HIPOPÓTAMO','CANGURU','ORNITORRINCO','TAMANDUÁ'],a:1,
+       exp:'É o CANGURU! A mamãe tem um marsúpio (bolsinho) onde o filhote fica meses! 🦘'},
+      {type:'pegadinha',
+       q:'De que cor é o cavalo branco de Napoleão?',
+       opts:['CINZA','MALHADO','BRANCO','MARROM'],a:2,
+       exp:'BRANCO! O nome já entregou tudo — era o cavalo BRANCO! 🐴'},
+      {type:'rebus',
+       emoji:'🌞',suffix:'+ DADO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['SOLDADO','SOLUÇO','SOLADO','SOLETO'],a:0,
+       exp:'🌞 = SOL → SOL + DADO = SOLDADO! Um guerreiro do exército! 🪖'},
+      {type:'charada',
+       q:'Que animal dorme de cabeça para baixo e usa sonar para se orientar?',
+       opts:['CORUJA','ARANHA','MORCEGO','COBRA'],a:2,
+       exp:'É o MORCEGO! Dorme pendurado e "enxerga" pelo eco do próprio som! 🦇'},
+      {type:'pegadinha',
+       q:'Tenho 6 peixes num aquário e 3 afogam. Com quantos fico?',
+       opts:['3','0','6','9'],a:2,
+       exp:'Com 6! PEIXE NÃO AFOGA! Eles respiram dentro da água! 🐟'},
+    ],
+    medio:[
+      {type:'charada',
+       q:'Qual animal tem 3 corações e sangue azul?',
+       opts:['TUBARÃO','LULA','POLVO','CARANGUEJO'],a:2,
+       exp:'É o POLVO! Tem 3 corações e hemocianina (sangue azul) mesmo! 🐙'},
+      {type:'pegadinha',
+       q:'O que o sapo disse para a sapa?',
+       opts:['Que olhos lindos!','Croac!','Nada — sapo não fala!','Eu te amo!'],a:2,
+       exp:'NADA! Sapo não fala, só coaxa — e mesmo assim, foi pego! 🐸'},
+      {type:'rebus',
+       emoji:'🌊',suffix:'+ TELO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['MARESIA','MARTELO','MARIDO','MARELO'],a:1,
+       exp:'🌊 = MAR → MAR + TELO = MARTELO! A ferramenta de pregar pregos! 🔨'},
+      {type:'charada',
+       q:'Sou o único mamífero com voo verdadeiro. Uso ecolocalização para caçar à noite. O que sou?',
+       opts:['ESQUILO-VOADOR','BORBOLETA','FALCÃO','MORCEGO'],a:3,
+       exp:'MORCEGO! Único mamífero que realmente voa (não planar) e usa sonar! 🦇'},
+      {type:'pegadinha',
+       q:'Dois patos na frente de um pato, dois patos atrás de um pato, e um pato no meio. Quantos patos há?',
+       opts:['5 patos','7 patos','3 patos','6 patos'],a:2,
+       exp:'Só 3! 🦆🦆🦆 O do meio tem 2 na frente e 2 atrás — são os mesmos 3 patos em fila!'},
+    ],
+    dificil:[
+      {type:'charada',
+       q:'Tenho 5 letras. Lido de trás para frente, continuo sendo o mesmo animal. O que sou?',
+       opts:['COBRA','TUCANO','ARARA','PAPAGAIO'],a:2,
+       exp:'ARARA! A-R-A-R-A ao contrário = A-R-A-R-A. É um palíndromo! 🦜'},
+      {type:'pegadinha',
+       q:'Quantos animais Moisés levou na Arca?',
+       opts:['2 de cada espécie','1 de cada','Todos os animais','Nenhum — foi Noé!'],a:3,
+       exp:'Foi NOÉ quem construiu a arca, não Moisés! Pegadinha bíblica! ⛵'},
+      {type:'rebus',
+       emoji:'🌺',suffix:'+ ESTA',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['FLORIDO','FLORESTA','FLOREIRA','FLORÃO'],a:1,
+       exp:'🌺 = FLOR → FLOR + ESTA = FLORESTA! O pulmão verde do planeta! 🌳'},
+      {type:'charada',
+       q:'Sou o único animal terrestre com 4 joelhos verdadeiros. O que sou?',
+       opts:['HIPOPÓTAMO','RINOCERONTE','ELEFANTE','BISÃO'],a:2,
+       exp:'ELEFANTE! As 4 patas têm articulações que funcionam como joelhos reais! 🐘'},
+      {type:'pegadinha',
+       q:'Um elefante está de costas para o Sul. Para qual lado aponta o rabo dele?',
+       opts:['Sul','Norte','Leste','Oeste'],a:1,
+       exp:'NORTE! Se as costas estão para o Sul, o traseiro (e o rabo) aponta para o Norte! 🧭'},
+    ],
+  },
+
+  /* ══════════ NATUREZA ══════════ */
+  natureza:{
+    facil:[
+      {type:'charada',
+       q:'Sou feita de água, flutuo no ar e às vezes choro. O que sou?',
+       opts:['NÉVOA','BALÃO','NUVEM','BOLHA'],a:2,
+       exp:'NUVEM! É formada por gotículas d\'água, flutua e quando chora... chove! ☁️'},
+      {type:'pegadinha',
+       q:'Quanto mais eu seco, mais molhada eu fico. O que sou?',
+       opts:['ESPONJA','CHUVA','TOALHA','SECADOR'],a:2,
+       exp:'A TOALHA! Ela seca você e vai ficando cada vez mais molhada! 🛁'},
+      {type:'rebus',
+       emoji:'🎯',suffix:'+ RADA',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['ALVOROÇO','ALVORADA','ALVORECER','ALVOÇAR'],a:1,
+       exp:'🎯 = ALVO → ALVO + RADA = ALVORADA! O nascimento do sol de manhã! 🌅'},
+      {type:'charada',
+       q:'Caio do céu, nunca me machuco, posso ser suave ou forte. O que sou?',
+       opts:['RAIO','PEDRA','GRANIZO','CHUVA'],a:3,
+       exp:'A CHUVA! Cai do céu sem se machucar — pode ser garoa suave ou tempestade! 🌧️'},
+      {type:'pegadinha',
+       q:'Em que mês as pessoas dormem menos?',
+       opts:['Julho','Janeiro','Fevereiro','Dezembro'],a:2,
+       exp:'FEVEREIRO! É o menor mês (28 ou 29 dias), então tem menos noites para dormir! 😴'},
+    ],
+    medio:[
+      {type:'charada',
+       q:'Corro sem pernas, tenho boca mas não falo, nasço na montanha e morro no mar.',
+       opts:['VENTO','NUVEM','RIO','COBRA'],a:2,
+       exp:'É o RIO! Ele flui (corre), tem foz (boca) e nasce nas montanhas! 🏔️'},
+      {type:'pegadinha',
+       q:'Uma pedra cai num buraco de 5 metros. Quando chega ao fundo, ela está grande ou pequena?',
+       opts:['Grande','Pequena','Do mesmo tamanho!','Quebra em pedaços'],a:2,
+       exp:'DO MESMO TAMANHO! Cair não muda o tamanho da pedra! 🪨'},
+      {type:'rebus',
+       emoji:'🌹',suffix:'+ RIO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['ROSADO','ROSÁRIO','ROSEIRA','ROSETA'],a:1,
+       exp:'🌹 = ROSA → ROSA + RIO = ROSÁRIO! Um colar de contas para rezar! 📿'},
+      {type:'charada',
+       q:'Posso encher um quarto inteiro, não peso nada e sumo quando apago. O que sou?',
+       opts:['FUMAÇA','LUZ','AR','PERFUME'],a:1,
+       exp:'A LUZ! Preenche tudo, não pesa nada, e desaparece quando apagada! 💡'},
+      {type:'pegadinha',
+       q:'O que fica no canto mas não é preguiçoso?',
+       opts:['ARANHA','O ÂNGULO','GATO','POEIRA'],a:1,
+       exp:'O ÂNGULO! Fica no canto (corner) mas trabalha duro em todo triângulo e polígono! 📐'},
+    ],
+    dificil:[
+      {type:'charada',
+       q:'Sou mais fino que papel e nenhuma espada me corta. O que sou?',
+       opts:['ÁGUA','PAPEL','SOMBRA','LUZ'],a:2,
+       exp:'A SOMBRA! Não tem espessura alguma e nenhuma espada consegue cortá-la! 🌑'},
+      {type:'pegadinha',
+       q:'Um geólogo encontra uma pedra de 1 bilhão de anos. Quantos anos ela tinha há 500 anos atrás?',
+       opts:['500 milhões','1 bilhão','999.999.500','500'],a:2,
+       exp:'999.999.500 anos! É só subtrair 500 de 1.000.000.000. Simples! 🪨'},
+      {type:'rebus',
+       emoji:'🌟',suffix:'+ DO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['ESTRELADO','ESTRELINHA','ESTRELAR','ESTRELEIRO'],a:0,
+       exp:'🌟 = ESTRELA → ESTRELA + DO = ESTRELADO! Um céu cheio de estrelas! ✨'},
+      {type:'charada',
+       q:'Sou invisível, sem cor, sem cheiro, mas posso mover árvores e derrubar casas. O que sou?',
+       opts:['CALOR','RAIO','TROVÃO','VENTO'],a:3,
+       exp:'O VENTO! Você não o vê, mas ele pode ser devastador! 🌪️'},
+      {type:'pegadinha',
+       q:'Qual é mais pesado: 1 kg de ouro ou 1 kg de penas?',
+       opts:['O ouro','As penas','São iguais!','Depende do tipo'],a:2,
+       exp:'SÃO IGUAIS! Ambos pesam exatamente 1 kg! O cérebro tentou te enganar! ⚖️'},
+    ],
+  },
+
+  /* ══════════ COMIDA ══════════ */
+  comida:{
+    facil:[
+      {type:'charada',
+       q:'Sou amarela, curva e os macacos adoram me comer. O que sou?',
+       opts:['MANGA','ABACAXI','BANANA','LARANJA'],a:2,
+       exp:'A BANANA! Amarela, curva e muito apreciada pelos macacos! 🍌'},
+      {type:'pegadinha',
+       q:'O que todo cozinheiro usa na cozinha mas nunca come?',
+       opts:['PANELA','AVENTAL','FACA','TEMPERO'],a:1,
+       exp:'O AVENTAL! Ele usa para não sujar a roupa, mas comer? Nunca! 👨‍🍳'},
+      {type:'rebus',
+       emoji:'🌊',suffix:'+ TELO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['MARESIA','MARTELO','MARELO','MARIDO'],a:1,
+       exp:'🌊 = MAR → MAR + TELO = MARTELO! Uma ferramenta, não comida — mas foi no tema! 🔨'},
+      {type:'charada',
+       q:'Sou branco por fora, amarelo por dentro, e os pintinhos nascem de mim. O que sou?',
+       opts:['QUEIJO','MANTEIGA','LEITE','OVO'],a:3,
+       exp:'O OVO! A casca é branca (ou marrom), a gema é amarela, e os pintinhos nascem nele! 🥚'},
+      {type:'pegadinha',
+       q:'Um restaurante tem 6 mesas com 4 cadeiras cada. Chegam 5 garçons. Quantas cadeiras tem o restaurante?',
+       opts:['20','24','28','30'],a:1,
+       exp:'24! (6 × 4 = 24). Os 5 garçons são distração — não mudam o número de cadeiras! 🪑'},
+    ],
+    medio:[
+      {type:'charada',
+       q:'Nasci embaixo da terra, faço chorar, tenho camadas e tempero pratos do mundo todo. O que sou?',
+       opts:['BATATA','ALHO','CEBOLA','RABANETE'],a:2,
+       exp:'A CEBOLA! Crescida no solo, tem camadas, e quem corta acaba chorando! 😢🧅'},
+      {type:'pegadinha',
+       q:'Uma galinha e meia bota um ovo e meio em um dia e meio. Quantos ovos uma galinha bota por dia?',
+       opts:['0,5','1','1,5','2'],a:1,
+       exp:'1 OVO! A taxa é 1 galinha = 1 ovo/dia. Pegadinha matemática clássica! 🐓'},
+      {type:'rebus',
+       emoji:'🏠',suffix:'+ MENTO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['CASARÃO','CASINHA','CASAMENTO','CASAFORTE'],a:2,
+       exp:'🏠 = CASA → CASA + MENTO = CASAMENTO! Festa de amor com bolo! 💍'},
+      {type:'charada',
+       q:'Tenho dentes mas não morda. Sou usado para misturar e levar comida à boca. O que sou?',
+       opts:['FACA','GARFO','COLHER','ESPÁTULA'],a:1,
+       exp:'O GARFO! Tem "dentes" (os dentes do garfo) mas não morde nada! 🍴'},
+      {type:'pegadinha',
+       q:'Qual fruta é botanicamente uma fruta, mas os cozinheiros tratam como verdura?',
+       opts:['BANANA','MELANCIA','TOMATE','LARANJA'],a:2,
+       exp:'O TOMATE! Botanicamente é fruta (tem sementes, cresce da flor), mas culinariamente é legume! 🍅'},
+    ],
+    dificil:[
+      {type:'charada',
+       q:'Sou o único alimento que nunca estraga. Fui encontrado em tumbas de faraós com milênios de idade. O que sou?',
+       opts:['AZEITE','SAL','MEL','AÇÚCAR'],a:2,
+       exp:'O MEL! Mel de 3.000 anos foi encontrado em tumbas egípcias — ainda comestível! 🍯'},
+      {type:'pegadinha',
+       q:'Se você dividir 30 por metade e somar 10, quanto dá?',
+       opts:['25','40','70','30'],a:2,
+       exp:'70! Dividir por METADE (÷ ½) = multiplicar por 2: 30 × 2 = 60, + 10 = 70. Não confunda ÷ 2 com ÷ ½! 🧮'},
+      {type:'rebus',
+       emoji:'🔥',suffix:'+ UEIRA',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['FOGOSO','FOGUEIRA','FOGÃO','FOGO'],a:1,
+       exp:'🔥 = FOGO → FOGO + UEIRA = FOGUEIRA! A festa junina fica mais animada com ela! 🔥'},
+      {type:'charada',
+       q:'Sou feito de leite, azedo, cremoso e vim da Europa Oriental. Estou em todo açaí. O que sou?',
+       opts:['MANTEIGA','KEFIR','IOGURTE','REQUEIJÃO'],a:2,
+       exp:'IOGURTE! Originado no leste europeu, é feito de leite fermentado e está em todo açaí! 🫙'},
+      {type:'pegadinha',
+       q:'Se você comesse metade de uma pizza ANTES de cortá-la, com quantas fatias ficaria?',
+       opts:['Com metade da pizza','Com 4 fatias','Com nenhuma fatia!','Com 2 fatias'],a:2,
+       exp:'Com NENHUMA fatia! Você comeu antes de cortar — não há fatias, só a outra metade inteira! 😂🍕'},
+    ],
+  },
+
+  /* ══════════ COTIDIANO ══════════ */
+  cotidiano:{
+    facil:[
+      {type:'charada',
+       q:'Tenho dois braços, uma armação e sento no nariz. O que sou?',
+       opts:['CHAPÉU','MÁSCARA','ÓCULOS','BONÉ'],a:2,
+       exp:'Os ÓCULOS! Dois "braços" (hastes), armação e descansam no nariz! 👓'},
+      {type:'pegadinha',
+       q:'O que você quebra quando fala?',
+       opts:['A voz','O silêncio','Uma promessa','O recorde'],a:1,
+       exp:'O SILÊNCIO! Toda vez que alguém fala, está quebrando o silêncio! 🤫'},
+      {type:'rebus',
+       emoji:'🏠',suffix:'+ MENTO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['CASARÃO','CASAMENTO','CASINHA','CASAFORTE'],a:1,
+       exp:'🏠 = CASA → CASA + MENTO = CASAMENTO! Uma festa muito especial! 💍'},
+      {type:'charada',
+       q:'Tenho mãos mas não trabalho. Tenho rosto mas não vejo. Falo números mas não sei ler. O que sou?',
+       opts:['RÁDIO','CALENDÁRIO','RELÓGIO','TELEFONE'],a:2,
+       exp:'O RELÓGIO! Tem ponteiros (mãos), mostrador (rosto) e mostra os números! ⏰'},
+      {type:'pegadinha',
+       q:'O que vem depois de tudo?',
+       opts:['O nada','A letra O','O fim','A morte'],a:1,
+       exp:'A LETRA O! A palavra "tudO" termina com a letra O! Olhou bem? 😄'},
+    ],
+    medio:[
+      {type:'charada',
+       q:'Tenho dentes mas não como. Tenho costas mas não me deito. O que sou?',
+       opts:['FACA','PENTE','GARFO','TESOURA'],a:1,
+       exp:'O PENTE! Tem dentinhos mas não come nada, e tem a "costas" (parte plana)! 🪮'},
+      {type:'pegadinha',
+       q:'O que você pode segurar na mão direita, mas nunca na mão esquerda?',
+       opts:['A sacola','O celular','O cotovelo direito!','O controle'],a:2,
+       exp:'O COTOVELO DIREITO! Você nunca consegue segurar seu próprio cotovelo direito com a mão direita! 💪'},
+      {type:'rebus',
+       emoji:'🎯',suffix:'+ RADA',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['ALVOROÇO','ALVOÇAR','ALVORADA','ALVORECER'],a:2,
+       exp:'🎯 = ALVO → ALVO + RADA = ALVORADA! O amanhecer, quando nasce o dia! 🌅'},
+      {type:'charada',
+       q:'Tenho chave mas não abro porta. Tenho teclas mas não sou piano. Tenho espaço mas não tenho ar. O que sou?',
+       opts:['TELEFONE','COFRE','PIANO','TECLADO'],a:3,
+       exp:'O TECLADO! Tem teclas, uma "chave" (atalho) e uma tecla chamada "espaço"! ⌨️'},
+      {type:'pegadinha',
+       q:'Se você está em pé no Brasil, para que lado aponta sua cabeça?',
+       opts:['Para o Norte','Para o Sul','Para cima!','Para o centro'],a:2,
+       exp:'Para CIMA! Independente de país ou direção, sua cabeça sempre aponta para cima! 🙃'},
+    ],
+    dificil:[
+      {type:'charada',
+       q:'Quanto mais você me aperta, mais suave eu fico. O que sou?',
+       opts:['PEDRA','ARGILA','FERRO','MADEIRA'],a:1,
+       exp:'A ARGILA! Quanto mais você trabalha e aperta, mais macia e moldável ela fica! 🏺'},
+      {type:'pegadinha',
+       q:'Um pai tem 5 filhos. Cada filho tem uma irmã. Quantos filhos o pai tem no total?',
+       opts:['10','6','5','11'],a:1,
+       exp:'6! Os 5 irmãos COMPARTILHAM a mesma irmã (5 meninos + 1 menina = 6 filhos)! 👨‍👧‍👦'},
+      {type:'rebus',
+       emoji:'🐟',suffix:'+ IRO',
+       q:'Que palavra a imagem + as letras formam?',
+       opts:['PEIXADA','PEIXEIRO','PEIXÃO','PEIXARIA'],a:1,
+       exp:'🐟 = PEIXE → PEIXE + IRO = PEIXEIRO! A pessoa que vende peixes na feira! 🐠'},
+      {type:'charada',
+       q:'Tenho teto e paredes, mas nem porta nem janela. Sou pequeno e carrego vida dentro. O que sou?',
+       opts:['NINHO','OVO','CASACO','BARRACA'],a:1,
+       exp:'O OVO! Tem "teto e paredes" (a casca), sem porta ou janela, e o pintinho fica lá dentro! 🥚'},
+      {type:'pegadinha',
+       q:'Você está dirigindo um ônibus. Na 1ª parada sobem 5. Na 2ª, descem 3 e sobem 7. Qual é a cor do cabelo do motorista?',
+       opts:['Preto','Loiro','A cor do SEU cabelo!','Depende do ônibus'],a:2,
+       exp:'"VOCÊ está dirigindo" — então é a cor do SEU cabelo! A matemática era distração! 🚌'},
+    ],
+  },
+};
+
+// ═══════════════════════════════════════════════════════
+//  ESTADO DO JOGO
+// ═══════════════════════════════════════════════════════
+const state={
+  theme:'',age:'',diff:'',
+  qs:[],idx:0,score:0,answered:false,
+  themeData:{
+    animais:{icon:'🐾',name:'ANIMAIS',cls:'tc-green'},
+    natureza:{icon:'🌿',name:'NATUREZA',cls:'tc-teal'},
+    comida:{icon:'🍕',name:'COMIDA',cls:'tc-orange'},
+    cotidiano:{icon:'🏠',name:'COTIDIANO',cls:'tc-violet'},
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+//  NAVEGAÇÃO
+// ═══════════════════════════════════════════════════════
+function go(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+// ═══════════════════════════════════════════════════════
+//  SELEÇÕES
+// ═══════════════════════════════════════════════════════
+function pickTheme(key,el){
+  state.theme=key;
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+
+  // prepara tela 3
+  const d=state.themeData[key];
+  document.getElementById('tp-icon').textContent=d.icon;
+  document.getElementById('tp-name').textContent=d.name;
+
+  // reset age+diff
+  state.age='';state.diff='';
+  document.querySelectorAll('.sel-btn').forEach(b=>{
+    b.classList.remove('active-age','active-diff');
+  });
+  document.getElementById('btn-start').classList.remove('ready');
+
+  go('s3');
+}
+
+function pickAge(val,el){
+  state.age=val;
+  document.querySelectorAll('#age-row .sel-btn').forEach(b=>b.classList.remove('active-age'));
+  el.classList.add('active-age');
+  checkReady();
+}
+
+function pickDiff(val,el){
+  state.diff=val;
+  document.querySelectorAll('#diff-row .sel-btn').forEach(b=>b.classList.remove('active-diff'));
+  el.classList.add('active-diff');
+  checkReady();
+}
+
+function checkReady(){
+  const ok=state.age&&state.diff;
+  document.getElementById('btn-start').classList.toggle('ready',!!ok);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INICIAR JOGO
+// ═══════════════════════════════════════════════════════
+function startGame(){
+  if(!state.age||!state.diff)return;
+
+  state.qs=shuffle([...DB[state.theme][state.diff]]);
+  state.idx=0;state.score=0;state.answered=false;
+
+  // chips
+  const d=state.themeData[state.theme];
+  document.getElementById('g-theme').textContent=d.icon+' '+d.name;
+  const ageMap={'6-7':'6-7 anos','8-10':'8-10 anos','11-14':'11-14 anos'};
+  document.getElementById('g-age').textContent=ageMap[state.age];
+  const diffMap={facil:'FÁCIL',medio:'MÉDIO',dificil:'DIFÍCIL'};
+  const gc=document.getElementById('g-diff');
+  gc.textContent=diffMap[state.diff];
+  gc.className='gchip gchip-diff'+(state.diff==='medio'?' medium':state.diff==='dificil'?' hard':'');
+
+  document.getElementById('g-tot').textContent=state.qs.length;
+  document.getElementById('g-score').textContent=0;
+
+  go('s4');
+  render();
+}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDERIZAR PERGUNTA
+// ═══════════════════════════════════════════════════════
+function render(){
+  const q=state.qs[state.idx];
+  state.answered=false;
+
+  const pct=((state.idx+1)/state.qs.length)*100;
+  document.getElementById('g-pfill').style.width=pct+'%';
+  document.getElementById('g-cur').textContent=state.idx+1;
+  document.getElementById('g-score').textContent=state.score;
+
+  const tmap={
+    charada:{lbl:'🧩 CHARADA',css:'tb-charada'},
+    pegadinha:{lbl:'😂 PEGADINHA',css:'tb-pegadinha'},
+    rebus:{lbl:'🖼️ REBUS',css:'tb-rebus'},
+  };
+  const t=tmap[q.type];
+
+  let rebusHtml='';
+  if(q.type==='rebus'){
+    rebusHtml=`
+      <div class="rebus-box">
+        <span class="rb-emoji">${q.emoji}</span>
+        <span class="rb-op">${q.suffix} =</span>
+        <span class="rb-q">?</span>
+      </div>
+      <div class="rb-hint">Que palavra essa imagem + as letras formam?</div>
+    `;
+  }
+
+  const isLast=state.idx===state.qs.length-1;
+  const optsHtml=q.opts.map((o,i)=>`
+    <button class="opt" id="opt${i}" onclick="pick(${i})">${o}</button>
+  `).join('');
+
+  document.getElementById('q-area').innerHTML=`
+    <span class="tbadge ${t.css}">${t.lbl}</span>
+    ${rebusHtml}
+    <div class="qtxt">${q.q}</div>
+    <div class="opts">${optsHtml}</div>
+    <div class="fb" id="fb"></div>
+    <div class="nxt" id="nxt">
+      <button class="btn btn-red" onclick="next()" style="font-size:11px;padding:14px 32px">
+        ${isLast?'VER RESULTADO →':'PRÓXIMA →'}
+      </button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RESPOSTA
+// ═══════════════════════════════════════════════════════
+function pick(i){
+  if(state.answered)return;
+  state.answered=true;
+  const q=state.qs[state.idx];
+  const ok=i===q.a;
+  if(ok)state.score++;
+
+  for(let j=0;j<q.opts.length;j++){
+    const b=document.getElementById('opt'+j);
+    b.disabled=true;
+    if(j===q.a)b.classList.add('correct');
+    else if(j===i&&!ok)b.classList.add('wrong');
+  }
+
+  const fb=document.getElementById('fb');
+  fb.style.display='block';
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=ok
+    ?`<div class="fb-t">✅ ACERTOU!</div>${q.exp}`
+    :`<div class="fb-t">❌ ERROU!</div>${q.exp}`;
+
+  document.getElementById('g-score').textContent=state.score;
+  document.getElementById('nxt').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════════
+//  PRÓXIMA / RESULTADO
+// ═══════════════════════════════════════════════════════
+function next(){
+  state.idx++;
+  if(state.idx>=state.qs.length)showResult();
+  else render();
+}
+
+function showResult(){
+  const tot=state.qs.length;
+  const p=state.score/tot;
+  const data=
+    p===1     ?{t:'🏆',m:'PERFEITO! Você acertou tudo! Incrível!',s:'⭐⭐⭐'}:
+    p>=0.8    ?{t:'🥇',m:'Muito bem! Você mandou demais!',s:'⭐⭐⭐'}:
+    p>=0.6    ?{t:'🥈',m:'Bom trabalho! Dá pra melhorar mais!',s:'⭐⭐'}:
+    p>=0.4    ?{t:'🥉',m:'Continue tentando — você chega lá!',s:'⭐'}:
+              {t:'💪',m:'Não desanime! Tente de novo!',s:''};
+
+  document.getElementById('r-trophy').textContent=data.t;
+  document.getElementById('r-num').textContent=state.score;
+  document.getElementById('r-den').textContent=tot;
+  document.getElementById('r-msg').textContent=data.m;
+  document.getElementById('r-stars').textContent=data.s;
+  go('s5');
+}
+
+function restart(){
+  // mesmas config
+  startGame();
+}
+</script>
+</body>
+</html>
