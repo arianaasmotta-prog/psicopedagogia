@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contador de Gols - Producao de Texto</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:#1a472a;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,.05) 59px,rgba(255,255,255,.05) 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,.05) 59px,rgba(255,255,255,.05) 60px);
+  min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;padding:16px;
+}
+.container{width:100%;max-width:700px;display:flex;flex-direction:column;gap:16px;padding-bottom:32px;}
+.header{text-align:center;background:rgba(0,0,0,.45);border-radius:16px;padding:18px 20px 14px;border:2px solid rgba(255,215,0,.3);}
+.header h1{font-family:'Bebas Neue',cursive;font-size:2rem;color:#FFD700;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.6);}
+.header p{color:rgba(255,255,255,.75);font-size:.85rem;margin-top:4px;}
+.stats{display:flex;gap:10px;justify-content:center;}
+.stat-pill{background:rgba(0,0,0,.4);border:1px solid rgba(255,215,0,.25);border-radius:30px;padding:6px 16px;color:#FFD700;font-weight:700;font-size:.82rem;display:flex;align-items:center;gap:6px;}
+.card-area{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.card-wrapper{perspective:900px;width:200px;height:220px;}
+.card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);border-radius:18px;}
+.card.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;}
+.card-back{background:linear-gradient(135deg,#2d6a4f,#1a472a);border:3px solid #FFD700;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.card-back-icon{font-size:3.5rem;margin-bottom:6px;}
+.card-back-label{font-family:'Bebas Neue',cursive;color:#FFD700;font-size:1.1rem;letter-spacing:1px;}
+.card-front{transform:rotateY(180deg);background:#fff;border:3px solid #FFD700;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.card-img{width:100%;height:158px;object-fit:cover;display:block;}
+.card-img-placeholder{width:100%;height:158px;display:flex;align-items:center;justify-content:center;font-size:4.5rem;background:#145a32;border-radius:14px 14px 0 0;}
+.card-label-bar{font-weight:800;font-size:.95rem;color:#1a472a;text-align:center;padding:8px 6px 10px;background:#f0faf4;width:100%;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+
+.btn{border:none;border-radius:12px;padding:13px 32px;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:all .18s;letter-spacing:.5px;text-transform:uppercase;}
+.btn-primary{background:#FFD700;color:#1a472a;box-shadow:0 4px 16px rgba(255,215,0,.4);}
+.btn-primary:hover:not(:disabled){background:#ffe033;transform:translateY(-2px);}
+.btn-green{background:#2d9e5f;color:#fff;box-shadow:0 4px 16px rgba(45,158,95,.4);}
+.btn-green:hover:not(:disabled){background:#34b56c;transform:translateY(-2px);}
+.btn-secondary{background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.3);}
+.btn-secondary:hover:not(:disabled){background:rgba(255,255,255,.2);}
+.btn-danger{background:rgba(220,50,50,.2);color:#ff8080;border:2px solid rgba(220,50,50,.4);font-size:.8rem;padding:8px 16px;}
+.btn-danger:hover:not(:disabled){background:rgba(220,50,50,.35);}
+.btn-print{background:#3a3a5c;color:#c0c0ff;border:2px solid rgba(150,150,255,.3);font-size:.9rem;padding:10px 22px;}
+.btn-print:hover:not(:disabled){background:#4a4a7c;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+.text-area-wrap{background:rgba(0,0,0,.4);border:2px solid rgba(255,215,0,.25);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.text-area-label{color:#FFD700;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:1px;}
+.story-display{background:rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;min-height:90px;color:#fff;font-size:1rem;line-height:1.7;word-break:break-word;}
+.word-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.35);border-radius:6px;padding:2px 8px;margin:2px 3px;font-weight:700;color:#FFD700;font-size:.85rem;}
+.word-chip img{width:20px;height:20px;object-fit:cover;border-radius:3px;}
+.placeholder{color:rgba(255,255,255,.3);font-style:italic;font-size:.9rem;}
+.input-row{display:flex;gap:8px;}
+.text-input{flex:1;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;color:#fff;font-family:'Nunito',sans-serif;font-size:.95rem;outline:none;transition:border .2s;}
+.text-input:focus{border-color:#FFD700;}
+.text-input::placeholder{color:rgba(255,255,255,.35);}
+.text-input:disabled{opacity:.4;cursor:not-allowed;}
+.history-strip{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.history-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:4px 8px;font-size:.78rem;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px;}
+.history-chip img{width:22px;height:22px;object-fit:cover;border-radius:4px;}
+
+.screen{display:none;}
+.screen.active{display:flex;flex-direction:column;gap:14px;}
+.status-msg{text-align:center;font-size:.88rem;color:rgba(255,255,255,.6);min-height:22px;}
+.status-msg.active-msg{color:#FFD700;font-weight:700;}
+
+/* RESULTADO */
+.result-wrap{background:rgba(0,0,0,.45);border:2px solid rgba(255,215,0,.3);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;}
+.result-section-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;color:#FFD700;letter-spacing:1.5px;margin-bottom:2px;}
+.story-final-box{background:rgba(255,255,255,.07);border-radius:12px;padding:16px;color:#fff;font-size:.97rem;line-height:1.8;word-break:break-word;}
+.score-meta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.score-meta-item{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:10px;padding:8px 16px;color:#FFD700;font-weight:700;font-size:.9rem;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.score-meta-item span{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:400;text-transform:uppercase;}
+.divider{border:none;border-top:1px solid rgba(255,215,0,.2);margin:4px 0;}
+.analise-box{background:rgba(10,30,15,.6);border:2px solid rgba(100,200,120,.3);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;}
+.analise-loading{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.6);font-size:.9rem;}
+.spinner{width:20px;height:20px;border:3px solid rgba(255,215,0,.2);border-top-color:#FFD700;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.analise-content{color:#e8f5e9;font-size:.93rem;line-height:1.75;}
+.analise-content h3{color:#FFD700;font-size:1rem;margin:14px 0 6px;font-family:'Nunito',sans-serif;font-weight:800;}
+.analise-content ul{padding-left:18px;margin:4px 0 8px;}
+.analise-content li{margin-bottom:4px;}
+.analise-content .erro{color:#ff9999;font-weight:700;}
+.analise-content .sugestao{color:#90ee90;font-weight:700;}
+.analise-content .destaque{color:#FFD700;font-weight:700;}
+.analise-content .correcao-item{background:rgba(255,100,100,.1);border-left:3px solid #ff8080;border-radius:6px;padding:8px 12px;margin:6px 0;}
+.analise-content .conectivo-item{background:rgba(100,200,150,.1);border-left:3px solid #90ee90;border-radius:6px;padding:8px 12px;margin:6px 0;line-height:1.6;}
+.print-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.print-label{color:rgba(255,255,255,.5);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;}
+
+/* INTRO */
+.intro-box{background:rgba(0,0,0,.4);border:2px solid rgba(255,215,0,.25);border-radius:16px;padding:24px;text-align:center;display:flex;flex-direction:column;gap:16px;align-items:center;}
+.how-to{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:12px;padding:14px 18px;width:100%;text-align:left;}
+select{background:#1a472a;border:2px solid #FFD700;border-radius:8px;color:#FFD700;padding:8px 16px;font-family:Nunito,sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;}
+
+/* aviso idade */
+.age-tip{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:10px;padding:10px 14px;color:rgba(255,255,255,.8);font-size:.82rem;text-align:center;display:none;}
+.age-tip.show{display:block;}
+
+/* IMPRESSAO */
+@media print{
+  body{background:#fff!important;background-image:none!important;display:block;padding:0;}
+  .container{max-width:100%;gap:0;}
+  .screen{display:none!important;}
+  #print-area{display:block!important;}
+  #print-area *{color:#000!important;background:transparent!important;border-color:#ccc!important;}
+  .no-print{display:none!important;}
+  .print-page-title{font-size:1.4rem;font-weight:800;margin-bottom:8px;}
+  .print-block{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #ccc;}
+  .print-block-reescrita{page-break-before:always;padding-top:16px;}
+  .print-block-title{font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#1a472a!important;}
+  .print-text{font-size:1rem;line-height:1.8;}
+  .print-lines{margin-top:12px;}
+  .print-line{border-bottom:1px solid #bbb;height:34px;margin-bottom:2px;}
+  .print-meta{font-size:.8rem;color:#666!important;margin-bottom:16px;}
+  .print-img-strip{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .print-img-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.82rem;font-weight:700;}
+  .print-img-emoji{font-size:2rem;line-height:1;}
+}
+#print-area{display:none;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>CONTADOR DE GOLS</h1>
+    <p>Jogo de produ&ccedil;&atilde;o de texto oral &mdash; Psicopedagogia</p>
+  </div>
+
+  <!-- TELA INICIO -->
+  <div class="screen active" id="screen-start">
+    <div class="intro-box">
+      <div style="font-size:3rem;">&#9917;&#127942;&#128095;</div>
+      <div style="color:#fff;font-size:1rem;line-height:1.7;">
+        Vire cartas com imagens de <strong style="color:#FFD700;">futebol</strong>.<br>
+        A cada carta revelada, continue a hist&oacute;ria com essa imagem!
+      </div>
+      <div class="how-to">
+        <div style="color:#FFD700;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Como jogar</div>
+        <div style="color:rgba(255,255,255,.8);font-size:.88rem;line-height:1.8;">
+          1. Clique em <strong style="color:#FFD700;">Virar Carta</strong><br>
+          2. Diga em voz alta uma frase com aquela imagem<br>
+          3. Digite a frase e clique em <strong style="color:#FFD700;">Adicionar</strong><br>
+          4. Repita at&eacute; usar todas as cartas!
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+        <div>
+          <label style="color:rgba(255,255,255,.6);font-size:.82rem;display:block;margin-bottom:6px;">&#128100; Idade do paciente:</label>
+          <select id="idade-paciente" style="min-width:130px;" onchange="atualizarCartas()">
+            <option value="7">7 anos</option>
+            <option value="8">8 anos</option>
+            <option value="9" selected>9 anos</option>
+            <option value="10">10 anos</option>
+            <option value="11">11 anos</option>
+            <option value="12">12 anos</option>
+          </select>
+        </div>
+        <div>
+          <label style="color:rgba(255,255,255,.6);font-size:.82rem;display:block;margin-bottom:6px;">&#127183; N&uacute;mero de cartas:</label>
+          <select id="card-count" style="min-width:130px;">
+            <option value="10" selected>10 cartas</option>
+            <option value="15">15 cartas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="age-tip" id="age-tip">
+        &#127881; Para 7 e 8 anos, recomendamos <strong>6 cartas</strong> &mdash; selecionado automaticamente!
+      </div>
+
+      <button class="btn btn-primary" id="btn-start" style="font-size:1.1rem;padding:14px 38px;">
+        &#127937; Come&ccedil;ar o Jogo!
+      </button>
+    </div>
+  </div>
+
+  <!-- TELA JOGO -->
+  <div class="screen" id="screen-game">
+    <div class="stats">
+      <div class="stat-pill">Carta <span id="stat-current">1</span> de <span id="stat-total">10</span></div>
+      <div class="stat-pill">Frases: <span id="stat-sentences">0</span></div>
+    </div>
+    <div class="card-area">
+      <div class="card-wrapper">
+        <div class="card" id="main-card">
+          <div class="card-face card-back">
+            <div class="card-back-icon">&#9917;</div>
+            <span class="card-back-label">Clique para virar</span>
+          </div>
+          <div class="card-face card-front" id="card-front-face">
+            <img class="card-img" id="card-img" src="" alt="" onerror="this.style.display='none';document.getElementById('card-img-fallback').style.display='flex'">
+            <div class="card-img-placeholder" id="card-img-fallback" style="display:none;">&#9917;</div>
+            <div class="card-label-bar" id="card-label">Bola</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-flip" style="padding:10px 28px;font-size:.95rem;">
+        &#127823; Virar Carta
+      </button>
+      <div class="status-msg" id="status-msg">Clique em &ldquo;Virar Carta&rdquo; para come&ccedil;ar!</div>
+    </div>
+    <div class="text-area-wrap">
+      <div class="text-area-label">&#128214; Minha hist&oacute;ria</div>
+      <div class="story-display" id="story-display">
+        <span class="placeholder">Sua hist&oacute;ria vai aparecer aqui...</span>
+      </div>
+      <div class="input-row">
+        <input class="text-input" type="text" id="sentence-input" placeholder="Digite sua frase aqui..." disabled>
+        <button class="btn btn-primary" id="btn-add" disabled style="padding:10px 18px;font-size:.85rem;">Adicionar</button>
+      </div>
+      <div class="history-strip" id="history-strip" style="display:none;">
+        <span style="color:rgba(255,255,255,.4);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;">Cartas usadas:</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-danger" id="btn-reset">&#128260; Reiniciar</button>
+      <button class="btn btn-green" id="btn-finish" disabled style="padding:13px 28px;">&#9997; Fazer meu Texto</button>
+    </div>
+  </div>
+
+  <!-- TELA RESULTADO -->
+  <div class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-section-title">&#128218; Texto Produzido</div>
+      <div class="score-meta" id="score-meta-area"></div>
+      <div class="story-final-box" id="final-story"></div>
+      <hr class="divider">
+      <div class="result-section-title">&#129504; An&aacute;lise e Sugest&otilde;es</div>
+      <div class="analise-box" id="analise-box">
+        <div class="analise-loading" id="analise-loading">
+          <div class="spinner"></div>
+          <span>Analisando o texto... aguarde.</span>
+        </div>
+        <div class="analise-content" id="analise-content" style="display:none;"></div>
+      </div>
+      <hr class="divider">
+      <div class="print-section">
+        <div class="print-label">&#128438; Impress&atilde;o</div>
+        <p style="color:rgba(255,255,255,.6);font-size:.85rem;line-height:1.5;">
+          Imprima o texto original com as corre&ccedil;&otilde;es e linhas para o paciente reescrever.
+        </p>
+        <div class="btn-row">
+          <button class="btn btn-print" id="btn-print">&#128438; Imprimir Texto + Corre&ccedil;&otilde;es</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="btn-copy">&#128203; Copiar Texto</button>
+        <button class="btn btn-primary" id="btn-home">&#128260; Novo Jogo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+
+<script>
+// 20 cartas com emojis e cores temáticas (sem dependência de URLs externas)
+const ALL_CARDS = [
+  { label:'Bola',        fallback:'⚽', bg:'linear-gradient(135deg,#145a32,#27ae60)' },
+  { label:'Gol',         fallback:'🥅', bg:'linear-gradient(135deg,#0b3954,#1a7fa8)' },
+  { label:'Goleiro',     fallback:'🧤', bg:'linear-gradient(135deg,#4a0e7e,#8e44ad)' },
+  { label:'Chuteira',    fallback:'👟', bg:'linear-gradient(135deg,#7d4e00,#d4800a)' },
+  { label:'Estádio',     fallback:'🏟️', bg:'linear-gradient(135deg,#1c3a5e,#3498db)' },
+  { label:'Torcida',     fallback:'🎊', bg:'linear-gradient(135deg,#7b0d0d,#e74c3c)' },
+  { label:'Troféu',      fallback:'🏆', bg:'linear-gradient(135deg,#7d6600,#e6b800)' },
+  { label:'Árbitro',     fallback:'🟥', bg:'linear-gradient(135deg,#5c0000,#c0392b)' },
+  { label:'Jogador',     fallback:'🏃', bg:'linear-gradient(135deg,#0a3d0a,#1e8449)' },
+  { label:'Treinador',   fallback:'📋', bg:'linear-gradient(135deg,#1a1a5c,#2e86c1)' },
+  { label:'Camisa',      fallback:'👕', bg:'linear-gradient(135deg,#003366,#0070cc)' },
+  { label:'Apito',       fallback:'📯', bg:'linear-gradient(135deg,#5a3d00,#b7860b)' },
+  { label:'Campo',       fallback:'🌿', bg:'linear-gradient(135deg,#0d4a0d,#1e8449)' },
+  { label:'Bandeira',    fallback:'🚩', bg:'linear-gradient(135deg,#700000,#c0392b)' },
+  { label:'Medalha',     fallback:'🥇', bg:'linear-gradient(135deg,#614e00,#d4a400)' },
+  { label:'Luvas',       fallback:'🥊', bg:'linear-gradient(135deg,#2d1b69,#6c3483)' },
+  { label:'Placar',      fallback:'📊', bg:'linear-gradient(135deg,#001d3a,#0a4a7c)' },
+  { label:'Chuva',       fallback:'🌧️', bg:'linear-gradient(135deg,#1a2a4a,#2874a6)' },
+  { label:'Comemoração', fallback:'🎉', bg:'linear-gradient(135deg,#4d0066,#9b59b6)' },
+  { label:'Pênalti',     fallback:'⚽', bg:'linear-gradient(135deg,#4a1200,#d35400)' },
+];
+
+let deck=[],idx=0,total=10,chunks=[],flipped=false,cur=null;
+let analiseText='', idadePaciente=9;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function setStatus(msg,active){const el=document.getElementById('status-msg');el.innerHTML=msg;el.className='status-msg'+(active?' active-msg':'');}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Atualiza opções de cartas conforme idade
+function atualizarCartas(){
+  const idade=parseInt(document.getElementById('idade-paciente').value);
+  const sel=document.getElementById('card-count');
+  const tip=document.getElementById('age-tip');
+  if(idade<=8){
+    sel.innerHTML='<option value="6" selected>6 cartas</option><option value="10">10 cartas</option>';
+    tip.classList.add('show');
+  } else {
+    sel.innerHTML='<option value="10" selected>10 cartas</option><option value="15">15 cartas</option>';
+    tip.classList.remove('show');
+  }
+}
+
+// INICIO
+document.getElementById('btn-start').addEventListener('click',function(){
+  total=parseInt(document.getElementById('card-count').value);
+  idadePaciente=parseInt(document.getElementById('idade-paciente').value);
+  deck=shuffle(ALL_CARDS).slice(0,total);
+  idx=0;chunks=[];flipped=false;cur=null;analiseText='';
+
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-current').textContent=1;
+  document.getElementById('stat-sentences').textContent=0;
+  document.getElementById('story-display').innerHTML='<span class="placeholder">Sua hist\u00f3ria vai aparecer aqui...</span>';
+  document.getElementById('history-strip').style.display='none';
+  document.getElementById('history-strip').innerHTML='<span style="color:rgba(255,255,255,.4);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;">Cartas usadas:</span>';
+  document.getElementById('main-card').classList.remove('flipped');
+  document.getElementById('btn-flip').disabled=false;
+  const inp=document.getElementById('sentence-input');
+  inp.disabled=true;inp.value='';
+  document.getElementById('btn-add').disabled=true;
+  document.getElementById('btn-finish').disabled=true;
+  setStatus('Clique em &ldquo;Virar Carta&rdquo; para come\u00e7ar!',false);
+  showScreen('screen-game');
+});
+
+// VIRAR
+document.getElementById('btn-flip').addEventListener('click',function(){
+  if(flipped||idx>=total)return;
+  cur=deck[idx];
+
+  // Atualiza imagem (emoji + cor temática)
+  const img=document.getElementById('card-img');
+  const fallback=document.getElementById('card-img-fallback');
+  img.style.display='none';
+  fallback.style.display='flex';
+  fallback.textContent=cur.fallback;
+  fallback.style.background=cur.bg||'#145a32';
+  fallback.style.fontSize='4.5rem';
+
+  document.getElementById('card-label').textContent=cur.label;
+  document.getElementById('main-card').classList.add('flipped');
+  flipped=true;
+  this.disabled=true;
+
+  const inp=document.getElementById('sentence-input');
+  inp.disabled=false;inp.value='';inp.focus();
+  document.getElementById('btn-add').disabled=false;
+  setStatus('Diga uma frase com essa imagem e escreva abaixo!',true);
+});
+
+// ADICIONAR
+function addSentence(){
+  const inp=document.getElementById('sentence-input');
+  const text=inp.value.trim();
+  if(!text){inp.style.borderColor='#ff6060';inp.focus();setTimeout(()=>inp.style.borderColor='',900);return;}
+  if(!flipped||!cur)return;
+  chunks.push({text,card:cur});
+  inp.value='';inp.disabled=true;
+  document.getElementById('btn-add').disabled=true;
+
+  const strip=document.getElementById('history-strip');
+  strip.style.display='flex';
+  const chip=document.createElement('div');
+  chip.className='history-chip';
+  chip.innerHTML='<span style="font-size:1.1rem;line-height:1;">'+cur.fallback+'</span> '+escHtml(cur.label);
+  strip.appendChild(chip);
+
+  renderStory();
+  idx++;
+  document.getElementById('stat-sentences').textContent=chunks.length;
+
+  if(idx>=total){
+    document.getElementById('btn-flip').disabled=true;
+    document.getElementById('btn-finish').disabled=false;
+    document.getElementById('stat-current').textContent=total;
+    setStatus('Voc\u00ea usou todas as cartas! Clique em &ldquo;Fazer meu Texto&rdquo;.',true);
+    document.getElementById('main-card').classList.remove('flipped');
+  }else{
+    document.getElementById('stat-current').textContent=idx+1;
+    flipped=false;
+    document.getElementById('main-card').classList.remove('flipped');
+    document.getElementById('btn-flip').disabled=false;
+    setStatus('Carta '+(idx+1)+' de '+total+' &mdash; clique para virar!',false);
+  }
+}
+document.getElementById('btn-add').addEventListener('click',addSentence);
+document.getElementById('sentence-input').addEventListener('keydown',function(e){if(e.key==='Enter')addSentence();});
+
+function renderStory(){
+  const el=document.getElementById('story-display');
+  if(!chunks.length){el.innerHTML='<span class="placeholder">Sua hist\u00f3ria vai aparecer aqui...</span>';return;}
+  el.innerHTML=chunks.map(c=>
+    '<span class="word-chip"><span style="font-size:1rem;">'+c.card.fallback+'</span>'+escHtml(c.card.label)+'</span> <span>'+escHtml(c.text)+'</span>'
+  ).join('  ');
+}
+
+// FINALIZAR
+document.getElementById('btn-finish').addEventListener('click',function(){
+  const words=chunks.map(c=>c.text).join(' ').split(/\s+/).filter(Boolean).length;
+  document.getElementById('score-meta-area').innerHTML=[
+    {v:idadePaciente+' anos',l:'Idade'},
+    {v:total,l:'Cartas'},
+    {v:chunks.length,l:'Frases'},
+    {v:words,l:'Palavras'}
+  ].map(m=>'<div class="score-meta-item"><strong>'+m.v+'</strong><span>'+m.l+'</span></div>').join('');
+
+  document.getElementById('final-story').innerHTML=chunks.map(c=>
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="width:36px;height:36px;border-radius:6px;border:1.5px solid rgba(255,215,0,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:'+c.card.bg+';">'+c.card.fallback+'</span><span class="word-chip" style="font-size:.78rem;flex-shrink:0;">'+escHtml(c.card.label)+'</span><span style="color:#e8f5e9;">'+escHtml(c.text)+'</span></div>'
+  ).join('');
+
+  showScreen('screen-result');
+  document.getElementById('analise-loading').style.display='flex';
+  document.getElementById('analise-content').style.display='none';
+  document.getElementById('analise-content').innerHTML='';
+  analiseText='';
+
+  const textoCompleto=chunks.map(c=>'['+c.card.label+']: '+c.text).join('\n');
+  chamarAnalise(textoCompleto);
+});
+
+// ANÁLISE LOCAL (sem API externa)
+async function chamarAnalise(texto){
+  await new Promise(r=>setTimeout(r,1400));
+  try{
+    const html=gerarAnaliseLocal(chunks,idadePaciente);
+    analiseText=html;
+    document.getElementById('analise-loading').style.display='none';
+    const ac=document.getElementById('analise-content');
+    ac.innerHTML=html;
+    ac.style.display='block';
+  }catch(err){
+    document.getElementById('analise-loading').style.display='none';
+    const ac=document.getElementById('analise-content');
+    ac.innerHTML='<span style="color:#ff9999;">Erro ao gerar a análise. Tente novamente.</span>';
+    ac.style.display='block';
+  }
+}
+
+function gerarAnaliseLocal(chunks,idade){
+  if(!chunks||chunks.length===0)return'<p>Nenhuma frase encontrada para analisar.</p>';
+  const frases=chunks.map(c=>(c.text||'').trim()).filter(Boolean);
+  if(frases.length===0)return'<p>Nenhuma frase encontrada para analisar.</p>';
+  const textoCompleto=frases.join(' ');
+  const textoLower=textoCompleto.toLowerCase();
+  const palavras=textoCompleto.split(/\s+/).filter(Boolean);
+  const numFrases=frases.length;
+  const numPalavras=palavras.length;
+
+  // --- ERROS ORTOGRÁFICOS COMUNS ---
+  const errosComuns={
+    // Pronomes e artigos sem acento
+    'voce':'você','vc':'você','vce':'você',
+    'nos':'nós','voces':'vocês',
+    // Verbos sem acento / com erro fonético
+    'nao':'não','entao':'então','tambem':'também',
+    'tanbem':'também','tamben':'também','tbm':'também',
+    'apos':'após','ate':'até','so':'só','ja':'já',
+    'la':'lá','ai':'aí','ca':'cá','dai':'daí',
+    'sao':'são','dao':'dão','vao':'vão','estao':'estão',
+    'pq':'porque','porq':'porque',
+    'ta':'está','to':'estou','tava':'estava','tavam':'estavam',
+    'fui':'fui', // correto — não mapear
+    // Erros fonéticos muito comuns em crianças
+    'gou':'gol','goul':'gol','goull':'gol',
+    'comesou':'começou','comessou':'começou','comecou':'começou',
+    'muinto':'muito','munto':'muito','mito':'muito',
+    'serto':'certo','sierto':'certo',
+    'serio':'sério','fasil':'fácil',
+    'difisil':'difícil','dificil':'difícil',
+    'xutar':'chutar','xutou':'chutou','xute':'chute',
+    'arbitro':'árbitro','estadio':'estádio',
+    'trofeu':'troféu','penalti':'pênalti',
+    'comemoracao':'comemoração','comemoraccao':'comemoração',
+    'exelente':'excelente',
+    'correo':'correu','coreu':'correu',
+    'perdu':'perdeu','ganho':'ganhou',
+    'conpetiu':'competiu',
+    'trocendo':'torcendo','torsida':'torcida',
+    'chutou':'chutou', // correto
+    'fes':'fez','feis':'fez','fez':'fez',
+    'ves':'vez','viram':'viram',
+    'quizerom':'quiseram','quizeram':'quiseram',
+    'trabaiou':'trabalhou','trabalhou':'trabalhou',
+    'sairam':'saíram','saiu':'saiu',
+    'correram':'correram','corerram':'correram',
+    'jogaram':'jogaram','jogarom':'jogaram',
+    'ganharão':'ganharão','ganarão':'ganharão',
+    'perdero':'perderam','perderom':'perderam',
+    'consiguiu':'conseguiu','consegiu':'conseguiu',
+    'tentou':'tentou','marcou':'marcou',
+    'chingo':'xingou','xingou':'xingou',
+    'emocionante':'emocionante','emocionante':'emocionante',
+  };
+
+  const errosEncontrados=[];
+  const vistos=new Set();
+  palavras.forEach(p=>{
+    const limpo=p.replace(/[.,!?;:()"']/g,'').toLowerCase();
+    if(limpo&&errosComuns[limpo]!==undefined&&errosComuns[limpo]!==limpo&&!vistos.has(limpo)){
+      vistos.add(limpo);
+      errosEncontrados.push({errado:p.replace(/[.,!?;:()"']/g,''),certo:errosComuns[limpo]});
+    }
+  });
+
+  // --- VERIFICAÇÃO DE LETRA MAIÚSCULA NO INÍCIO ---
+  const frasesMinuscula=frases.filter(f=>{
+    const primeira=f.trim().charAt(0);
+    return primeira&&primeira===primeira.toLowerCase()&&primeira!==primeira.toUpperCase();
+  });
+  // Adicionar como erros de maiúscula
+  frasesMinuscula.forEach(f=>{
+    const trecho=f.trim().slice(0,20)+(f.length>20?'...':'');
+    errosEncontrados.push({
+      tipo:'maiuscula',
+      frase:trecho,
+      errado:f.trim().charAt(0),
+      certo:f.trim().charAt(0).toUpperCase()
+    });
+  });
+
+  // --- CONECTIVOS JÁ USADOS ---
+  const listaConectivos=['e depois','depois','então','porque','mas','porém','quando',
+    'enquanto','antes','assim','por isso','portanto','também','além disso',
+    'aí','logo','daí','já que','embora','mesmo assim','afinal'];
+  const conectivosUsados=listaConectivos.filter(c=>textoLower.includes(c));
+
+  // --- POSITIVOS ---
+  const positivos=[];
+  if(numFrases>=5)positivos.push(`Você criou <span class="destaque">${numFrases} frases</span> — isso mostra que você tem muito a contar!`);
+  else positivos.push(`Você criou <span class="destaque">${numFrases} frases</span> e deu vida a uma história — parabéns pelo esforço!`);
+
+  if(numPalavras>=40)positivos.push(`Seu texto tem <span class="destaque">${numPalavras} palavras</span>! Você foi muito detalhado — ótimo!`);
+  else if(numPalavras>=15)positivos.push(`Você usou <span class="destaque">${numPalavras} palavras</span> para contar sua história — muito bom!`);
+
+  if(conectivosUsados.length>0)
+    positivos.push(`Você já usou a palavra <span class="destaque">"${conectivosUsados[0]}"</span> para ligar suas ideias — isso é exatamente o que bons escritores fazem!`);
+
+  const frasesComArt=frases.filter(f=>/\b(o|a|os|as|um|uma)\b/i.test(f));
+  if(frasesComArt.length>=2)
+    positivos.push(`Você usou artigos como <em>o, a, um, uma</em> — isso deixa o texto mais claro e bonito!`);
+
+  const maiorFrase=frases.reduce((a,b)=>a.split(/\s+/).length>=b.split(/\s+/).length?a:b,frases[0]);
+  if(maiorFrase&&maiorFrase.split(/\s+/).length>=5)
+    positivos.push(`Sua frase <span class="destaque">"${escHtml(maiorFrase)}"</span> foi muito completa — você caprichou nos detalhes!`);
+
+  // --- CONECTIVOS SUGERIDOS ---
+  const sugestoesConectivos=[
+    {c:'depois', tipo:'para falar o que veio a seguir'},
+    {c:'porque', tipo:'para explicar o motivo de algo'},
+    {c:'mas',    tipo:'para mostrar uma surpresa ou virada'},
+    {c:'então',  tipo:'para contar o que aconteceu em seguida'},
+    {c:'quando', tipo:'para falar do momento em que algo aconteceu'},
+    {c:'e aí',   tipo:'para continuar contando a história'},
+    {c:'por isso',tipo:'para explicar o resultado de algo'},
+  ];
+  const maxConect=idade<=8?3:5;
+  const conectivosFinal=sugestoesConectivos.slice(0,maxConect);
+
+  // --- MONTAGEM HTML ---
+  let h='';
+
+  // 1. Pontos positivos
+  h+=`<h3>⭐ O que você arrasou!</h3><ul>`;
+  positivos.slice(0,3).forEach(p=>{h+=`<li>${p}</li>`;});
+  if(positivos.length===0)h+=`<li>Você participou de todo o jogo e criou sua história — isso já é uma conquista incrível!</li>`;
+  h+=`</ul>`;
+
+  // 2. Ortografia
+  h+=`<h3>✏️ Palavras para corrigir</h3>`;
+  if(errosEncontrados.length===0){
+    h+=`<p>Parabéns! Você não cometeu nenhum erro de escrita. Continue assim! 🎉</p>`;
+  }else{
+    errosEncontrados.forEach(e=>{
+      if(e.tipo==='maiuscula'){
+        h+=`<div class="correcao-item">A frase <span class="erro">"${escHtml(e.frase)}"</span> começa com letra <strong>minúscula</strong>. Toda frase começa com letra <span class="sugestao">MAIÚSCULA</span>! Troque o <span class="erro">${escHtml(e.errado)}</span> por <span class="sugestao">${escHtml(e.certo)}</span> no começo.</div>`;
+      }else{
+        h+=`<div class="correcao-item">Você escreveu <span class="erro">${escHtml(e.errado)}</span>, mas o certo é <span class="sugestao">${escHtml(e.certo)}</span>. `
+          +(idade<=9?'É difícil mesmo, mas agora você já sabe!':'Preste atenção nessa palavra quando reescrever.')
+          +`</div>`;
+      }
+    });
+  }
+
+  // 3. Coesão (sem usar o termo)
+  h+=`<h3>🔗 Suas frases estão se conversando?</h3>`;
+  if(conectivosUsados.length>=2){
+    h+=`<p>Suas frases estão bem conectadas! Você já usou <span class="destaque">"${conectivosUsados.slice(0,2).join('" e "')}"</span> para ligar as ideias — isso deixa a história fluir muito bem.</p>`;
+  }else if(numFrases>=3){
+    const f1=frases[Math.floor(numFrases/3)]||frases[0];
+    const f2=frases[Math.floor(2*numFrases/3)]||frases[numFrases-1];
+    if(idade<=8){
+      h+=`<p>Suas frases contam uma história legal! Que tal usar <span class="destaque">"e depois"</span> para ligar algumas delas?</p>`;
+    }else{
+      h+=`<p>Quando você falou <span class="destaque">"${escHtml(f1)}"</span> e depois <span class="destaque">"${escHtml(f2)}"</span>, essas ideias ficaram um pouquinho soltas. Que tal ligar com uma "palavra mágica"?</p>`;
+    }
+  }else{
+    h+=`<p>Continue desenvolvendo sua história — quanto mais frases, mais ela vai fluir!</p>`;
+  }
+
+  // 4. Dicas
+  h+=`<h3>💡 Dicas para deixar seu texto ainda melhor</h3><ul>`;
+  const dicas=[];
+  if(!textoLower.match(/\b(era uma vez|certo dia|num dia|um dia|numa tarde|numa manhã)\b/))
+    dicas.push('Que tal começar dizendo <em>quando</em> acontece a história? Exemplo: <em>"Numa tarde de sábado..."</em>');
+  if(!textoLower.match(/\b(no campo|no estádio|na escola|no parque|em casa)\b/)&&idade>=9)
+    dicas.push('Você pode falar <em>onde</em> o jogo acontece — no estádio? No campo da escola? Isso deixa a história mais real!');
+  if(!textoLower.match(/\b(feliz|animado|nervoso|triste|alegre|empolgado|assustado)\b/)&&idade>=9)
+    dicas.push('Tente incluir <em>como os personagens estão se sentindo</em> — isso deixa a história mais emocionante!');
+  dicas.push('Depois de escrever, leia em voz alta — se soar estranho em alguma parte, você já sabe o que melhorar!');
+  if(idade>=10)dicas.push('Use pontuação: ponto final (.), vírgula (,) e exclamação (!) para mostrar emoção no texto!');
+  dicas.slice(0,idade<=8?2:3).forEach(d=>{h+=`<li>${d}</li>`;});
+  h+=`</ul>`;
+
+  // 5. Conectivos com exemplos reais
+  h+=`<h3>🔀 Palavras mágicas para ligar suas frases</h3>`;
+  conectivosFinal.forEach((s,i)=>{
+    const idx1=Math.min(i,numFrases-1);
+    const idx2=Math.min(i+1,numFrases-1);
+    const ex1=(frases[idx1]||'').replace(/\.$/,'');
+    const ex2raw=frases[idx2]||'';
+    const ex2=ex2raw.charAt(0).toLowerCase()+ex2raw.slice(1);
+    h+=`<div class="conectivo-item"><span class="destaque">${escHtml(s.c)}</span> → serve ${escHtml(s.tipo)}.<br>Exemplo com o seu texto: "<i>${escHtml(ex1)} <span class="destaque">${escHtml(s.c)}</span> ${escHtml(ex2)}</i>"</div>`;
+  });
+
+  // 6. Estrutura narrativa
+  const fInicio=frases[0]||'';
+  const fMeio1=frases[Math.floor(numFrases/3)]||frases[0];
+  const fMeio2=frases[Math.floor(2*numFrases/3)]||frases[numFrases-1];
+  const fFim=frases[numFrases-1]||'';
+
+  h+=`<h3>📖 Como montar seu texto com começo, meio e fim</h3>`;
+  h+=`<p><b>🟢 COMEÇO:</b> "O começo é onde você apresenta a história. Sua frase <span class='destaque'>'${escHtml(fInicio)}'</span> pode ser um ótimo começo! Você pode acrescentar: onde é o jogo? Quem está jogando?"</p>`;
+  h+=`<p style="margin-top:8px;"><b>🟡 MEIO:</b> "No meio acontece tudo de emocionante! Suas frases <span class='destaque'>'${escHtml(fMeio1)}'</span> e <span class='destaque'>'${escHtml(fMeio2)}'</span> ficam aqui. Use as palavras mágicas para ligar elas!"</p>`;
+  h+=`<p style="margin-top:8px;"><b>🔴 FIM:</b> "No fim você conta como terminou. Sua frase <span class='destaque'>'${escHtml(fFim)}'</span> pode ser o seu fim! Como o time ficou depois do jogo?"</p>`;
+
+  return h;
+}
+
+// IMPRIMIR
+document.getElementById('btn-print').addEventListener('click',function(){
+  const analise=document.getElementById('analise-content').innerHTML||'<em>Análise ainda não carregada.</em>';
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  const nLinhas=26;
+  let linhas='';
+  for(let i=0;i<nLinhas;i++)linhas+='<div class="print-line"></div>';
+  const imgStrip=chunks.map(c=>'<div class="print-img-item"><div class="print-img-emoji">'+c.card.fallback+'</div><span>'+c.card.label+'</span></div>').join('');
+
+  document.getElementById('print-area').innerHTML=`
+    <div class="print-page-title">&#9917; Contador de Gols &mdash; Produ&ccedil;&atilde;o de Texto Oral</div>
+    <div class="print-meta">Data: ${hoje} &nbsp;|&nbsp; Idade: ${idadePaciente} anos &nbsp;|&nbsp; Cartas: ${total} &nbsp;|&nbsp; Frases: ${chunks.length}</div>
+
+    <div class="print-block">
+      <div class="print-block-title">Cartas usadas na sess&atilde;o</div>
+      <div class="print-img-strip">${imgStrip}</div>
+    </div>
+
+    <div class="print-block">
+      <div class="print-block-title">1. Texto Original do Paciente</div>
+      <div class="print-text">${chunks.map(c=>'<b>'+c.card.label+':</b> '+escHtml(c.text)).join('<br>')}</div>
+    </div>
+
+    <div class="print-block">
+      <div class="print-block-title">2. An&aacute;lise e Sugest&otilde;es</div>
+      <div class="print-text">${analise}</div>
+    </div>
+
+    <div class="print-block print-block-reescrita">
+      <div class="print-block-title">3. Minha Reescrita (ap&oacute;s a corre&ccedil;&atilde;o)</div>
+      <p style="font-size:.85rem;color:#555;margin-bottom:8px;">Reescreva seu texto corrigido nas linhas abaixo:</p>
+      <div class="print-lines">${linhas}</div>
+    </div>
+  `;
+  window.print();
+});
+
+// COPIAR
+document.getElementById('btn-copy').addEventListener('click',function(){
+  const text=chunks.map(c=>'['+c.card.label+'] '+c.text).join(' ');
+  navigator.clipboard.writeText(text).catch(()=>{});
+  this.textContent='Copiado!';
+  setTimeout(()=>this.textContent='&#128203; Copiar Texto',2000);
+});
+
+document.getElementById('btn-reset').addEventListener('click',function(){
+  if(confirm('Reiniciar? O texto atual será perdido.')){showScreen('screen-start');}
+});
+document.getElementById('btn-home').addEventListener('click',function(){showScreen('screen-start');});
+</script>
+</body>
+</html>
