@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taco! Gato! Cabra! Queijo! Pizza!</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --yellow: #FFD600;
+  --red: #E53935;
+  --green: #2E7D32;
+  --dark: #1a1a1a;
+  --white: #fff;
+  --radius: 20px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--yellow);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px 12px 40px;
+}
+
+.screen { display: none; width: 100%; max-width: 440px; }
+.screen.active { display: flex; flex-direction: column; align-items: center; }
+
+/* ===== HOME ===== */
+.logo {
+  font-size: clamp(1.5rem, 6vw, 2.2rem);
+  font-weight: 900;
+  color: var(--red);
+  text-align: center;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.12);
+  line-height: 1.2;
+  margin: 24px 0 6px;
+}
+.logo-sub {
+  font-size: 0.85rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.level-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.level-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform 0.13s, box-shadow 0.13s;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+}
+.level-card:hover, .level-card:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+  outline: none;
+}
+.level-card.easy   { border-color: #43A047; }
+.level-card.medium { border-color: #FB8C00; }
+.level-card.hard   { border-color: #E53935; }
+
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.level-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  color: white;
+}
+.easy   .level-badge { background: #43A047; }
+.medium .level-badge { background: #FB8C00; }
+.hard   .level-badge { background: #E53935; }
+
+.level-title { font-size: 1rem; font-weight: 800; color: var(--dark); }
+
+.level-stimuli { display: flex; flex-direction: column; gap: 5px; }
+.stimulus-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #444;
+}
+.stim-card-icon {
+  font-size: 1.1rem;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stim-arrow { color: #aaa; font-size: 0.75rem; }
+.stim-action { font-weight: 600; }
+
+/* ===== GAME SCREEN ===== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 14px;
+}
+.back-btn {
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #333;
+}
+.game-level-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  color: white;
+}
+.card-counter {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Progress */
+.progress-wrap {
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 8px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 8px;
+  transition: width 0.4s ease;
+}
+
+/* ===== CARD ===== */
+.card-display {
+  width: 200px;
+  height: 260px;
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.22);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.card-display::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.28) 0%, transparent 55%);
+  pointer-events: none;
+  border-radius: 26px;
+}
+.card-emoji { font-size: 6rem; line-height: 1; pointer-events: none; }
+.card-label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 12px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  pointer-events: none;
+}
+
+/* Tap hint */
+.tap-hint {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.35);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+/* Countdown ring */
+.countdown-wrap {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+}
+.countdown-svg { width: 36px; height: 36px; transform: rotate(-90deg); }
+.countdown-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 3; }
+.countdown-ring {
+  fill: none;
+  stroke: rgba(255,255,255,0.85);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 88;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.1s linear;
+}
+.countdown-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: white;
+}
+
+/* ===== RULES PANEL (always visible) ===== */
+.rules-panel {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 14px 16px;
+  width: 100%;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.08);
+}
+.rules-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+.ref-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f2f2f2;
+  font-size: 0.85rem;
+  color: #333;
+}
+.ref-row:last-child { border-bottom: none; }
+.ref-icon {
+  font-size: 1.2rem;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ref-arrow { color: #ccc; font-size: 0.7rem; }
+.ref-action { font-weight: 700; color: #222; }
+.ref-inactive { color: #ccc; font-style: italic; }
+
+/* ===== START OVERLAY ===== */
+.start-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.start-overlay-icon { font-size: 2.8rem; }
+.start-overlay-txt {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== RESULT ===== */
+#resultScreen { justify-content: center; min-height: 70vh; }
+.result-box {
+  background: var(--white);
+  border-radius: 28px;
+  padding: 36px 28px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  animation: popIn 0.35s ease;
+}
+@keyframes popIn {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.result-trophy { font-size: 4.5rem; margin-bottom: 10px; }
+.result-title  { font-size: 1.6rem; font-weight: 900; color: var(--dark); margin-bottom: 6px; }
+.result-level  { font-size: 0.8rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+.result-stats  {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.stat-box { background: #f7f7f7; border-radius: 14px; padding: 14px 8px; }
+.stat-val  { font-size: 1.6rem; font-weight: 900; color: var(--red); }
+.stat-lbl  { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+.result-msg {
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: #fffde7;
+  border-radius: 12px;
+  border-left: 4px solid var(--yellow);
+  text-align: left;
+}
+.result-btns { display: flex; flex-direction: column; gap: 10px; }
+.btn-primary {
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--red);
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-secondary {
+  padding: 14px;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  background: white;
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Card colors */
+.bg-taco   { background: linear-gradient(135deg, #FF8F00, #E65100); }
+.bg-gato   { background: linear-gradient(135deg, #7B1FA2, #4A148C); }
+.bg-cabra  { background: linear-gradient(135deg, #2E7D32, #1B5E20); }
+.bg-queijo { background: linear-gradient(135deg, #F9A825, #E65100); }
+.bg-pizza  { background: linear-gradient(135deg, #C62828, #B71C1C); }
+.bg-back   { background: linear-gradient(135deg, #455A64, #263238); }
+
+.ic-taco   { background: #FFF3E0; }
+.ic-gato   { background: #F3E5F5; }
+.ic-cabra  { background: #E8F5E9; }
+.ic-queijo { background: #FFFDE7; }
+.ic-pizza  { background: #FFEBEE; }
+
+/* Animations */
+@keyframes cardPop {
+  0%  { transform: scale(0.82) rotate(-5deg); opacity: 0.4; }
+  70% { transform: scale(1.07) rotate(1deg); }
+  100%{ transform: scale(1) rotate(0); opacity: 1; }
+}
+.card-pop { animation: cardPop 0.28s ease forwards; }
+
+@keyframes shake {
+  0%,100%{ transform: translateX(0); }
+  20%    { transform: translateX(-9px); }
+  40%    { transform: translateX(9px); }
+  60%    { transform: translateX(-6px); }
+  80%    { transform: translateX(6px); }
+}
+.shake { animation: shake 0.35s ease; }
+
+/* Pause btn */
+.pause-btn {
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #333;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="homeScreen">
+  <div class="logo">🌮 Taco! Gato!<br>Cabra! Queijo! Pizza!</div>
+  <p class="logo-sub">Escolha o nível e reaja às cartas!</p>
+
+  <div class="level-cards">
+
+    <div class="level-card easy" tabindex="0" onclick="startGame('easy')" onkeydown="if(event.key==='Enter')startGame('easy')">
+      <div class="level-header">
+        <span class="level-badge">Fácil</span>
+        <span class="level-title">2 estímulos · 20 cartas</span>
+      </div>
+      <div class="level-stimuli">
+        <div class="stimulus-row"><div class="stim-card-icon ic-taco">🌮</div><span class="stim-arrow">▶</span><span class="stim-action">👏 Bate palma</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-gato">🐱</div><span class="stim-arrow">▶</span><span class="stim-action">🙌 Levanta os braços</span></div>
+      </div>
+    </div>
+
+    <div class="level-card medium" tabindex="0" onclick="startGame('medium')" onkeydown="if(event.key==='Enter')startGame('medium')">
+      <div class="level-header">
+        <span class="level-badge">Médio</span>
+        <span class="level-title">3 estímulos · 24 cartas</span>
+      </div>
+      <div class="level-stimuli">
+        <div class="stimulus-row"><div class="stim-card-icon ic-taco">🌮</div><span class="stim-arrow">▶</span><span class="stim-action">👏 Bate palma</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-gato">🐱</div><span class="stim-arrow">▶</span><span class="stim-action">🙌 Levanta os braços</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-cabra">🐐</div><span class="stim-arrow">▶</span><span class="stim-action">🦶 Bate o pé</span></div>
+      </div>
+    </div>
+
+    <div class="level-card hard" tabindex="0" onclick="startGame('hard')" onkeydown="if(event.key==='Enter')startGame('hard')">
+      <div class="level-header">
+        <span class="level-badge">Difícil</span>
+        <span class="level-title">5 estímulos · 30 cartas</span>
+      </div>
+      <div class="level-stimuli">
+        <div class="stimulus-row"><div class="stim-card-icon ic-taco">🌮</div><span class="stim-arrow">▶</span><span class="stim-action">👏 Bate palma</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-gato">🐱</div><span class="stim-arrow">▶</span><span class="stim-action">🙌 Levanta os braços</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-cabra">🐐</div><span class="stim-arrow">▶</span><span class="stim-action">🦶 Bate o pé</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-queijo">🧀</div><span class="stim-arrow">▶</span><span class="stim-action">😮‍💨 Tosse</span></div>
+        <div class="stimulus-row"><div class="stim-card-icon ic-pizza">🍕</div><span class="stim-arrow">▶</span><span class="stim-action">✊ Bate no peito</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div class="screen" id="gameScreen">
+  <div class="top-bar" style="width:100%;max-width:440px;">
+    <button class="back-btn" onclick="stopGame()">← Sair</button>
+    <span class="game-level-badge" id="gameLevelBadge"></span>
+    <div class="card-counter"><span id="cardCurrent">0</span> / <span id="cardTotal">0</span></div>
+  </div>
+
+  <div style="width:100%;max-width:440px;">
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="card-display bg-back" id="cardDisplay" onclick="handleCardTap()">
+    <div id="startOverlay" class="start-overlay">
+      <div class="start-overlay-icon">▶</div>
+      <div class="start-overlay-txt">Toque para começar</div>
+    </div>
+    <div class="card-emoji" id="cardEmoji" style="display:none">🌮</div>
+    <div class="card-label" id="cardLabel" style="display:none"></div>
+    <div class="countdown-wrap" id="countdownWrap" style="display:none">
+      <svg class="countdown-svg" viewBox="0 0 36 36">
+        <circle class="countdown-bg" cx="18" cy="18" r="14"/>
+        <circle class="countdown-ring" id="countdownRing" cx="18" cy="18" r="14"/>
+      </svg>
+      <div class="countdown-num" id="countdownNum">3</div>
+    </div>
+  </div>
+
+  <p class="tap-hint" id="tapHint" style="display:none">Toque na carta para avançar</p>
+
+  <!-- Rules always visible -->
+  <div class="rules-panel" id="rulesPanel">
+    <div class="rules-title">📋 Regras do nível</div>
+    <div id="refRows"></div>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="screen" id="resultScreen">
+  <div class="result-box">
+    <div class="result-trophy" id="resTrophy">🏆</div>
+    <div class="result-title"  id="resTitle">Parabéns!</div>
+    <div class="result-level"  id="resLevel"></div>
+    <div class="result-stats">
+      <div class="stat-box"><div class="stat-val" id="resTotal">0</div><div class="stat-lbl">Cartas</div></div>
+      <div class="stat-box"><div class="stat-val" id="resActive">0</div><div class="stat-lbl">Com ação</div></div>
+      <div class="stat-box"><div class="stat-val" id="resDistract">0</div><div class="stat-lbl">Distratoras</div></div>
+    </div>
+    <div class="result-msg" id="resMsg"></div>
+    <div class="result-btns">
+      <button class="btn-primary" onclick="startGame(currentLevel)">🔄 Jogar novamente</button>
+      <button class="btn-secondary" onclick="goHome()">← Escolher outro nível</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LEVEL_CONFIG = {
+  easy:   { label:'Fácil',  color:'#43A047', active:['taco','gato'],                       total:20, interval:2200 },
+  medium: { label:'Médio',  color:'#FB8C00', active:['taco','gato','cabra'],               total:24, interval:2000 },
+  hard:   { label:'Difícil',color:'#E53935', active:['taco','gato','cabra','queijo','pizza'], total:30, interval:1800 }
+};
+
+const CARD_DATA = {
+  taco:   { emoji:'🌮', label:'Taco',   bg:'bg-taco',   action:'👏 Bate palma',         ic:'ic-taco'   },
+  gato:   { emoji:'🐱', label:'Gato',   bg:'bg-gato',   action:'🙌 Levanta os braços',   ic:'ic-gato'   },
+  cabra:  { emoji:'🐐', label:'Cabra',  bg:'bg-cabra',  action:'🦶 Bate o pé',           ic:'ic-cabra'  },
+  queijo: { emoji:'🧀', label:'Queijo', bg:'bg-queijo', action:'😮‍💨 Tosse',              ic:'ic-queijo' },
+  pizza:  { emoji:'🍕', label:'Pizza',  bg:'bg-pizza',  action:'✊ Bate no peito',        ic:'ic-pizza'  }
+};
+const ALL_TYPES = ['taco','gato','cabra','queijo','pizza'];
+
+let currentLevel = 'easy';
+let deck = [];
+let cardIndex = 0;
+let activeTypes = [];
+let autoTimer = null;
+let countdownTimer = null;
+let gameStarted = false;
+let cfg = null;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildDeck(cfg) {
+  let d = [];
+  const perType = Math.floor(cfg.total / 5);
+  const extra = cfg.total % 5;
+  ALL_TYPES.forEach((t,i) => {
+    const count = perType + (i < extra ? 1 : 0);
+    for (let j=0; j<count; j++) d.push(t);
+  });
+  return shuffle(d);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome() { showScreen('homeScreen'); }
+
+function stopGame() {
+  clearTimeout(autoTimer);
+  clearInterval(countdownTimer);
+  gameStarted = false;
+  goHome();
+}
+
+function startGame(level) {
+  currentLevel = level;
+  cfg = LEVEL_CONFIG[level];
+  activeTypes = cfg.active;
+  deck = buildDeck(cfg);
+  cardIndex = 0;
+  gameStarted = false;
+
+  clearTimeout(autoTimer);
+  clearInterval(countdownTimer);
+
+  // badge
+  const badge = document.getElementById('gameLevelBadge');
+  badge.textContent = cfg.label;
+  badge.style.background = cfg.color;
+
+  document.getElementById('cardTotal').textContent = deck.length;
+  document.getElementById('cardCurrent').textContent = 0;
+  document.getElementById('progressFill').style.width = '0%';
+
+  // reset card
+  const cd = document.getElementById('cardDisplay');
+  cd.className = 'card-display bg-back';
+  document.getElementById('cardEmoji').style.display = 'none';
+  document.getElementById('cardLabel').style.display = 'none';
+  document.getElementById('countdownWrap').style.display = 'none';
+  document.getElementById('startOverlay').style.display = 'flex';
+  document.getElementById('tapHint').style.display = 'none';
+
+  buildRefPanel(cfg);
+  showScreen('gameScreen');
+}
+
+function handleCardTap() {
+  if (!gameStarted) {
+    // First tap — start
+    gameStarted = true;
+    document.getElementById('startOverlay').style.display = 'none';
+    document.getElementById('cardEmoji').style.display = 'block';
+    document.getElementById('cardLabel').style.display = 'block';
+    document.getElementById('countdownWrap').style.display = 'block';
+    document.getElementById('tapHint').style.display = 'block';
+    showCard();
+    return;
+  }
+  // Tap to advance manually
+  if (cardIndex < deck.length) {
+    clearTimeout(autoTimer);
+    clearInterval(countdownTimer);
+    showCard();
+  }
+}
+
+function showCard() {
+  if (cardIndex >= deck.length) {
+    showResult();
+    return;
+  }
+
+  const type = deck[cardIndex];
+  cardIndex++;
+  const data = CARD_DATA[type];
+
+  const cd = document.getElementById('cardDisplay');
+  cd.className = 'card-display ' + data.bg + ' card-pop';
+  setTimeout(() => cd.classList.remove('card-pop'), 300);
+
+  document.getElementById('cardEmoji').textContent = data.emoji;
+  document.getElementById('cardLabel').textContent = data.label;
+
+  // Progress
+  const pct = (cardIndex / deck.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('cardCurrent').textContent = cardIndex;
+
+  // Countdown ring
+  startCountdown(cfg.interval);
+
+  // Auto-advance
+  autoTimer = setTimeout(() => {
+    showCard();
+  }, cfg.interval);
+}
+
+function startCountdown(duration) {
+  clearInterval(countdownTimer);
+  const ring = document.getElementById('countdownRing');
+  const num  = document.getElementById('countdownNum');
+  const circ = 88; // 2πr ≈ 88 for r=14
+  const steps = duration / 100;
+  let step = 0;
+  const secTotal = Math.round(duration / 1000);
+
+  ring.style.strokeDashoffset = 0;
+  num.textContent = secTotal;
+
+  countdownTimer = setInterval(() => {
+    step++;
+    const fraction = step / steps;
+    ring.style.strokeDashoffset = circ * fraction;
+    const secLeft = Math.ceil((1 - fraction) * secTotal);
+    num.textContent = secLeft > 0 ? secLeft : '';
+    if (step >= steps) clearInterval(countdownTimer);
+  }, 100);
+}
+
+function showResult() {
+  clearTimeout(autoTimer);
+  clearInterval(countdownTimer);
+
+  const activeCount  = deck.filter(t => activeTypes.includes(t)).length;
+  const distractCount = deck.length - activeCount;
+
+  const cfg2 = LEVEL_CONFIG[currentLevel];
+
+  let trophy = '💪', title = 'Vamos praticar mais!';
+  // Since there's no right/wrong tracking (therapist observes), show completion
+  trophy = '🏆'; title = 'Jogo concluído!';
+
+  document.getElementById('resTrophy').textContent = trophy;
+  document.getElementById('resTitle').textContent  = title;
+  document.getElementById('resLevel').textContent  = 'Nível ' + cfg2.label + ' · ' + deck.length + ' cartas';
+  document.getElementById('resTotal').textContent  = deck.length;
+  document.getElementById('resActive').textContent = activeCount;
+  document.getElementById('resDistract').textContent = distractCount;
+
+  const msgs = {
+    easy:   'Observe se o paciente inibiu corretamente as cartas sem ação (🐐🧀🍕) e reagiu às cartas-alvo (🌮🐱). Os erros mais comuns são reações impulsivas às distratoras.',
+    medium: 'Com 3 estímulos-alvo, acompanhe a consistência das respostas ao longo das cartas. A fadiga de inibição tende a aparecer nas últimas rodadas.',
+    hard:   'Nível com carga máxima de memória de trabalho. Observe erros por omissão (não reagiu quando devia) versus comissão (reagiu quando não devia). Ambos têm perfis funcionais distintos.'
+  };
+  document.getElementById('resMsg').textContent = msgs[currentLevel];
+
+  showScreen('resultScreen');
+}
+
+function buildRefPanel(cfg) {
+  const container = document.getElementById('refRows');
+  let html = '';
+  ALL_TYPES.forEach(type => {
+    const d = CARD_DATA[type];
+    const active = cfg.active.includes(type);
+    if (active) {
+      html += `<div class="ref-row">
+        <div class="ref-icon ${d.ic}">${d.emoji}</div>
+        <span class="ref-arrow">▶</span>
+        <span class="ref-action">${d.action}</span>
+      </div>`;
+    } else {
+      html += `<div class="ref-row" style="opacity:0.45">
+        <div class="ref-icon" style="background:#f0f0f0">${d.emoji}</div>
+        <span class="ref-arrow">▶</span>
+        <span class="ref-inactive">— Nenhuma ação</span>
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+</script>
+</body>
+</html>
