@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descubra a Sílaba Certa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root{
+    --verde-escuro:#1c4d3f;
+    --verde-escuro2:#153a2f;
+    --creme:#faf6ee;
+    --dourado:#c9a24b;
+    --dourado-claro:#e8c97a;
+    --marrom:#6b4a2f;
+    --texto:#2b2b26;
+    --sombra: 0 6px 0 rgba(0,0,0,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    min-height:100vh;
+  }
+  header{
+    background: linear-gradient(160deg, var(--verde-escuro), var(--verde-escuro2));
+    padding: 28px 20px 22px;
+    text-align:center;
+    border-bottom: 6px solid var(--dourado);
+    position:relative;
+  }
+  header h1{
+    font-family:'Baloo 2', sans-serif;
+    color:#fff;
+    font-size: clamp(24px, 5vw, 34px);
+    margin: 0 0 6px;
+    letter-spacing: 0.5px;
+  }
+  header p{
+    color: var(--dourado-claro);
+    margin:0;
+    font-weight:600;
+    font-size: 14px;
+  }
+
+  nav{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    padding: 16px 12px;
+    background:#fff;
+    border-bottom: 2px solid #eee1c4;
+    position: sticky;
+    top:0;
+    z-index: 50;
+  }
+  nav button{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding: 9px 14px;
+    border-radius: 30px;
+    border: 2px solid var(--verde-escuro);
+    background:#fff;
+    color: var(--verde-escuro);
+    cursor:pointer;
+    transition: all .15s ease;
+  }
+  nav button.active, nav button:hover{
+    background: var(--verde-escuro);
+    color:#fff;
+  }
+
+  main{
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 22px 16px 60px;
+  }
+
+  .modulo{ display:none; animation: fadeIn .35s ease; }
+  .modulo.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .instrucao{
+    background:#fff;
+    border-left: 5px solid var(--dourado);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .instrucao strong{ color: var(--verde-escuro); }
+
+  .placar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: var(--verde-escuro);
+    color:#fff;
+    border-radius: 12px;
+    padding: 10px 18px;
+    margin-bottom: 18px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+  }
+  .placar span.gold{ color: var(--dourado-claro); }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .cartao{
+    background:#fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--sombra), 0 2px 6px rgba(0,0,0,0.06);
+    border: 2px solid #f0e6cf;
+  }
+  .cartao .figura{
+    font-size: 64px;
+    text-align:center;
+    margin-bottom: 6px;
+    line-height:1;
+  }
+  .palavra-oculta{
+    text-align:center;
+    font-size:12px;
+    color:#999;
+    margin-bottom:10px;
+  }
+  .btn-falar{
+    display:block;
+    margin: 0 auto 12px;
+    background: var(--dourado);
+    border:none;
+    color:#fff;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor:pointer;
+  }
+  .btn-falar:hover{ background:#b6903c; }
+
+  .opcoes{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .opcao{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 2px solid var(--verde-escuro);
+    background:#fff;
+    color: var(--verde-escuro);
+    cursor:pointer;
+    min-width: 56px;
+    transition: transform .1s ease;
+  }
+  .opcao:hover{ transform: translateY(-2px); }
+  .opcao.certa{ background:#4c8c5f; border-color:#4c8c5f; color:#fff; }
+  .opcao.errada{ background:#c65b4e; border-color:#c65b4e; color:#fff; }
+  .opcao:disabled{ cursor:default; opacity:0.75; }
+
+  /* Módulo 5 - separar sílabas */
+  .palavra-bloco{
+    background:#fff;
+    border-radius:16px;
+    padding:18px;
+    box-shadow: var(--sombra), 0 2px 6px rgba(0,0,0,0.06);
+    border:2px solid #f0e6cf;
+    text-align:center;
+  }
+  .palavra-bloco h3{
+    font-family:'Baloo 2', sans-serif;
+    color: var(--verde-escuro);
+    font-size: 26px;
+    margin: 0 0 12px;
+    letter-spacing: 1px;
+  }
+  .silabas-drop{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .silaba-slot{
+    width: 64px;
+    height: 50px;
+    border: 2px dashed var(--dourado);
+    border-radius: 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:20px;
+    color: var(--verde-escuro);
+    background: #fffaf0;
+  }
+  .silaba-slot.preenchido{ border-style: solid; background:#eef7ee; }
+  .banco-silabas{
+    margin-top: 14px;
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .peca{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:18px;
+    padding: 8px 14px;
+    border-radius:8px;
+    background: var(--verde-escuro);
+    color:#fff;
+    cursor: grab;
+    user-select:none;
+  }
+  .peca.usada{ visibility:hidden; }
+
+  .checar-btn{
+    margin-top:14px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    background: var(--verde-escuro);
+    color:#fff;
+    border:none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor:pointer;
+  }
+  .fb-msg{
+    font-size:13px;
+    font-weight:700;
+    margin-top:10px;
+    min-height:18px;
+    text-align:center;
+  }
+  .fb-msg.ok{ color:#2f7a45; }
+  .fb-msg.no{ color:#b6402f; }
+
+  .final{
+    text-align:center;
+    padding: 40px 20px;
+  }
+  .final .emoji{ font-size:56px; }
+  .final h2{ font-family:'Baloo 2', sans-serif; color: var(--verde-escuro); }
+  .reiniciar{
+    margin-top:14px;
+    background: var(--dourado);
+    border:none;
+    color:#fff;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    padding: 10px 22px;
+    border-radius: 24px;
+    cursor:pointer;
+    font-size:15px;
+  }
+
+  footer{
+    text-align:center;
+    padding: 18px;
+    font-size:12px;
+    color:#8a8a80;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Descubra a Sílaba Certa!</h1>
+  <p>Consciência fonológica · Atividade interativa</p>
+</header>
+
+<nav id="navModulos">
+  <button data-m="1" class="active">1. Sílaba certa</button>
+  <button data-m="2">2. Sílaba inicial</button>
+  <button data-m="3">3. Sílaba medial</button>
+  <button data-m="4">4. Sílaba final</button>
+  <button data-m="5">5. Separar sílabas</button>
+</nav>
+
+<main>
+
+  <!-- MÓDULO 1 -->
+  <section class="modulo active" id="modulo1">
+    <div class="instrucao"><strong>Instrução:</strong> Toque no botão para ouvir o nome do desenho. Depois, escolha a sílaba correta.</div>
+    <div class="placar">Acertos <span class="gold" id="placar1">0 / 8</span></div>
+    <div class="grid" id="grid1"></div>
+  </section>
+
+  <!-- MÓDULO 2 -->
+  <section class="modulo" id="modulo2">
+    <div class="instrucao"><strong>Sílaba inicial:</strong> escolha a sílaba com que a palavra começa.</div>
+    <div class="placar">Acertos <span class="gold" id="placar2">0 / 5</span></div>
+    <div class="grid" id="grid2"></div>
+  </section>
+
+  <!-- MÓDULO 3 -->
+  <section class="modulo" id="modulo3">
+    <div class="instrucao"><strong>Sílaba medial:</strong> escolha a sílaba do meio da palavra.</div>
+    <div class="placar">Acertos <span class="gold" id="placar3">0 / 5</span></div>
+    <div class="grid" id="grid3"></div>
+  </section>
+
+  <!-- MÓDULO 4 -->
+  <section class="modulo" id="modulo4">
+    <div class="instrucao"><strong>Sílaba final:</strong> escolha a sílaba com que a palavra termina.</div>
+    <div class="placar">Acertos <span class="gold" id="placar4">0 / 5</span></div>
+    <div class="grid" id="grid4"></div>
+  </section>
+
+  <!-- MÓDULO 5 -->
+  <section class="modulo" id="modulo5">
+    <div class="instrucao"><strong>Separando sílabas:</strong> arraste (ou toque) as sílabas do banco para montar a palavra na ordem correta.</div>
+    <div class="placar">Acertos <span class="gold" id="placar5">0 / 9</span></div>
+    <div class="grid" id="grid5"></div>
+  </section>
+
+  <section class="modulo" id="moduloFinal">
+    <div class="final">
+      <div class="emoji">🏆</div>
+      <h2>Muito bem!</h2>
+      <p>Você concluiu todas as atividades de sílabas.</p>
+      <button class="reiniciar" onclick="reiniciarTudo()">Recomeçar tudo</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>Material desenvolvido para prática de consciência fonológica · uso clínico e educacional</footer>
+
+<script>
+// ---------- Utilidades ----------
+let vozesDisponiveis = [];
+let vozPT = null;
+
+function carregarVozes(){
+  vozesDisponiveis = speechSynthesis.getVoices();
+  vozPT = vozesDisponiveis.find(v => v.lang === 'pt-BR')
+       || vozesDisponiveis.find(v => v.lang && v.lang.startsWith('pt'))
+       || null;
+}
+
+if('speechSynthesis' in window){
+  carregarVozes();
+  speechSynthesis.onvoiceschanged = carregarVozes;
+}
+
+function falar(texto, botao){
+  if(!('speechSynthesis' in window)){
+    if(botao) mostrarAvisoSom(botao, 'Este navegador não tem leitor de voz. Abra o arquivo no Chrome ou Safari.');
+    return;
+  }
+  // garante que a lista de vozes já carregou (Android/Chrome carrega de forma assíncrona)
+  if(vozesDisponiveis.length === 0){
+    carregarVozes();
+  }
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'pt-BR';
+  u.rate = 0.85;
+  if(vozPT) u.voice = vozPT;
+
+  u.onerror = () => {
+    if(botao) mostrarAvisoSom(botao, 'Não foi possível reproduzir o áudio. Abra o arquivo direto no Chrome/Safari (fora de apps como WhatsApp/Instagram).');
+  };
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+
+  // fallback: se nada começar a falar em 700ms, avisa a profissional/aluno
+  setTimeout(()=>{
+    if(!speechSynthesis.speaking && botao){
+      mostrarAvisoSom(botao, 'Sem som disponível neste navegador. Toque em ⋮ e escolha "Abrir no Chrome".');
+    }
+  }, 700);
+}
+
+function mostrarAvisoSom(botao, msg){
+  let aviso = botao.parentElement.querySelector('.aviso-som');
+  if(!aviso){
+    aviso = document.createElement('div');
+    aviso.className = 'aviso-som';
+    aviso.style.cssText = 'font-size:11px;color:#b6402f;margin-top:-6px;margin-bottom:10px;text-align:center;';
+    botao.insertAdjacentElement('afterend', aviso);
+  }
+  aviso.textContent = msg;
+}
+
+const progresso = {1:0,2:0,3:0,4:0,5:0};
+const totais = {1:8,2:5,3:5,4:5,5:9};
+
+function atualizarPlacar(m){
+  document.getElementById('placar'+m).textContent = progresso[m] + ' / ' + totais[m];
+  verificarConclusaoGeral();
+}
+
+function verificarConclusaoGeral(){
+  const tudo = Object.keys(totais).every(m => progresso[m] === totais[m]);
+  if(tudo){
+    setTimeout(()=>{ irPara('Final'); }, 600);
+  }
+}
+
+function irPara(m){
+  document.querySelectorAll('.modulo').forEach(s=>s.classList.remove('active'));
+  document.getElementById('modulo'+m).classList.add('active');
+  document.querySelectorAll('#navModulos button').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector('#navModulos button[data-m="'+m+'"]');
+  if(btn) btn.classList.add('active');
+}
+
+document.getElementById('navModulos').addEventListener('click', e=>{
+  if(e.target.tagName === 'BUTTON'){
+    irPara(e.target.dataset.m);
+  }
+});
+
+// ---------- Módulo 1: Descubra a sílaba certa ----------
+const dados1 = [
+  {emoji:'🍄', palavra:'cogumelo', opcoes:['LE','NE','ME'], correta:'ME'},
+  {emoji:'🦉', palavra:'coruja', opcoes:['RU','LU','TU'], correta:'RU'},
+  {emoji:'🥑', palavra:'abacate', opcoes:['DE','TE','JE'], correta:'TE'},
+  {emoji:'🍵', palavra:'xícara', opcoes:['CA','KA','SA'], correta:'CA'},
+  {emoji:'👠', palavra:'sapato', opcoes:['PA','BA','SA'], correta:'PA'},
+  {emoji:'🐴', palavra:'cavalo', opcoes:['RO','LO','BO'], correta:'LO'},
+  {emoji:'🍦', palavra:'picolé', opcoes:['BI','FI','PI'], correta:'PI'},
+  {emoji:'📦', palavra:'caixa', opcoes:['CA','XA','JA'], correta:'CA'},
+];
+
+function montarCartaoOpcoes(dado, containerId, moduloNum){
+  const div = document.createElement('div');
+  div.className = 'cartao';
+  div.innerHTML = `
+    <div class="figura">${dado.emoji}</div>
+    <div class="palavra-oculta">? ? ?</div>
+    <button class="btn-falar" onclick="falar('${dado.palavra}', this)">🔊 Ouvir palavra</button>
+    <div class="opcoes">
+      ${dado.opcoes.map(op => `<button class="opcao" data-op="${op}">${op}</button>`).join('')}
+    </div>
+    <div class="fb-msg"></div>
+  `;
+  const botoes = div.querySelectorAll('.opcao');
+  const fb = div.querySelector('.fb-msg');
+  botoes.forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const acertou = b.dataset.op === dado.correta;
+      botoes.forEach(x=>x.disabled = true);
+      if(acertou){
+        b.classList.add('certa');
+        progresso[moduloNum]++;
+        fb.textContent = 'Parabéns! Você acertou! 🎉';
+        fb.className = 'fb-msg ok';
+      } else {
+        b.classList.add('errada');
+        botoes.forEach(x=>{ if(x.dataset.op === dado.correta) x.classList.add('certa'); });
+        fb.textContent = 'Tente novamente na próxima! A certa era "' + dado.correta + '".';
+        fb.className = 'fb-msg no';
+      }
+      atualizarPlacar(moduloNum);
+    });
+  });
+  document.getElementById(containerId).appendChild(div);
+}
+
+dados1.forEach(d => montarCartaoOpcoes(d, 'grid1', 1));
+
+// ---------- Módulo 2: sílaba inicial ----------
+const dados2 = [
+  {emoji:'🍍', palavra:'abacaxi', opcoes:['A','XI','CA','BA'], correta:'A'},
+  {emoji:'🍉', palavra:'melancia', opcoes:['A','CI','ME','LAN'], correta:'ME'},
+  {emoji:'🍓', palavra:'morango', opcoes:['MO','RAN','NO','GO'], correta:'MO'},
+  {emoji:'🍊', palavra:'laranja', opcoes:['RAN','JA','RA','LA'], correta:'LA'},
+  {emoji:'🍇', palavra:'uva', opcoes:['VA','I','U','O'], correta:'U'},
+];
+dados2.forEach(d => montarCartaoOpcoes(d, 'grid2', 2));
+
+// ---------- Módulo 3: sílaba medial ----------
+const dados3 = [
+  {emoji:'🍿', palavra:'pipoca', opcoes:['PI','BO','PO','CA'], correta:'PO'},
+  {emoji:'🍦', palavra:'sorvete', opcoes:['SOR','VE','FE','TE'], correta:'VE'},
+  {emoji:'🍪', palavra:'biscoito', opcoes:['BIS','GI','COI','TO'], correta:'COI'},
+  {emoji:'🍭', palavra:'picolé', opcoes:['PI','GO','LÉ','CO'], correta:'CO'},
+  {emoji:'🧁', palavra:'bolinho', opcoes:['LI','BO','RI','NHO'], correta:'LI'},
+];
+dados3.forEach(d => montarCartaoOpcoes(d, 'grid3', 3));
+
+// ---------- Módulo 4: sílaba final ----------
+const dados4 = [
+  {emoji:'🛴', palavra:'patinete', opcoes:['TE','PA','NE','TI'], correta:'TE'},
+  {emoji:'🍍', palavra:'abacaxi', opcoes:['BA','XI','A','CA'], correta:'XI'},
+  {emoji:'🍮', palavra:'gelatina', opcoes:['TI','GE','NA','LA'], correta:'NA'},
+  {emoji:'👂', palavra:'cotonete', opcoes:['CO','TE','TO','NE'], correta:'TE'},
+  {emoji:'🍉', palavra:'melancia', opcoes:['LAN','CI','ME','A'], correta:'A'},
+];
+dados4.forEach(d => montarCartaoOpcoes(d, 'grid4', 4));
+
+// ---------- Módulo 5: separar sílabas ----------
+const dados5 = [
+  {palavra:'BAÚ', silabas:['BA','Ú']},
+  {palavra:'BABÁ', silabas:['BA','BÁ']},
+  {palavra:'BEBA', silabas:['BE','BA']},
+  {palavra:'BEBÊ', silabas:['BE','BÊ']},
+  {palavra:'BEBO', silabas:['BE','BO']},
+  {palavra:'BIA', silabas:['BI','A']},
+  {palavra:'BOBA', silabas:['BO','BA']},
+  {palavra:'BOBO', silabas:['BO','BO']},
+  {palavra:'OBA', silabas:['O','BA']},
+];
+
+function embaralhar(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+dados5.forEach((dado, idx) => {
+  const div = document.createElement('div');
+  div.className = 'palavra-bloco';
+  const embaralhadas = embaralhar(dado.silabas.map((s,i)=>({texto:s, origem:i})));
+
+  div.innerHTML = `
+    <h3>${dado.palavra}</h3>
+    <button class="btn-falar" onclick="falar('${dado.palavra}', this)">🔊 Ouvir</button>
+    <div class="silabas-drop" id="slots-${idx}">
+      ${dado.silabas.map((_,i)=>`<div class="silaba-slot" data-slot="${i}"></div>`).join('')}
+    </div>
+    <div class="banco-silabas" id="banco-${idx}">
+      ${embaralhadas.map((s,pi)=>`<span class="peca" draggable="true" data-piece="${pi}" data-texto="${s.texto}">${s.texto}</span>`).join('')}
+    </div>
+    <div class="fb-msg" id="fb-${idx}"></div>
+  `;
+  document.getElementById('grid5').appendChild(div);
+
+  const slots = div.querySelectorAll('.silaba-slot');
+  const pecas = div.querySelectorAll('.peca');
+  const fb = div.querySelector('.fb-msg');
+  let concluido = false;
+
+  let slotAtual = 0; // simplificado: toque em sequência preenche da esquerda pra direita
+
+  pecas.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      if(concluido || p.classList.contains('usada')) return;
+      const slotVazio = Array.from(slots).find(s=>!s.classList.contains('preenchido'));
+      if(!slotVazio) return;
+      slotVazio.textContent = p.dataset.texto;
+      slotVazio.classList.add('preenchido');
+      slotVazio.dataset.valor = p.dataset.texto;
+      p.classList.add('usada');
+
+      const todasPreenchidas = Array.from(slots).every(s=>s.classList.contains('preenchido'));
+      if(todasPreenchidas){
+        const montado = Array.from(slots).map(s=>s.dataset.valor).join('');
+        const correto = dado.silabas.join('');
+        if(montado === correto){
+          fb.textContent = 'Certinho! ✅';
+          fb.className = 'fb-msg ok';
+          concluido = true;
+          progresso[5]++;
+          atualizarPlacar(5);
+        } else {
+          fb.textContent = 'Ops, tente novamente.';
+          fb.className = 'fb-msg no';
+          setTimeout(()=>{
+            slots.forEach(s=>{ s.textContent=''; s.classList.remove('preenchido'); delete s.dataset.valor; });
+            pecas.forEach(pc=>pc.classList.remove('usada'));
+            fb.textContent = '';
+          }, 900);
+        }
+      }
+    });
+  });
+});
+
+// ---------- Reiniciar tudo ----------
+function reiniciarTudo(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
