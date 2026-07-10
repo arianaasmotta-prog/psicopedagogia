@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Trilha da Sequência — Jogo de Pareamento Alternado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#618e8a;
+    --teal-dark:#4a716d;
+    --salmon:#da987c;
+    --salmon-dark:#c47a5d;
+    --gold:#c9a227;
+    --sage:#93ab8f;
+    --cream:#faf6ef;
+    --card:#ffffff;
+    --ink:#33302c;
+    --ink-soft:#6b655d;
+    --line:#e7ded0;
+    --ok:#5c8a68;
+    --err:#c46a56;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(97,142,138,0.07), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(218,152,124,0.09), transparent 40%);
+    color:var(--ink);
+    font-family:'Nunito', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    width:100%;
+    max-width:640px;
+    min-height:100vh;
+    padding:20px 18px 40px;
+    display:flex;
+    flex-direction:column;
+  }
+  h1,h2,h3{font-family:'Baloo 2', sans-serif; margin:0;}
+  button{font-family:'Nunito', sans-serif; cursor:pointer; border:none;}
+  button:focus-visible, .opt:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:38px; height:38px; border-radius:12px;
+    background:linear-gradient(135deg, var(--teal), var(--teal-dark));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Baloo 2'; font-weight:700; font-size:18px;
+    box-shadow:0 4px 10px rgba(74,113,109,0.35);
+  }
+  .brand-text{line-height:1.1;}
+  .brand-text .t1{font-family:'Baloo 2'; font-weight:700; font-size:15px; color:var(--ink);}
+  .brand-text .t2{font-size:11px; color:var(--ink-soft); letter-spacing:0.03em;}
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; background:var(--card);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:var(--ink-soft);
+  }
+
+  .screen{display:none; flex-direction:column; flex:1;}
+  .screen.active{display:flex;}
+
+  .hero{text-align:center; padding:8px 6px 22px;}
+  .hero h1{font-size:26px; color:var(--teal-dark); margin-bottom:8px;}
+  .hero p{font-size:14.5px; color:var(--ink-soft); line-height:1.55; max-width:460px; margin:0 auto;}
+  .hero .tag{
+    display:inline-block; margin-top:12px; padding:5px 14px; border-radius:999px;
+    background:rgba(201,162,39,0.14); color:#93761d; font-size:12px; font-weight:700; letter-spacing:0.03em;
+  }
+
+  .levels{display:flex; flex-direction:column; gap:12px; margin-top:6px;}
+  .level-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:15px 16px; display:flex; align-items:center; gap:14px;
+    box-shadow:0 3px 10px rgba(51,48,44,0.05);
+    transition:transform .15s ease, box-shadow .15s ease;
+    text-align:left; width:100%;
+  }
+  .level-card:active{transform:scale(0.98);}
+  .level-badge{
+    width:46px; height:46px; border-radius:14px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Baloo 2'; font-weight:700; font-size:16px; color:#fff;
+  }
+  .level-info{flex:1; min-width:0;}
+  .level-info .lt{font-family:'Baloo 2'; font-weight:600; font-size:15.5px; color:var(--ink);}
+  .level-info .ld{font-size:12.5px; color:var(--ink-soft); margin-top:2px; line-height:1.4;}
+  .level-arrow{color:var(--ink-soft); font-size:18px;}
+
+  .game-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:10px;}
+  .back-link{
+    font-size:13px; color:var(--ink-soft); display:flex; align-items:center; gap:5px; font-weight:700;
+    background:none; padding:6px 4px;
+  }
+  .progress-wrap{flex:1; margin:0 12px;}
+  .progress-track{height:8px; border-radius:6px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--teal), var(--sage)); border-radius:6px; transition:width .35s ease;}
+  .round-label{font-size:11px; color:var(--ink-soft); margin-top:4px; text-align:right; font-weight:700;}
+  .stars-live{
+    display:flex; align-items:center; gap:4px; font-family:'Baloo 2'; font-weight:700; color:var(--gold); font-size:14px;
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:5px 11px;
+    box-shadow:0 2px 6px rgba(51,48,44,0.05);
+  }
+
+  .instruction{text-align:center; font-size:13.5px; color:var(--ink-soft); margin:6px 0 18px; line-height:1.5;}
+  .instruction b{color:var(--teal-dark);}
+  .instruction .stage-note{display:block; margin-top:4px; font-size:12px; color:#93761d; font-weight:700;}
+
+  .trail-card{
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:22px 14px 26px; box-shadow:0 6px 18px rgba(51,48,44,0.06); margin-bottom:22px;
+  }
+  .trail{display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px 6px;}
+  .stone{
+    width:52px; height:52px; border-radius:14px; background:#f3efe6; border:2px solid var(--line);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    animation:pop .35s ease both;
+  }
+  .stone svg{width:30px; height:30px;}
+  .connector{width:10px; height:2px; background:var(--line); border-radius:2px; flex:none;}
+  .stone.hidden-slot{
+    background:repeating-linear-gradient(135deg, #fff, #fff 6px, #f2ece0 6px, #f2ece0 12px);
+    border:2px dashed var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Baloo 2'; font-weight:700; color:var(--gold); font-size:22px;
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pop{from{transform:scale(0.4); opacity:0;} to{transform:scale(1); opacity:1;}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0.25);}50%{box-shadow:0 0 0 6px rgba(201,162,39,0.05);}}
+
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .opt{
+    background:var(--card); border:2px solid var(--line); border-radius:16px;
+    padding:16px 8px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 3px 8px rgba(51,48,44,0.05);
+    transition:transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .opt svg{width:38px; height:38px;}
+  .opt:active{transform:scale(0.95);}
+  .opt.correct{border-color:var(--ok); background:rgba(92,138,104,0.09);}
+  .opt.wrong{border-color:var(--err); background:rgba(196,106,86,0.09); animation:shake .35s ease;}
+  .opt.disabled{pointer-events:none; opacity:0.55;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+
+  .feedback-bar{
+    min-height:56px; margin-top:16px; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-size:13.5px; color:var(--ink-soft); line-height:1.5; padding:0 10px;
+  }
+  .feedback-bar.ok{color:var(--ok); font-weight:700;}
+  .feedback-bar.no{color:var(--err); font-weight:700;}
+
+  .next-btn{
+    display:block; margin:0 auto; padding:13px 34px; border-radius:999px;
+    background:var(--teal-dark); color:#fff; font-weight:700; font-size:14.5px;
+    box-shadow:0 5px 14px rgba(74,113,109,0.35);
+  }
+  .next-btn:disabled{opacity:0; pointer-events:none;}
+
+  .result-wrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:10px;}
+  .result-badge{
+    width:88px; height:88px; border-radius:50%; background:linear-gradient(135deg, var(--gold), #e0be55);
+    display:flex; align-items:center; justify-content:center; font-size:38px; margin-bottom:16px;
+    box-shadow:0 8px 20px rgba(201,162,39,0.35);
+  }
+  .result-wrap h2{font-size:22px; color:var(--teal-dark); margin-bottom:6px;}
+  .result-wrap p{font-size:13.5px; color:var(--ink-soft); max-width:340px; line-height:1.6;}
+  .metrics{display:flex; gap:14px; margin:20px 0;}
+  .metric{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 20px; min-width:96px;
+    box-shadow:0 3px 10px rgba(51,48,44,0.05);
+  }
+  .metric .m-num{font-family:'Baloo 2'; font-weight:700; font-size:22px; color:var(--teal-dark);}
+  .metric .m-lbl{font-size:11px; color:var(--ink-soft); margin-top:2px; text-transform:uppercase; letter-spacing:0.04em;}
+  .result-actions{display:flex; flex-direction:column; gap:10px; width:100%; max-width:280px; margin-top:6px;}
+  .btn-primary{background:var(--teal-dark); color:#fff; padding:13px; border-radius:14px; font-weight:700; font-size:14px;}
+  .btn-secondary{
+    background:#fff; color:var(--teal-dark); padding:13px; border-radius:14px; font-weight:700; font-size:14px;
+    border:1.5px solid var(--teal-dark);
+  }
+  .btn-ghost{background:none; color:var(--ink-soft); padding:8px; font-size:12.5px; font-weight:700; text-decoration:underline;}
+  .copied-msg{font-size:11.5px; color:var(--ok); font-weight:700; margin-top:-2px; min-height:16px;}
+
+  footer.foot{text-align:center; font-size:11px; color:#b6ad9c; margin-top:auto; padding-top:22px;}
+
+  @media (max-width:360px){
+    .stone{width:44px; height:44px;} .stone svg{width:25px; height:25px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">✳</div>
+      <div class="brand-text">
+        <div class="t1">Trilha da Sequência</div>
+        <div class="t2">jogo de pareamento alternado</div>
+      </div>
+    </div>
+    <button class="icon-btn" id="infoBtn" aria-label="Sobre o jogo" title="Sobre o jogo">ⓘ</button>
+  </div>
+
+  <section class="screen active" id="screen-home">
+    <div class="hero">
+      <h1>Complete o padrão da trilha</h1>
+      <p>Observe a sequência de figuras, identifique a lógica de alternância e escolha a peça que continua o caminho corretamente. Cada nível tem 5 etapas, e as formas e cores mudam a cada etapa — a criança precisa reconhecer a <b>lógica do padrão</b>, não decorar figuras específicas.</p>
+      <span class="tag">Foco: atenção · função executiva · raciocínio sequencial</span>
+    </div>
+    <div class="levels" id="levelList"></div>
+    <footer class="foot">Ferramenta de apoio clínico-pedagógico · uso profissional</footer>
+  </section>
+
+  <section class="screen" id="screen-game">
+    <div class="game-header">
+      <button class="back-link" id="btnBackHome">← Sair</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="round-label" id="roundLabel">Etapa 1/5</div>
+      </div>
+      <div class="stars-live">★ <span id="starsLive">0</span></div>
+    </div>
+    <div class="instruction" id="levelInstruction"></div>
+    <div class="trail-card"><div class="trail" id="trailRow"></div></div>
+    <div class="options" id="optionsRow"></div>
+    <div class="feedback-bar" id="feedbackBar"></div>
+    <button class="next-btn" id="nextBtn" disabled>Próxima etapa →</button>
+  </section>
+
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-badge" id="resultBadge">🏆</div>
+      <h2 id="resultTitle">Fase concluída!</h2>
+      <p id="resultText">Você completou a trilha deste nível.</p>
+      <div class="metrics">
+        <div class="metric"><div class="m-num" id="mAcc">0%</div><div class="m-lbl">Acertos</div></div>
+        <div class="metric"><div class="m-num" id="mStars">0</div><div class="m-lbl">Estrelas</div></div>
+        <div class="metric"><div class="m-num" id="mFirst">0</div><div class="m-lbl">De 1ª tentativa</div></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" id="btnRetry">Repetir este nível</button>
+        <button class="btn-secondary" id="btnNextLevel">Ir para o próximo nível →</button>
+        <button class="btn-ghost" id="btnCopy">Copiar resumo da sessão (para registro clínico)</button>
+        <div class="copied-msg" id="copiedMsg"></div>
+        <button class="btn-ghost" id="btnHome2">Voltar ao menu</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const SHAPES = {
+  circle:   c => `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="${c}"/></svg>`,
+  square:   c => `<svg viewBox="0 0 40 40"><rect x="6" y="6" width="28" height="28" rx="5" fill="${c}"/></svg>`,
+  triangle: c => `<svg viewBox="0 0 40 40"><polygon points="20,6 34,32 6,32" fill="${c}"/></svg>`,
+  star:     c => `<svg viewBox="0 0 40 40"><polygon points="20,4 24.5,15 36,15.5 27,23 30,35 20,28 10,35 13,23 4,15.5 15.5,15" fill="${c}"/></svg>`,
+  hexagon:  c => `<svg viewBox="0 0 40 40"><polygon points="20,4 33,12 33,28 20,36 7,28 7,12" fill="${c}"/></svg>`
+};
+const SHAPE_POOL = ['circle','square','triangle','star','hexagon'];
+const COLOR = { teal:'#618e8a', salmon:'#da987c', gold:'#c9a227', sage:'#93ab8f', plum:'#9b7ba6', sky:'#5f8fa3' };
+const COLOR_POOL = ['teal','salmon','gold','sage','plum','sky'];
+
+function svgFor(shape, color){ return SHAPES[shape](COLOR[color]); }
+
+const LEVELS = [
+  { id:1, name:'Nível 1 · A-B', badge:'AB', color:'#618e8a', type:'AB', shapesNeeded:2, colorsNeeded:2,
+    desc:'Alternância simples entre duas figuras · 5 etapas, formas diferentes a cada uma.',
+    instr:'A figura se repete a cada <b>2 posições</b>.', visible:6 },
+  { id:2, name:'Nível 2 · A-B-C', badge:'ABC', color:'#4a716d', type:'ABC', shapesNeeded:3, colorsNeeded:3,
+    desc:'Alternância entre três figuras · 5 etapas, trio de formas diferente a cada uma.',
+    instr:'Agora são <b>3 figuras</b> se revezando em ordem fixa.', visible:6 },
+  { id:3, name:'Nível 3 · A-A-B', badge:'AAB', color:'#da987c', type:'AAB', shapesNeeded:2, colorsNeeded:2,
+    desc:'Repetição dupla antes da troca · 5 etapas, par de formas diferente a cada uma.',
+    instr:'Repare: a mesma figura aparece <b>duas vezes seguidas</b> antes de trocar.', visible:6 },
+  { id:4, name:'Nível 4 · A-B-B', badge:'ABB', color:'#c47a5d', type:'ABB', shapesNeeded:2, colorsNeeded:2,
+    desc:'A troca acontece antes da repetição dupla · 5 etapas, formas diferentes a cada uma.',
+    instr:'Desta vez a <b>segunda figura</b> é que se repete duas vezes.', visible:6 },
+  { id:5, name:'Nível 5 · A-A-B-B', badge:'AABB', color:'#93ab8f', type:'AABB', shapesNeeded:2, colorsNeeded:2,
+    desc:'Blocos duplos alternados · 5 etapas, par de formas diferente a cada uma.',
+    instr:'Cada figura aparece em <b>blocos de dois</b> antes de trocar.', visible:8 },
+  { id:6, name:'Nível 6 · Duplo atributo', badge:'2x', color:'#93761d', type:'DUAL', shapesNeeded:2, colorsNeeded:3,
+    desc:'Forma e cor alternam em ritmos diferentes · 5 etapas, combinações sempre novas.',
+    instr:'Atenção redobrada: a <b>forma</b> muda a cada 2 posições e a <b>cor</b> muda a cada 3 — ritmos independentes.', visible:8 },
+];
+
+const ETAPAS_POR_NIVEL = 5;
+
+let state = {
+  levelIndex:0, round:0, stars:0, correctCount:0, firstTryCount:0,
+  attemptedThisRound:false, history:[], prevShapes:null, prevColors:null, prevPosition:null
+};
+
+function gcd(a,b){ return b===0 ? a : gcd(b, a % b); }
+function lcm(a,b){ return (a*b) / gcd(a,b); }
+
+/* Comprimento do ciclo do padrão (quantas posições até o padrão se repetir) */
+function cycleLengthFor(level){
+  switch(level.type){
+    case 'AB': return 2;
+    case 'ABC': return 3;
+    case 'AAB': return 3;
+    case 'ABB': return 3;
+    case 'AABB': return 4;
+    case 'DUAL': return lcm(level.shapesNeeded, level.colorsNeeded);
+  }
+}
+
+/* Sorteia em qual posição do ciclo a resposta pedida vai cair nesta etapa,
+   garantindo que seja diferente da posição pedida na etapa anterior */
+function pickPosition(cycleLen, prevPosition){
+  if(cycleLen <= 1) return 0;
+  let pos, attempt=0;
+  do{
+    pos = Math.floor(Math.random()*cycleLen);
+    attempt++;
+  } while(prevPosition !== null && pos === prevPosition && attempt < 15);
+  return pos;
+}
+
+/* Calcula o comprimento visível mínimo (>= baseline) cujo índice da resposta
+   corresponda exatamente à posição sorteada dentro do ciclo do padrão */
+function visibleLengthFor(baseline, cycleLen, position){
+  let len = baseline;
+  while(len % cycleLen !== position){ len++; }
+  return len;
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function sameSet(a,b){
+  if(!a || !b || a.length!==b.length) return false;
+  const sa=[...a].sort(); const sb=[...b].sort();
+  return sa.every((v,i)=>v===sb[i]);
+}
+function pickDistinct(pool, n, prevSelection){
+  let picked, attempt=0;
+  do{
+    picked = shuffle(pool).slice(0,n);
+    attempt++;
+  } while(prevSelection && attempt<12 && sameSet(picked, prevSelection));
+  return picked;
+}
+
+function generateStage(level, prevShapes, prevColors){
+  const shapes = pickDistinct(SHAPE_POOL, level.shapesNeeded, prevShapes);
+  const colors = pickDistinct(COLOR_POOL, level.colorsNeeded, prevColors);
+  let unit = null, shapeUnit = null, colorUnit = null;
+  switch(level.type){
+    case 'AB':
+      unit = [{shape:shapes[0],color:colors[0]},{shape:shapes[1],color:colors[1]}]; break;
+    case 'ABC':
+      unit = [{shape:shapes[0],color:colors[0]},{shape:shapes[1],color:colors[1]},{shape:shapes[2],color:colors[2]}]; break;
+    case 'AAB':
+      unit = [{shape:shapes[0],color:colors[0]},{shape:shapes[0],color:colors[0]},{shape:shapes[1],color:colors[1]}]; break;
+    case 'ABB':
+      unit = [{shape:shapes[0],color:colors[0]},{shape:shapes[1],color:colors[1]},{shape:shapes[1],color:colors[1]}]; break;
+    case 'AABB':
+      unit = [{shape:shapes[0],color:colors[0]},{shape:shapes[0],color:colors[0]},{shape:shapes[1],color:colors[1]},{shape:shapes[1],color:colors[1]}]; break;
+    case 'DUAL':
+      shapeUnit = shapes; colorUnit = colors; break;
+  }
+  return { unit, shapeUnit, colorUnit, shapes, colors };
+}
+
+function buildSequence(stageData, length){
+  const seq = [];
+  if(stageData.shapeUnit){
+    for(let i=0;i<length;i++){
+      const shape = stageData.shapeUnit[i % stageData.shapeUnit.length];
+      const color = stageData.colorUnit[i % stageData.colorUnit.length];
+      seq.push({shape,color});
+    }
+  } else {
+    const u = stageData.unit;
+    for(let i=0;i<length;i++){ seq.push(u[i % u.length]); }
+  }
+  return seq;
+}
+
+function sameItem(a,b){ return a.shape===b.shape && a.color===b.color; }
+
+function buildOptions(correctItem, prevItem){
+  const options = [correctItem];
+  if(prevItem && !sameItem(prevItem, correctItem)){ options.push({...prevItem}); }
+  const shapePool = SHAPE_POOL.filter(s => s !== correctItem.shape);
+  options.push({shape: shapePool[Math.floor(Math.random()*shapePool.length)], color: correctItem.color});
+  const colorPool = COLOR_POOL.filter(c => c !== correctItem.color);
+  options.push({shape: correctItem.shape, color: colorPool[Math.floor(Math.random()*colorPool.length)]});
+  const unique = [];
+  options.forEach(o=>{ if(!unique.some(u=>sameItem(u,o))) unique.push(o); });
+  while(unique.length < 4){
+    const s = SHAPE_POOL[Math.floor(Math.random()*SHAPE_POOL.length)];
+    const c = COLOR_POOL[Math.floor(Math.random()*COLOR_POOL.length)];
+    const cand = {shape:s,color:c};
+    if(!unique.some(u=>sameItem(u,cand))) unique.push(cand);
+  }
+  return shuffle(unique.slice(0,4));
+}
+
+function renderHome(){
+  const list = document.getElementById('levelList');
+  list.innerHTML = '';
+  LEVELS.forEach((lvl, idx) => {
+    const card = document.createElement('button');
+    card.className = 'level-card';
+    card.innerHTML = `
+      <div class="level-badge" style="background:${lvl.color}">${lvl.badge}</div>
+      <div class="level-info">
+        <div class="lt">${lvl.name}</div>
+        <div class="ld">${lvl.desc}</div>
+      </div>
+      <div class="level-arrow">›</div>
+    `;
+    card.addEventListener('click', () => startLevel(idx));
+    list.appendChild(card);
+  });
+}
+
+function startLevel(idx){
+  state.levelIndex = idx; state.round = 0; state.stars = 0;
+  state.correctCount = 0; state.firstTryCount = 0; state.history = [];
+  state.prevShapes = null; state.prevColors = null; state.prevPosition = null;
+  showScreen('screen-game');
+  nextRound();
+}
+
+function currentLevel(){ return LEVELS[state.levelIndex]; }
+
+function nextRound(){
+  state.round++;
+  state.attemptedThisRound = false;
+
+  if(state.round > ETAPAS_POR_NIVEL){ finishLevel(); return; }
+
+  const level = currentLevel();
+  const stageData = generateStage(level, state.prevShapes, state.prevColors);
+  state.prevShapes = stageData.shapes;
+  state.prevColors = stageData.colors;
+
+  document.getElementById('levelInstruction').innerHTML =
+    level.instr + `<span class="stage-note">Etapa ${state.round}/${ETAPAS_POR_NIVEL} — novas formas, cores e posição da resposta</span>`;
+  document.getElementById('roundLabel').textContent = `Etapa ${state.round}/${ETAPAS_POR_NIVEL}`;
+  document.getElementById('progressFill').style.width = ((state.round-1)/ETAPAS_POR_NIVEL*100) + '%';
+  document.getElementById('starsLive').textContent = state.stars;
+  document.getElementById('feedbackBar').className = 'feedback-bar';
+  document.getElementById('feedbackBar').textContent = '';
+  document.getElementById('nextBtn').disabled = true;
+
+  const cycleLen = cycleLengthFor(level);
+  const position = pickPosition(cycleLen, state.prevPosition);
+  state.prevPosition = position;
+  const visibleLen = visibleLengthFor(level.visible, cycleLen, position);
+  const seq = buildSequence(stageData, visibleLen + 1);
+  const visibleSeq = seq.slice(0, visibleLen);
+  const correctItem = seq[visibleLen];
+  const prevItem = seq[visibleLen - 1];
+  const options = buildOptions(correctItem, prevItem);
+
+  renderTrail(visibleSeq);
+  renderOptions(options, correctItem);
+
+  state.roundData = { correctItem, attempts:0 };
+}
+
+function renderTrail(seq){
+  const row = document.getElementById('trailRow');
+  row.innerHTML = '';
+  seq.forEach((item, i) => {
+    const stone = document.createElement('div');
+    stone.className = 'stone';
+    stone.style.animationDelay = (i*0.04)+'s';
+    stone.innerHTML = svgFor(item.shape, item.color);
+    row.appendChild(stone);
+    if(i < seq.length - 1){
+      const c = document.createElement('div');
+      c.className = 'connector';
+      row.appendChild(c);
+    }
+  });
+  const conn = document.createElement('div');
+  conn.className = 'connector';
+  row.appendChild(conn);
+  const slot = document.createElement('div');
+  slot.className = 'stone hidden-slot';
+  slot.textContent = '?';
+  row.appendChild(slot);
+}
+
+function renderOptions(options, correctItem){
+  const row = document.getElementById('optionsRow');
+  row.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = svgFor(opt.shape, opt.color);
+    btn.addEventListener('click', () => handleAnswer(opt, correctItem, btn, row));
+    row.appendChild(btn);
+  });
+}
+
+function handleAnswer(chosen, correctItem, btnEl, row){
+  if(state.attemptedThisRound) return;
+  state.roundData.attempts++;
+  const isCorrect = sameItem(chosen, correctItem);
+  const fb = document.getElementById('feedbackBar');
+
+  if(isCorrect){
+    state.attemptedThisRound = true;
+    Array.from(row.children).forEach(b=>b.classList.add('disabled'));
+    btnEl.classList.add('correct');
+    const firstTry = state.roundData.attempts === 1;
+    const gained = firstTry ? 2 : 1;
+    state.stars += gained;
+    state.correctCount++;
+    if(firstTry) state.firstTryCount++;
+    document.getElementById('starsLive').textContent = state.stars;
+    fb.className = 'feedback-bar ok';
+    fb.textContent = firstTry
+      ? '✓ Muito bem! Você identificou a lógica da sequência de primeira.'
+      : '✓ Isso mesmo! Observando com calma, você encontrou o padrão certo.';
+    state.history.push({level:currentLevel().id, correct:true, firstTry});
+    document.getElementById('nextBtn').disabled = false;
+  } else {
+    btnEl.classList.add('wrong');
+    btnEl.classList.add('disabled');
+    if(state.roundData.attempts === 1){
+      fb.className = 'feedback-bar no';
+      fb.textContent = 'Ainda não é essa. Volte à trilha e observe: qual figura deveria vir a seguir?';
+    } else {
+      state.attemptedThisRound = true;
+      Array.from(row.children).forEach(b=>b.classList.add('disabled'));
+      const correctBtn = Array.from(row.children).find(b => b.innerHTML === svgFor(correctItem.shape, correctItem.color));
+      if(correctBtn) correctBtn.classList.add('correct');
+      fb.className = 'feedback-bar no';
+      fb.textContent = 'Sem problema — o certo era essa peça. Vamos seguir para a próxima etapa.';
+      state.history.push({level:currentLevel().id, correct:false, firstTry:false});
+      document.getElementById('nextBtn').disabled = false;
+    }
+  }
+}
+
+function finishLevel(){
+  const total = ETAPAS_POR_NIVEL;
+  const acc = Math.round((state.correctCount/total)*100);
+  document.getElementById('mAcc').textContent = acc + '%';
+  document.getElementById('mStars').textContent = state.stars;
+  document.getElementById('mFirst').textContent = state.firstTryCount + '/' + total;
+
+  const lvl = currentLevel();
+  document.getElementById('resultTitle').textContent =
+    acc >= 80 ? 'Excelente trilha!' : acc >= 50 ? 'Trilha concluída!' : 'Trilha concluída — vamos revisar?';
+  document.getElementById('resultText').textContent =
+    acc >= 80
+      ? `Ótimo domínio do padrão ${lvl.badge}, mesmo com formas e cores novas a cada etapa. A criança está pronta para um nível mais desafiador.`
+      : acc >= 50
+      ? `Padrão ${lvl.badge} parcialmente consolidado. Pode ser útil repetir este nível antes de avançar.`
+      : `O padrão ${lvl.badge} ainda demanda mais prática, especialmente ao mudar as formas. Sugerimos repetir esta fase na próxima sessão.`;
+
+  document.getElementById('btnNextLevel').style.display =
+    state.levelIndex < LEVELS.length - 1 ? 'block' : 'none';
+  document.getElementById('copiedMsg').textContent = '';
+
+  showScreen('screen-result');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+document.getElementById('btnBackHome').addEventListener('click', ()=>showScreen('screen-home'));
+document.getElementById('btnHome2').addEventListener('click', ()=>showScreen('screen-home'));
+document.getElementById('nextBtn').addEventListener('click', nextRound);
+document.getElementById('btnRetry').addEventListener('click', ()=>startLevel(state.levelIndex));
+document.getElementById('btnNextLevel').addEventListener('click', ()=>{
+  if(state.levelIndex < LEVELS.length - 1) startLevel(state.levelIndex + 1);
+});
+document.getElementById('btnCopy').addEventListener('click', ()=>{
+  const lvl = currentLevel();
+  const total = ETAPAS_POR_NIVEL;
+  const acc = Math.round((state.correctCount/total)*100);
+  const date = new Date().toLocaleDateString('pt-BR');
+  const text = `Sessão – Trilha da Sequência\nData: ${date}\nNível: ${lvl.name} (padrão ${lvl.badge})\nAcertos: ${state.correctCount}/${total} (${acc}%)\nAcertos de 1ª tentativa: ${state.firstTryCount}/${total}\nEstrelas: ${state.stars}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    document.getElementById('copiedMsg').textContent = 'Resumo copiado para a área de transferência.';
+  }).catch(()=>{
+    document.getElementById('copiedMsg').textContent = text;
+  });
+});
+document.getElementById('infoBtn').addEventListener('click', ()=>{
+  alert('Trilha da Sequência\n\nAtividade de pareamento de sequência alternada para estimular atenção sustentada, memória de trabalho e raciocínio lógico-sequencial.\n\nCada nível tem 5 etapas. A cada etapa, o par (ou trio) de formas e cores usado é sorteado novamente, diferente da etapa anterior — assim a criança precisa reconhecer a LÓGICA do padrão de alternância, e não apenas memorizar quais figuras aparecem.\n\nOs níveis avançam em complexidade: de alternâncias simples (AB) até padrões com dois atributos independentes (forma e cor).\n\nUso recomendado: sessões de 5 etapas por nível, com registro de acertos e tentativas para acompanhamento evolutivo.');
+});
+
+renderHome();
+</script>
+</body>
+</html>
