@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trilha das Sílabas Complexas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#123B34;
+    --deep-2:#0C2B26;
+    --moss:#3E7C59;
+    --moss-light:#5D9B76;
+    --river:#3F8FB0;
+    --gold:#E3A23D;
+    --gold-light:#F1C275;
+    --rust:#A9462E;
+    --paper:#F2ECDA;
+    --paper-dim:#E7DFC7;
+    --ink:#123B34;
+    --white:#FFFDF8;
+    --radius:18px;
+    --shadow: 0 10px 30px rgba(12,43,38,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(63,143,176,0.25), transparent 60%),
+      radial-gradient(900px 500px at 90% 10%, rgba(227,162,61,0.12), transparent 55%),
+      linear-gradient(180deg, var(--deep) 0%, var(--deep-2) 100%);
+    color:var(--paper);
+    min-height:100vh;
+    line-height:1.5;
+    letter-spacing:0.01em;
+  }
+  h1,h2,h3, .display{
+    font-family:'Baloo 2', sans-serif;
+    letter-spacing:0.01em;
+  }
+  .wrap{
+    max-width:820px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+  }
+  header.top{
+    text-align:center;
+    margin-bottom:8px;
+  }
+  header.top .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.82rem;
+    font-weight:700;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    margin-bottom:10px;
+  }
+  header.top h1{
+    font-size:clamp(1.9rem, 5vw, 2.7rem);
+    color:var(--white);
+    margin:0 0 6px;
+    font-weight:800;
+  }
+  header.top p{
+    color:var(--paper-dim);
+    max-width:520px;
+    margin:0 auto;
+    font-size:0.98rem;
+  }
+  .blend-chip{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    gap:0;
+  }
+  .blend-chip .letter{
+    background:var(--white);
+    color:var(--deep);
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08);
+  }
+  .blend-chip .arc{
+    display:block;
+  }
+  .blend-chip.size-lg .letter{ width:46px; height:46px; font-size:1.5rem; }
+  .blend-chip.size-lg { gap:0; }
+  .blend-chip.size-md .letter{ width:34px; height:34px; font-size:1.1rem; }
+  .blend-chip.size-sm .letter{ width:26px; height:26px; font-size:0.85rem; }
+  .trail{
+    position:relative;
+    margin-top:36px;
+    padding:10px 0 10px;
+  }
+  .trail-line{
+    position:absolute;
+    left:50%;
+    top:20px;
+    bottom:20px;
+    width:4px;
+    background:repeating-linear-gradient(180deg, var(--moss-light) 0 10px, transparent 10px 18px);
+    transform:translateX(-50%);
+    border-radius:4px;
+  }
+  .stone-row{
+    position:relative;
+    display:flex;
+    margin-bottom:26px;
+  }
+  .stone-row.left{ justify-content:flex-start; }
+  .stone-row.right{ justify-content:flex-end; }
+  .stone{
+    width:150px;
+    background:var(--white);
+    color:var(--ink);
+    border-radius:var(--radius);
+    padding:14px 12px 16px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    cursor:pointer;
+    border:none;
+    position:relative;
+    transition:transform .15s ease, box-shadow .15s ease;
+    font-family:'Atkinson Hyperlegible', sans-serif;
+  }
+  .stone:hover:not(.locked){ transform:translateY(-3px); box-shadow:0 14px 34px rgba(12,43,38,0.32); }
+  .stone:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+  .stone .lvl-num{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:0.75rem;
+    color:var(--moss);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .stone .lvl-title{
+    font-weight:700;
+    font-size:0.92rem;
+    margin-bottom:10px;
+    min-height:2.6em;
+  }
+  .stone .stars{
+    font-size:0.95rem;
+    color:var(--gold);
+    letter-spacing:2px;
+  }
+  .stone.locked{
+    opacity:0.55;
+    cursor:not-allowed;
+    background:var(--paper-dim);
+  }
+  .stone.locked .lock-icon{
+    font-size:1.3rem;
+  }
+  .stone.current{
+    box-shadow:0 0 0 4px var(--gold-light), var(--shadow);
+  }
+  .panel{
+    background:var(--white);
+    color:var(--ink);
+    border-radius:24px;
+    padding:28px 24px 26px;
+    box-shadow:var(--shadow);
+    margin-top:24px;
+  }
+  .panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .panel-header h2{
+    font-size:1.3rem;
+    margin:0;
+    color:var(--deep);
+  }
+  .back-btn{
+    background:none;
+    border:2px solid var(--paper-dim);
+    color:var(--deep);
+    border-radius:10px;
+    padding:6px 12px;
+    font-weight:700;
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    cursor:pointer;
+    font-size:0.85rem;
+  }
+  .back-btn:hover{ background:var(--paper); }
+  .progress-bar{
+    height:8px;
+    background:var(--paper-dim);
+    border-radius:6px;
+    overflow:hidden;
+    margin:14px 0 22px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--moss), var(--river));
+    border-radius:6px;
+    transition:width .35s ease;
+  }
+  .instruction{
+    font-size:0.88rem;
+    color:var(--moss);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:10px;
+  }
+  .prompt{
+    font-family:'Baloo 2', sans-serif;
+    font-size:1.5rem;
+    color:var(--deep);
+    text-align:center;
+    margin:6px 0 24px;
+    font-weight:700;
+  }
+  .prompt .gap{
+    display:inline-block;
+    min-width:2.2em;
+    border-bottom:3px dashed var(--river);
+    color:var(--river);
+  }
+  .tiles-row{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:22px;
+  }
+  .tile{
+    background:var(--paper);
+    border:2px solid var(--paper-dim);
+    color:var(--deep);
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+    padding:12px 18px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .tile:hover{ transform:translateY(-2px); border-color:var(--river); }
+  .tile:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .tile.selected{ background:var(--river); color:var(--white); border-color:var(--river); }
+  .tile.correct{ background:var(--moss); color:var(--white); border-color:var(--moss); }
+  .tile.incorrect{ background:var(--rust); color:var(--white); border-color:var(--rust); }
+  .tile.disabled{ cursor:default; }
+  .options-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .option-btn{
+    background:var(--paper);
+    border:2px solid var(--paper-dim);
+    color:var(--deep);
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.2rem;
+    padding:16px 10px;
+    border-radius:14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .option-btn:hover:not(.disabled){ transform:translateY(-2px); border-color:var(--river); }
+  .option-btn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .option-btn.correct{ background:var(--moss); color:var(--white); border-color:var(--moss); }
+  .option-btn.incorrect{ background:var(--rust); color:var(--white); border-color:var(--rust); }
+  .option-btn.disabled{ cursor:default; }
+  .build-target{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    min-height:56px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .build-slot{
+    width:64px;
+    height:52px;
+    border:2px dashed var(--paper-dim);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    color:var(--deep);
+    background:var(--paper);
+  }
+  .build-slot.filled{ border-style:solid; border-color:var(--river); }
+  .feedback{
+    text-align:center;
+    font-weight:700;
+    min-height:1.6em;
+    margin-bottom:14px;
+    font-size:0.98rem;
+  }
+  .feedback.ok{ color:var(--moss); }
+  .feedback.no{ color:var(--rust); }
+  .actions{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:8px;
+  }
+  .btn-primary{
+    background:var(--gold);
+    color:var(--deep-2);
+    border:none;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:12px 28px;
+    border-radius:14px;
+    cursor:pointer;
+    box-shadow:0 6px 0 #b97a1f;
+  }
+  .btn-primary:hover{ filter:brightness(1.05); }
+  .btn-primary:active{ transform:translateY(3px); box-shadow:0 3px 0 #b97a1f; }
+  .btn-primary:disabled{ opacity:0.4; cursor:not-allowed; box-shadow:none; }
+  .btn-primary:focus-visible{ outline:3px solid var(--white); outline-offset:3px; }
+  .btn-secondary{
+    background:none;
+    border:2px solid var(--paper-dim);
+    color:var(--deep);
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    font-weight:700;
+    padding:11px 22px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .results{ text-align:center; }
+  .results .big-stars{ font-size:2.6rem; color:var(--gold); margin:6px 0 14px; letter-spacing:6px; }
+  .results h2{ color:var(--deep); }
+  .results .score-line{ font-size:1.05rem; color:var(--moss); font-weight:700; margin-bottom:18px; }
+  footer.credit{
+    text-align:center;
+    color:var(--paper-dim);
+    font-size:0.8rem;
+    margin-top:36px;
+    opacity:0.8;
+  }
+  [hidden]{ display:none !important; }
+  @media (max-width:560px){
+    .stone{ width:130px; }
+    .stone-row.left, .stone-row.right{ justify-content:center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Consciência fonológica · encontros consonantais</span>
+    <h1>Trilha das Sílabas Complexas</h1>
+    <p>Cinco etapas para reconhecer, completar e formar palavras com sílabas complexas. Escolha qualquer nível na ordem que preferir.</p>
+  </header>
+  <section id="screen-trail">
+    <div class="trail" id="trail-container">
+      <div class="trail-line" aria-hidden="true"></div>
+    </div>
+  </section>
+  <section id="screen-game" class="panel" hidden>
+    <div class="panel-header">
+      <h2 id="game-title">Nível</h2>
+      <button class="back-btn" id="btn-back">← Trilha</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="instruction" id="game-instruction">Instrução</div>
+    <div class="prompt" id="game-prompt">Palavra</div>
+    <div id="area-tiles" class="tiles-row" hidden></div>
+    <div id="area-options" class="options-grid" hidden></div>
+    <div id="area-build">
+      <div id="build-target" class="build-target" hidden></div>
+      <div id="build-bank" class="tiles-row" hidden></div>
+    </div>
+    <div class="feedback" id="game-feedback" aria-live="polite"></div>
+    <div class="actions">
+      <button class="btn-primary" id="btn-next" disabled>Confirmar</button>
+    </div>
+  </section>
+  <section id="screen-results" class="panel results" hidden>
+    <div class="big-stars" id="results-stars">★★★</div>
+    <h2 id="results-title">Nível concluído!</h2>
+    <p class="score-line" id="results-score">Você acertou 6 de 6</p>
+    <p id="results-msg">Muito bem!</p>
+    <div class="actions">
+      <button class="btn-secondary" id="btn-retry">Repetir nível</button>
+      <button class="btn-primary" id="btn-continue">Voltar à trilha</button>
+    </div>
+  </section>
+  <footer class="credit">Material de apoio psicopedagógico · uso clínico e educacional</footer>
+</div>
+<script>
+(function(){
+  function blendChipHTML(blend, size){
+    size = size || 'md';
+    var letters = blend.split('');
+    var w = size === 'lg' ? 46 : (size === 'md' ? 34 : 26);
+    var gap = Math.round(w*0.18);
+    var arcW = w*2 - gap;
+    var svg = '<svg class="arc" width="'+arcW+'" height="14" viewBox="0 0 '+arcW+' 14" style="position:absolute; top:-10px; left:'+ (gap/2) +'px;" aria-hidden="true">' +
+      '<path d="M2 12 Q '+(arcW/2)+' -6 '+(arcW-2)+' 12" fill="none" stroke="#E3A23D" stroke-width="3" stroke-linecap="round"/></svg>';
+    return '<span class="blend-chip size-'+size+'" style="position:relative;">' + svg +
+      letters.map(function(l){ return '<span class="letter">'+l.toUpperCase()+'</span>'; }).join('') +
+      '</span>';
+  }
+  var LEVELS = [
+    {
+      id:1,
+      title:'Monte com letras',
+      blend:'BR/PR',
+      instruction:'Toque nas letras na ordem certa para formar a palavra',
+      type:'build',
+      questions:[
+        {word:'PRATO', parts:'PRATO'.split('')},
+        {word:'LIVRO', parts:'LIVRO'.split('')},
+        {word:'COBRA', parts:'COBRA'.split('')},
+        {word:'TREM', parts:'TREM'.split('')},
+        {word:'GRANDE', parts:'GRANDE'.split('')},
+        {word:'FLOR', parts:'FLOR'.split('')}
+      ]
+    },
+    {
+      id:2,
+      title:'Complete a palavra',
+      blend:'CL/GL',
+      instruction:'Escolha o encontro consonantal que completa a palavra',
+      type:'complete',
+      questions:[
+        {before:'', after:'IMA', word:'CLIMA', options:['CL','GL','CR'], correct:'CL'},
+        {before:'', after:'OBO', word:'GLOBO', options:['GL','GR','CL'], correct:'GL'},
+        {before:'', after:'AVO', word:'CRAVO', options:['CR','GR','TR'], correct:'CR'},
+        {before:'', after:'ANDE', word:'GRANDE', options:['GR','GL','CR'], correct:'GR'},
+        {before:'', after:'UA', word:'CRUA', options:['CR','GR','CL'], correct:'CR'},
+        {before:'', after:'ÓRIA', word:'GLÓRIA', options:['GL','GR','CL'], correct:'GL'}
+      ]
+    },
+    {
+      id:3,
+      title:'Sons parecidos',
+      blend:'BL/PL',
+      instruction:'Cuidado com os sons parecidos: escolha o encontro correto',
+      type:'complete',
+      questions:[
+        {after:'OCO', word:'BLOCO', options:['BL','PL','BR'], correct:'BL'},
+        {after:'ANO', word:'PLANO', options:['PL','BL','PR'], correct:'PL'},
+        {after:'USA', word:'BLUSA', options:['BL','PL','BR'], correct:'BL'},
+        {after:'ATAFORMA', word:'PLATAFORMA', options:['PL','BL','PR'], correct:'PL'},
+        {after:'ETO', word:'PRETO', options:['PR','BR','PL'], correct:'PR'},
+        {after:'AÇO', word:'BRAÇO', options:['BR','PR','BL'], correct:'BR'}
+      ]
+    },
+    {
+      id:4,
+      title:'Encontros em dobro',
+      blend:'FR/FL',
+      instruction:'Escolha o encontro consonantal que completa a palavra',
+      type:'complete',
+      questions:[
+        {after:'ALDA', word:'FRALDA', options:['FR','FL','VR'], correct:'FR'},
+        {after:'ECHA', word:'FLECHA', options:['FL','FR','CL'], correct:'FL'},
+        {after:'IO', word:'FRIO', options:['FR','FL','PR'], correct:'FR'},
+        {after:'AUTA', word:'FLAUTA', options:['FL','FR','GL'], correct:'FL'},
+        {after:'EXO', word:'REFLEXO', options:['FL','FR','BL'], correct:'FL'},
+        {after:'ICANO', word:'AFRICANO', options:['FR','FL','PR'], correct:'FR'}
+      ]
+    },
+    {
+      id:5,
+      title:'Desafio final',
+      blend:'Misto',
+      instruction:'Nível misto: preste atenção em cada palavra',
+      type:'mixed',
+      questions:[
+        {kind:'complete', after:'ESENTE', word:'PRESENTE', options:['PR','PL','BR'], correct:'PR'},
+        {kind:'recognize', word:'COMPLETO', syllables:['COM','PLE','TO'], correct:1},
+        {kind:'build', word:'PROBLEMA', parts:['PRO','BLE','MA']},
+        {kind:'complete', after:'ANDE', word:'GRANDE', options:['GR','GL','CR'], correct:'GR'},
+        {kind:'recognize', word:'NEGRO', syllables:['NE','GRO'], correct:1},
+        {kind:'build', word:'APRENDER', parts:['A','PREN','DER']},
+        {kind:'complete', after:'ÂMICO', word:'DINÂMICO', options:['N','M','NH'], correct:'N'}
+      ]
+    }
+  ];
+  var progress = LEVELS.map(function(){ return {unlocked:true, stars:0}; });
+  var state = { levelIndex:0, qIndex:0, correctCount:0, answered:false, buildPicked:[] };
+  var elTrail = document.getElementById('trail-container');
+  var screenTrail = document.getElementById('screen-trail');
+  var screenGame = document.getElementById('screen-game');
+  var screenResults = document.getElementById('screen-results');
+  function renderTrail(){
+    elTrail.querySelectorAll('.stone-row').forEach(function(n){ n.remove(); });
+    LEVELS.forEach(function(lvl, i){
+      var row = document.createElement('div');
+      row.className = 'stone-row ' + (i % 2 === 0 ? 'left' : 'right');
+      var p = progress[i];
+      var stone = document.createElement('button');
+      stone.className = 'stone' + (p.unlocked ? '' : ' locked');
+      stone.setAttribute('aria-label', 'Nível ' + (i+1) + ': ' + lvl.title + (p.unlocked ? '' : ' (bloqueado)'));
+      if (!p.unlocked) stone.disabled = true;
+      var starsHTML = '';
+      if (p.unlocked){
+        starsHTML = '<div class="stars">' + (p.stars > 0 ? '★'.repeat(p.stars) + '☆'.repeat(3-p.stars) : '☆☆☆') + '</div>';
+      } else {
+        starsHTML = '<div class="lock-icon">🔒</div>';
+      }
+      stone.innerHTML =
+        '<div class="lvl-num">Nível ' + (i+1) + '</div>' +
+        blendChipHTML(lvl.blend.split('/')[0], 'sm') +
+        '<div class="lvl-title">' + lvl.title + '</div>' +
+        starsHTML;
+      stone.addEventListener('click', function(){ if(p.unlocked) startLevel(i); });
+      row.appendChild(stone);
+      elTrail.appendChild(row);
+    });
+  }
+  function showScreen(name){
+    screenTrail.hidden = name !== 'trail';
+    screenGame.hidden = name !== 'game';
+    screenResults.hidden = name !== 'results';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function startLevel(i){
+    state.levelIndex = i;
+    state.qIndex = 0;
+    state.correctCount = 0;
+    showScreen('game');
+    renderQuestion();
+  }
+  function currentLevel(){ return LEVELS[state.levelIndex]; }
+  function normalizedQuestion(){
+    var lvl = currentLevel();
+    var q = lvl.questions[state.qIndex];
+    if (lvl.type === 'mixed') return Object.assign({}, q, {type:q.kind});
+    return Object.assign({}, q, {type:lvl.type});
+  }
+  function renderQuestion(){
+    var lvl = currentLevel();
+    state.answered = false;
+    state.buildPicked = [];
+    document.getElementById('game-title').textContent = 'Nível ' + (lvl.id) + ' · ' + lvl.title;
+    document.getElementById('progress-fill').style.width = (100 * state.qIndex / lvl.questions.length) + '%';
+    document.getElementById('game-instruction').textContent = lvl.instruction;
+    document.getElementById('game-feedback').textContent = '';
+    document.getElementById('game-feedback').className = 'feedback';
+    document.getElementById('btn-next').disabled = true;
+    document.getElementById('btn-next').textContent = 'Confirmar';
+    var q = normalizedQuestion();
+    var areaTiles = document.getElementById('area-tiles');
+    var areaOptions = document.getElementById('area-options');
+    var buildTarget = document.getElementById('build-target');
+    var buildBank = document.getElementById('build-bank');
+    areaTiles.hidden = true; areaTiles.innerHTML = '';
+    areaOptions.hidden = true; areaOptions.innerHTML = '';
+    buildTarget.hidden = true; buildTarget.innerHTML = '';
+    buildBank.hidden = true; buildBank.innerHTML = '';
+    if (q.type === 'recognize'){
+      document.getElementById('game-prompt').textContent = q.word;
+      areaTiles.hidden = false;
+      q.syllables.forEach(function(syl, idx){
+        var btn = document.createElement('button');
+        btn.className = 'tile';
+        btn.textContent = syl;
+        btn.addEventListener('click', function(){ selectRecognize(idx, btn); });
+        areaTiles.appendChild(btn);
+      });
+    }
+    if (q.type === 'complete'){
+      document.getElementById('game-prompt').innerHTML = '<span class="gap">___</span>' + q.after.toLowerCase();
+      areaOptions.hidden = false;
+      shuffle(q.options.slice()).forEach(function(opt){
+        var btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', function(){ selectComplete(opt, btn); });
+        areaOptions.appendChild(btn);
+      });
+    }
+    if (q.type === 'build'){
+      document.getElementById('game-prompt').textContent = 'Monte a palavra';
+      buildTarget.hidden = false;
+      buildBank.hidden = false;
+      q.parts.forEach(function(){
+        var slot = document.createElement('div');
+        slot.className = 'build-slot';
+        buildTarget.appendChild(slot);
+      });
+      shuffle(q.parts.slice()).forEach(function(part){
+        var btn = document.createElement('button');
+        btn.className = 'tile';
+        btn.textContent = part;
+        btn.addEventListener('click', function(){ pickBuildPart(part, btn); });
+        buildBank.appendChild(btn);
+      });
+    }
+  }
+  function shuffle(arr){
+    for (var i = arr.length -1; i>0; i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = arr[i]; arr[i]=arr[j]; arr[j]=t;
+    }
+    return arr;
+  }
+  function lockOptions(container, selector){
+    container.querySelectorAll(selector).forEach(function(el){ el.classList.add('disabled'); el.disabled = true; });
+  }
+  function selectRecognize(idx, btn){
+    if (state.answered) return;
+    state.answered = true;
+    var q = normalizedQuestion();
+    var correct = idx === q.correct;
+    var tiles = document.getElementById('area-tiles');
+    tiles.querySelectorAll('.tile').forEach(function(t, i){
+      if (i === q.correct) t.classList.add('correct');
+      if (i === idx && !correct) t.classList.add('incorrect');
+    });
+    lockOptions(tiles, '.tile');
+    giveFeedback(correct, q.word);
+  }
+  function selectComplete(opt, btn){
+    if (state.answered) return;
+    state.answered = true;
+    var q = normalizedQuestion();
+    var correct = opt === q.correct;
+    var opts = document.getElementById('area-options');
+    opts.querySelectorAll('.option-btn').forEach(function(o){
+      if (o.textContent === q.correct) o.classList.add('correct');
+      if (o === btn && !correct) o.classList.add('incorrect');
+    });
+    lockOptions(opts, '.option-btn');
+    giveFeedback(correct, q.word);
+  }
+  function pickBuildPart(part, btn){
+    if (state.answered) return;
+    if (btn.classList.contains('disabled')) return;
+    var q = normalizedQuestion();
+    state.buildPicked.push(part);
+    btn.classList.add('disabled');
+    btn.disabled = true;
+    var slots = document.querySelectorAll('#build-target .build-slot');
+    var idx = state.buildPicked.length - 1;
+    slots[idx].textContent = part;
+    slots[idx].classList.add('filled');
+    if (state.buildPicked.length === q.parts.length){
+      state.answered = true;
+      var correct = state.buildPicked.join('') === q.parts.join('');
+      slots.forEach(function(s){ s.style.borderColor = correct ? 'var(--moss)' : 'var(--rust)'; s.style.color = correct ? 'var(--moss)':'var(--rust)'; });
+      lockOptions(document.getElementById('build-bank'), '.tile');
+      giveFeedback(correct, q.word);
+    }
+  }
+  function giveFeedback(correct, word){
+    var fb = document.getElementById('game-feedback');
+    if (correct){
+      state.correctCount++;
+      fb.textContent = 'Isso mesmo! ' + word + ' está correta.';
+      fb.className = 'feedback ok';
+    } else {
+      fb.textContent = 'Quase — a palavra certa é ' + word + '. Continue!';
+      fb.className = 'feedback no';
+    }
+    document.getElementById('btn-next').disabled = false;
+  }
+  document.getElementById('btn-next').addEventListener('click', function(){
+    var lvl = currentLevel();
+    if (!state.answered) return;
+    if (state.qIndex < lvl.questions.length - 1){
+      state.qIndex++;
+      renderQuestion();
+    } else {
+      finishLevel();
+    }
+  });
+  function finishLevel(){
+    var lvl = currentLevel();
+    var total = lvl.questions.length;
+    var pct = state.correctCount / total;
+    var stars = pct === 1 ? 3 : (pct >= 0.7 ? 2 : (pct >= 0.4 ? 1 : 0));
+    var p = progress[state.levelIndex];
+    p.stars = Math.max(p.stars, stars);
+    if (state.levelIndex + 1 < progress.length){
+      progress[state.levelIndex + 1].unlocked = true;
+    }
+    document.getElementById('results-stars').textContent = stars > 0 ? '★'.repeat(stars) + '☆'.repeat(3-stars) : '☆☆☆';
+    document.getElementById('results-title').textContent = stars >= 2 ? 'Muito bem!' : 'Nível concluído';
+    document.getElementById('results-score').textContent = 'Você acertou ' + state.correctCount + ' de ' + total;
+    document.getElementById('results-msg').textContent = stars === 3
+      ? 'Domínio completo dos encontros consonantais deste nível.'
+      : (stars >= 1 ? 'Bom progresso — vale repetir para fixar os sons que ainda geram dúvida.'
+                    : 'Vamos repetir este nível com calma, sílaba por sílaba.');
+    showScreen('results');
+  }
+  document.getElementById('btn-retry').addEventListener('click', function(){
+    startLevel(state.levelIndex);
+  });
+  document.getElementById('btn-continue').addEventListener('click', function(){
+    renderTrail();
+    showScreen('trail');
+  });
+  document.getElementById('btn-back').addEventListener('click', function(){
+    showScreen('trail');
+  });
+  renderTrail();
+  showScreen('trail');
+})();
+</script>
+</body>
+</html>
